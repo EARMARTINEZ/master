@@ -1,0 +1,38 @@
+{
+  "dependencies": {
+    "@strapi/plugin-color-picker": "^4.10.7",
+    "@strapi/plugin-graphql": "^4.0.0",
+    "@strapi/plugin-i18n": "4.10.5",
+    "@strapi/plugin-users-permissions": "4.10.5",
+    "@strapi/provider-email-nodemailer": "^4.13.7",
+    "@strapi/provider-email-sendgrid": "^4.2.2",
+    "@strapi/strapi": "4.10.5",
+    "lodash.set": "^4.3.2",
+    "passport-google-oauth2": "^0.2.0",
+    "pg": "8.6.0",
+    "strapi-plugin-import-export-entries": "^1.20.0",
+    "xlsx": "^0.18.5"
+  },
+  "name": "backend",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A Strapi application",
+  "scripts": {
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi"
+  },
+  "devDependencies": {},
+  "author": {
+    "name": "A Strapi developer"
+  },
+  "strapi": {
+    "uuid": "d938871a-b84f-40f1-b084-987f8bd41372"
+  },
+  "engines": {
+    "node": ">=12.x.x <=16.x.x",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "variations",
+  "info": {
+    "singularName": "variation",
+    "pluralName": "variations",
+    "displayName": "Variation#",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "IdMastar": {
+      "type": "string"
+    },
+    "CollectionId": {
+      "type": "string"
+    },
+    "CodigoPrefix": {
+      "type": "string"
+    },
+    "CodigoComposition": {
+      "type": "string"
+    },
+    "HuellaReference": {
+      "type": "string"
+    },
+    "CodigoSizes": {
+      "type": "string"
+    },
+    "StartSequence": {
+      "type": "string"
+    },
+    "CountSequence": {
+      "type": "string"
+    }
+  }
+}

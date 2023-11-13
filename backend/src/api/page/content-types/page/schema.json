@@ -1,0 +1,81 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pages",
+  "info": {
+    "singularName": "page",
+    "pluralName": "pages",
+    "displayName": "VPage#",
+    "name": "page",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "shortName": {
+      "type": "string",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "metadata": {
+      "type": "component",
+      "repeatable": false,
+      "component": "meta.metadata",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "contentSections": {
+      "type": "dynamiczone",
+      "components": [
+        "sections.bottom-actions",
+        "sections.center-title",
+        "sections.feature-columns-group",
+        "sections.feature-rows-group",
+        "sections.forgot-password",
+        "sections.hero",
+        "sections.large-video",
+        "sections.lead-form",
+        "sections.mercado",
+        "sections.mercado-renta-variable",
+        "sections.pricing",
+        "sections.registro-invercion",
+        "sections.registroform",
+        "sections.registrouser",
+        "sections.reset-password",
+        "sections.rich-text",
+        "sections.show-info-v1",
+        "sections.testimonials-group",
+        "sections.dashboard",
+        "sections.track-payment",
+        "sections.card-registro"
+      ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "required": true
+    },
+    "slug": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      },
+      "type": "string",
+      "regex": "^$|^[a-zA-Z/-]+$"
+    }
+  }
+}

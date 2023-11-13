@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_sections_dashboards",
+  "info": {
+    "displayName": "Dashboard",
+    "icon": "chess-king",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "kind": "collectionType",
+  "collectionName": "collections",
+  "info": {
+    "singularName": "collection",
+    "pluralName": "collections",
+    "displayName": "Collection",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "date": {
+      "type": "date"
+    },
+    "relation_id": {
+      "type": "uid",
+      "targetField": "name"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "created"
+      ],
+      "default": "created"
+    },
+    "collection_type": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::collection-type.collection-type"
+    },
+    "prefix_id": {
+      "type": "biginteger",
+      "required": true,
+      "max": "99",
+      "min": "10"
+    },
+    "pantones": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": true
+    }
+  }
+}

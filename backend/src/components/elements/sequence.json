@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_elements_sequences",
+  "info": {
+    "displayName": "Sequence"
+  },
+  "options": {},
+  "attributes": {
+    "relation_id": {
+      "type": "string"
+    },
+    "count": {
+      "type": "biginteger",
+      "default": "0"
+    }
+  }
+}

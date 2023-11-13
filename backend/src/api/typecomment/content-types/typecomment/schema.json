@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "typecomments",
+  "info": {
+    "singularName": "typecomment",
+    "pluralName": "typecomments",
+    "displayName": "Typecomment",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "comment",
+        "pending"
+      ]
+    }
+  }
+}

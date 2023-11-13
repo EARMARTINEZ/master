@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_sections_show_info_v1s",
+  "info": {
+    "displayName": "show info v1",
+    "icon": "grip-horizontal"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    }
+  }
+}

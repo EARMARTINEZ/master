@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_sections_mercados",
+  "info": {
+    "displayName": "mercado",
+    "icon": "balance-scale-left"
+  },
+  "options": {},
+  "attributes": {
+    "cotizacion": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.cotizaciones"
+    }
+  }
+}

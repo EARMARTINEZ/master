@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_elements_send_emails",
+  "info": {
+    "displayName": "sendEmail",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "to": {
+      "type": "text",
+      "required": true
+    },
+    "from": {
+      "type": "email",
+      "default": "master@epkweb.net"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "sendEmail": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

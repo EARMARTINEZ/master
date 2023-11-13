@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_sections_card_registros",
+  "info": {
+    "displayName": "CardRegistro",
+    "icon": "boxes",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "pagosnew": {
+      "type": "component",
+      "repeatable": true,
+      "component": "registros.registro4"
+    },
+    "pagostrans": {
+      "type": "component",
+      "repeatable": true,
+      "component": "registros.registro4"
+    },
+    "pagospaid": {
+      "type": "component",
+      "repeatable": true,
+      "component": "registros.registro4"
+    },
+    "title": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "rpsaldo": {
+      "type": "component",
+      "repeatable": true,
+      "component": "registros.registro4"
+    }
+  }
+}

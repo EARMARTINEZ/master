@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_elements_references",
+  "info": {
+    "displayName": "Reference",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "gender": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::gender.gender"
+    },
+    "fabric": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::fabric.fabric"
+    },
+    "color": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::color.color"
+    },
+    "typeproduct": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product"
+    }
+  }
+}

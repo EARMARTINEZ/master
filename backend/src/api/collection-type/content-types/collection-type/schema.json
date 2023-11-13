@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "collection_types",
+  "info": {
+    "singularName": "collection-type",
+    "pluralName": "collection-types",
+    "displayName": "CollectionType"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "prefix_id": {
+      "type": "uid",
+      "maxLength": 1,
+      "required": true,
+      "minLength": 1
+    }
+  }
+}

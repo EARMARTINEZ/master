@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_sections_center_titles",
+  "info": {
+    "displayName": "Center Title",
+    "icon": "align-justify",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    }
+  }
+}

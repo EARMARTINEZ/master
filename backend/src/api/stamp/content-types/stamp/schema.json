@@ -1,0 +1,57 @@
+{
+  "kind": "collectionType",
+  "collectionName": "stamps",
+  "info": {
+    "singularName": "stamp",
+    "pluralName": "stamps",
+    "displayName": "Stamps",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "picture": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "description": {
+      "type": "text"
+    },
+    "masters": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::master.master",
+      "mappedBy": "stamp"
+    },
+    "commentstamp": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.feature"
+    },
+    "pendingstamp": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.feature"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "Approved",
+        "Cancelled",
+        "Pending"
+      ]
+    }
+  }
+}

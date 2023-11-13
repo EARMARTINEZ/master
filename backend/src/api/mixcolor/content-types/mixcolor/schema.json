@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "mixcolors",
+  "info": {
+    "singularName": "mixcolor",
+    "pluralName": "mixcolors",
+    "displayName": "ColorPantone",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "collection": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::collection.collection"
+    },
+    "a_create_references": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::master.master",
+      "mappedBy": "color_pantone"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_registros_payment_orders",
+  "info": {
+    "displayName": "PaymentOrder",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "Loteid": {
+      "type": "biginteger"
+    },
+    "descripcion": {
+      "type": "string"
+    },
+    "monto": {
+      "type": "float"
+    },
+    "registros": {
+      "type": "biginteger"
+    },
+    "Estatus": {
+      "type": "enumeration",
+      "enum": [
+        "pendiente",
+        "ejecutado",
+        "cancelado"
+      ],
+      "default": "pendiente"
+    }
+  }
+}

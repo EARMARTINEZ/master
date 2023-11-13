@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_elements_sizes",
+  "info": {
+    "displayName": "tempsizes",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "genders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::gender.gender"
+    },
+    "typeproducts": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::product.product"
+    }
+  }
+}

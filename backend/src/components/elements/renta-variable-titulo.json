@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_elements_renta_variable_titulos",
+  "info": {
+    "displayName": "renta variable titulo",
+    "icon": "balance-scale-right"
+  },
+  "options": {},
+  "attributes": {
+    "DESC_SIMB": {
+      "type": "string"
+    },
+    "COD_SIMB": {
+      "type": "string"
+    },
+    "PRECIO": {
+      "type": "decimal",
+      "default": 0
+    },
+    "VAR_ABS": {
+      "type": "decimal",
+      "default": 0
+    },
+    "VAR_REL": {
+      "type": "decimal",
+      "default": 0
+    },
+    "VOLUMEN": {
+      "type": "string"
+    },
+    "MONTO_EFECTIVO": {
+      "type": "decimal"
+    },
+    "HORA": {
+      "type": "string"
+    },
+    "ICON": {
+      "type": "string"
+    }
+  }
+}

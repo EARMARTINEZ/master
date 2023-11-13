@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_elements_features",
+  "info": {
+    "name": "feature",
+    "displayName": "Feature",
+    "icon": "traffic-light",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "comment": {
+      "type": "text"
+    },
+    "date": {
+      "type": "datetime"
+    },
+    "user": {
+      "type": "string"
+    },
+    "type": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::typecomment.typecomment"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "Pending",
+        "Receive"
+      ],
+      "default": "Pending"
+    },
+    "city": {
+      "type": "string"
+    }
+  }
+}

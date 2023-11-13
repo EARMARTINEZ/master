@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_sections_registroforms",
+  "info": {
+    "displayName": "Registroform",
+    "icon": "address-book"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "emailPlaceholder": {
+      "type": "string"
+    },
+    "titlepassw": {
+      "type": "string"
+    },
+    "submitButton": {
+      "type": "component",
+      "repeatable": false,
+      "component": "links.button"
+    },
+    "location": {
+      "type": "string"
+    }
+  }
+}

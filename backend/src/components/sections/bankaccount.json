@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_sections_bankaccounts",
+  "info": {
+    "displayName": "bankaccount",
+    "icon": "address-card"
+  },
+  "options": {},
+  "attributes": {
+    "bank": {
+      "type": "component",
+      "repeatable": true,
+      "component": "identidad.bank"
+    }
+  }
+}

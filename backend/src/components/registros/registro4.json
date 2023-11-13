@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_registros_registro4s",
+  "info": {
+    "displayName": "registro4",
+    "icon": "list-alt",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "date": {
+      "type": "string"
+    },
+    "cant": {
+      "type": "string"
+    },
+    "receiveamount": {
+      "type": "float"
+    },
+    "payment": {
+      "type": "float"
+    }
+  }
+}

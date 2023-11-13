@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sizeactives",
+  "info": {
+    "singularName": "sizeactive",
+    "pluralName": "sizeactives",
+    "displayName": "SizeActive",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "gender": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::gender.gender"
+    },
+    "typeproduct": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product"
+    },
+    "sizes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::size.size"
+    },
+    "typeproduct_sizes": {
+      "type": "string"
+    },
+    "activateSearch": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

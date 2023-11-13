@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "providers",
+  "info": {
+    "singularName": "provider",
+    "pluralName": "providers",
+    "displayName": "Provider",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "masters": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::master.master",
+      "mappedBy": "provider"
+    }
+  }
+}

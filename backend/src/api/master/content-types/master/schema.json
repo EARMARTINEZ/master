@@ -1,0 +1,116 @@
+{
+  "kind": "collectionType",
+  "collectionName": "masters",
+  "info": {
+    "singularName": "master",
+    "pluralName": "masters",
+    "displayName": "aCreateReference",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "collection": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::collection.collection"
+    },
+    "Composition": {
+      "type": "component",
+      "repeatable": false,
+      "component": "elements.reference",
+      "required": true
+    },
+    "drawings": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "drawingsPDF": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "comments": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.feature"
+    },
+    "referencia": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text",
+      "required": false
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "Approved",
+        "Cancelled",
+        "Pending"
+      ],
+      "default": "Pending"
+    },
+    "genderName": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::provider.provider",
+      "inversedBy": "masters"
+    },
+    "stamp": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::stamp.stamp",
+      "inversedBy": "masters"
+    },
+    "theme": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::theme.theme",
+      "inversedBy": "masters"
+    },
+    "sizes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::size.size"
+    },
+    "productname": {
+      "type": "string"
+    },
+    "color_pantone": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::mixcolor.mixcolor",
+      "inversedBy": "a_create_references"
+    },
+    "similarRefs": {
+      "type": "string"
+    },
+    "pendings": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.feature"
+    }
+  }
+}

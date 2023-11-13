@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_identidad_banks",
+  "info": {
+    "displayName": "bank",
+    "icon": "user-cog",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "accountNumber": {
+      "type": "string",
+      "required": true
+    },
+    "accounttype": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "phone": {
+      "type": "string"
+    }
+  }
+}

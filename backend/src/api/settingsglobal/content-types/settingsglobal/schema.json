@@ -1,0 +1,31 @@
+{
+  "kind": "singleType",
+  "collectionName": "settingsglobals",
+  "info": {
+    "singularName": "settingsglobal",
+    "pluralName": "settingsglobals",
+    "displayName": "SettingsGlobal",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "EnableMailingComments": {
+      "type": "component",
+      "repeatable": false,
+      "component": "elements.send-email",
+      "required": true
+    },
+    "EnableMailingSISOC": {
+      "type": "component",
+      "repeatable": false,
+      "component": "elements.send-email",
+      "required": true
+    },
+    "toMaker": {
+      "type": "text"
+    }
+  }
+}

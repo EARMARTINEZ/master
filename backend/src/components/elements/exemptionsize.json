@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_elements_exemptionsizes",
+  "info": {
+    "displayName": "optionsize",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "product_type": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::product.product"
+    },
+    "sizes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::size.size"
+    }
+  }
+}

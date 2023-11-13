@@ -1,0 +1,34 @@
+{
+  "collectionName": "components_elements_cotizaciones",
+  "info": {
+    "displayName": "cotizaciones",
+    "icon": "balance-scale",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "COD_SIMB": {
+      "type": "string"
+    },
+    "DESC_SIMB": {
+      "type": "string"
+    },
+    "VOL_CMP_1": {
+      "type": "string"
+    },
+    "PRE_CMP_1": {
+      "type": "decimal",
+      "default": 0
+    },
+    "PRE_VTA_1": {
+      "type": "decimal",
+      "default": 0
+    },
+    "VOL_VTA_1": {
+      "type": "string"
+    },
+    "CANT_NEGOC_DES": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_sections_registro_invercions",
+  "info": {
+    "displayName": "RegistroInvercion",
+    "icon": "file-signature"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "phonePlaceholder": {
+      "type": "string"
+    },
+    "amountPlaceholder": {
+      "type": "string"
+    },
+    "submitButton": {
+      "type": "component",
+      "repeatable": false,
+      "component": "links.button"
+    },
+    "location": {
+      "type": "string"
+    }
+  }
+}

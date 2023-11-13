@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "genders",
+  "info": {
+    "singularName": "gender",
+    "pluralName": "genders",
+    "displayName": "Gender",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "relation_id": {
+      "type": "uid"
+    },
+    "startSequence": {
+      "type": "string",
+      "required": true,
+      "minLength": 4,
+      "maxLength": 4,
+      "unique": true
+    },
+    "endSequence": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 4
+    },
+    "valueSequence": {
+      "type": "string",
+      "private": true
+    },
+    "sizes": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::size.size",
+      "inversedBy": "genders"
+    }
+  }
+}

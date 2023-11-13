@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_identidad_users",
+  "info": {
+    "displayName": "user",
+    "icon": "user",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "firstName": {
+      "type": "string",
+      "required": true
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "dni": {
+      "type": "string",
+      "required": true
+    },
+    "nationality": {
+      "type": "enumeration",
+      "enum": [
+        "V",
+        "E"
+      ]
+    },
+    "email": {
+      "type": "email"
+    },
+    "phone": {
+      "type": "string"
+    }
+  }
+}

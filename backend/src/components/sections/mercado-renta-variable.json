@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_sections_mercado_renta_variables",
+  "info": {
+    "displayName": "Mercado Renta Variable",
+    "icon": "chess-queen"
+  },
+  "options": {},
+  "attributes": {
+    "rentavariable": {
+      "type": "component",
+      "repeatable": true,
+      "component": "elements.renta-variable-titulo"
+    }
+  }
+}
