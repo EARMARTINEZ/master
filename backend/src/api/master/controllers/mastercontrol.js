@@ -223,7 +223,7 @@ module.exports = {
       try {      
       
 
-            const Nmedia = ctx.request.body.media.name.substring(0, 7)
+            const Nmedia = ctx.request.body.media.name.substring(0, 8)
             const Nreferencia = Nmedia.toString().padEnd(8, '0');
             const Stampmedia = ctx.request.body.media.name.substring(0, 8) 
             const StampReferencia = Stampmedia.toString().padEnd(8, '0');        
