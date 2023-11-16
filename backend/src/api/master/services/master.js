@@ -405,8 +405,9 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
                   
                         MasterEntry.drawings = Imgentry ? Imgentry : []
                   
+                  const NReferencia = Nreferencia.substring(0, 7);       
                   const Dataentry = await strapi.db.query('api::master.master').update({
-                    where: { referencia: Nreferencia },    
+                    where: { referencia: NReferencia },    
                     data: MasterEntry
                   });
 
