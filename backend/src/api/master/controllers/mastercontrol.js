@@ -20,6 +20,32 @@ function convertToFrenchHour(date) {
   return finalHour
 }
 
+ async function fetchAPI(path, urlParamsObject = {}, options = {}) {
+  // Merge default and user options
+  const mergedOptions = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    ...options,
+  };
+  
+  const requestUrl = "https://devmaster.epkweb.com/api/mastercontrol/createreferencia/";
+
+  // Trigger API call
+  const response = await fetch(requestUrl, mergedOptions);
+ 
+  // Handle response
+  if (!response.ok) {
+    console.error(response.statusText);
+    throw new Error(`An error occured please try again`);
+  }
+  const data = await response.json();
+
+  return data;
+}
+
+
+
 async function CreateRegistroMaster(data) {
 
   try {
@@ -197,7 +223,7 @@ module.exports = {
       try {      
       
 
-            const Nmedia = ctx.request.body.media.name.substring(0, 8)
+            const Nmedia = ctx.request.body.media.name.substring(0, 7)
             const Nreferencia = Nmedia.toString().padEnd(8, '0');
             const Stampmedia = ctx.request.body.media.name.substring(0, 8) 
             const StampReferencia = Stampmedia.toString().padEnd(8, '0');        
@@ -1304,6 +1330,148 @@ if(EntryCount){
 
   async getcontrol(ctx){
     const { Nreferencia } = ctx.params; 
+
+    const [MasterEntry, MasterEntryCount] = await strapi.db.query('api::masterbase.masterbase').findWithCount({        
+      where: {      
+        ref: {
+          $contains: Nreferencia,
+        },             
+    },
+    orderBy: { id: 'DESC' }, 
+}); 
+
+let CodigoSizes=[];
+
+let arrSizes = Array.from(MasterEntry[0].sizelist.split(','),Number);
+
+arrSizes?.map((dataRef, index) => {  
+
+
+  const result = {
+
+          "id": dataRef
+          
+      }
+
+      CodigoSizes.push(result);
+            
+ 
+}); 
+
+const Data = {         
+         
+  "referencia": "",
+  "description": "Prueba Create Referencia",        
+          
+  "collection": { 
+     "id": MasterEntry[0].id_collection                     
+   },
+  "Composition": {                
+      
+      "gender": {  
+          "id": MasterEntry[0].id_gender    
+       },
+
+      "fabric": { 
+
+          "id": MasterEntry[0].id_fabric              
+      },
+      "color": {
+
+          "id": MasterEntry[0].id_colorsifa       
+      },
+      
+      "typeproduct": {   
+
+          "id": MasterEntry[0].id_product            
+      }
+  },
+
+  "theme": {   
+
+         "id": MasterEntry[0].id_theme ? MasterEntry[0].id_theme : 396  
+      },
+  
+  "sizes": CodigoSizes,        
+
+  "color_pantone": {
+
+    "id": MasterEntry[0].id_color ? MasterEntry[0].id_color : 4756
+},
+
+  
+   
+}
+
+
+const axios = require('axios');
+let data = JSON.stringify({
+  "status": 'Approved',
+  "referencia": "",
+  "description":  MasterEntry[0].description,
+  "similarRefs": MasterEntry[0].similar_ref,
+  "collection": {
+    "id": MasterEntry[0].id_collection 
+  },
+  "Composition": {
+    "gender": {
+      "id": MasterEntry[0].id_gender    
+    },
+    "fabric": {
+      "id": MasterEntry[0].id_fabric
+    },
+    "color": {
+      "id": MasterEntry[0].id_colorsifa     
+    },           
+    "typeproduct": {
+      "id": MasterEntry[0].id_product      
+    }
+  },
+  "color_pantone": {
+    "id": MasterEntry[0].id_color ? MasterEntry[0].id_color : 4756
+  },
+
+  "sizes": CodigoSizes, 
+
+  "provider": {
+    "id": Number(MasterEntry[0].id_provider)
+  },
+  // "stamp": {
+  //   "id": stamp ? stamp : ''
+  // },
+  "theme": {
+    "id": MasterEntry[0].id_theme ? MasterEntry[0].id_theme : 396  
+  }
+
+
+});
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: 'https://devmaster.epkweb.com/api/mastercontrol/createreferencia/',
+  headers: { 
+    'Content-Type': 'application/json'
+  },
+  data : data
+};
+
+axios.request(config)
+.then((response) => {
+  console.log(JSON.stringify(response.data));
+})
+.catch((error) => {
+  console.log(error);
+});
+
+
+
+console.log(MasterEntry);
+
+console.log(Data);
+
+
+
     
     // const MasterEntry = await strapi.service('api::master.master').FinOneIDMaster(Nreferencia); 
 
@@ -1367,22 +1535,22 @@ if(EntryCount){
         // }
 
     
-        await strapi.service('api::master.master').webhooksSendEmail(Nreferencia, 'entry.update');
+    //     await strapi.service('api::master.master').webhooksSendEmail(Nreferencia, 'entry.update');
 
-    const IDColection = Nreferencia ? Nreferencia : '29'
+    // const IDColection = Nreferencia ? Nreferencia : '29'
 
-    const knex = strapi.db.connection;
-    //const Statusresult = await knex.select('url').from('files')
+    // const knex = strapi.db.connection;
+    // //const Statusresult = await knex.select('url').from('files')
 
-    const loteCant = await knex
-    .select(
-      knex.raw( 'stamps.name, masters.referencia')
-      ).from("masters")
-      .innerJoin('masters_collection_links', ' masters_collection_links.master_id ', ' masters.id ')  
-      .innerJoin('masters_stamp_links', ' masters_stamp_links.master_id ', 'masters.id')
-      .innerJoin('stamps', ' stamps.id ', 'masters_stamp_links.stamp_id') 
-      .where("masters_collection_links.collection_id", "=", IDColection)      
-      .groupBy(' stamps.name ', 'masters.referencia' )
+    // const loteCant = await knex
+    // .select(
+    //   knex.raw( 'stamps.name, masters.referencia')
+    //   ).from("masters")
+    //   .innerJoin('masters_collection_links', ' masters_collection_links.master_id ', ' masters.id ')  
+    //   .innerJoin('masters_stamp_links', ' masters_stamp_links.master_id ', 'masters.id')
+    //   .innerJoin('stamps', ' stamps.id ', 'masters_stamp_links.stamp_id') 
+    //   .where("masters_collection_links.collection_id", "=", IDColection)      
+    //   .groupBy(' stamps.name ', 'masters.referencia' )
 
       
     
