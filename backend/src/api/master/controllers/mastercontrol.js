@@ -20,31 +20,6 @@ function convertToFrenchHour(date) {
   return finalHour
 }
 
- async function fetchAPI(path, urlParamsObject = {}, options = {}) {
-  // Merge default and user options
-  const mergedOptions = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    ...options,
-  };
-  
-  const requestUrl = "https://devmaster.epkweb.com/api/mastercontrol/createreferencia/";
-
-  // Trigger API call
-  const response = await fetch(requestUrl, mergedOptions);
- 
-  // Handle response
-  if (!response.ok) {
-    console.error(response.statusText);
-    throw new Error(`An error occured please try again`);
-  }
-  const data = await response.json();
-
-  return data;
-}
-
-
 
 async function CreateRegistroMaster(data) {
 
@@ -1013,7 +988,7 @@ if(EntryCount){
 
       let masterlist = {
         
-        "Ref": data.referencia,
+        "Identifier": data.referencia,
         "collection": data.collection.name,
         "color": data.color_pantone.name,
         "SystemColor": data.Composition.color.name,
