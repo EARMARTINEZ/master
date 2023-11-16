@@ -400,7 +400,7 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
                       orderBy: { id: 'DESC' }, 
                   }); 
 
-                  console.log('webhooksMedia:' +Imgentry);  
+                  console.log(Imgentry);  
 
             if (ImgentryCount){
                   const MasterEntry = await strapi.service('api::master.master').FinOneReferencia(Nreferencia);             
