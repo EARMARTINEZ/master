@@ -320,7 +320,7 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
 
   async FinOneReferencia(Nreferencia) {
 
-    const NReferencia = Nreferencia.toString().padEnd(7, '0');
+    const NReferencia = Nreferencia.substring(0, 7);
 
       try { 
 
