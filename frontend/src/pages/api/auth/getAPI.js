@@ -16,7 +16,7 @@ const handler = async (req, res) => {
                     //console.log(resp);
                     if(resp){
 
-                    const url = getStrapiURL(`/uploads/MasterList${resp[0].Ref.substring(0, 3)}.xlsx` );
+                    const url = getStrapiURL(`/uploads/MasterList${resp[0].Identifier.substring(0, 3)}.xlsx` );
                 
                    
                         const response = await fetch(url); // replace this with your API call & options
