@@ -322,6 +322,8 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
 
     const NReferencia = Nreferencia.substring(0, 7);
 
+    console.log('webhooksMedia:' +NReferencia);  
+
       try { 
 
         const MasterEntry = await strapi.db.query('api::master.master').findOne({
