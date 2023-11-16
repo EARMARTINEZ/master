@@ -322,7 +322,7 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
 
     const NReferencia = Nreferencia.substring(0, 7);
 
-    console.log('webhooksMedia:' +NReferencia);  
+    
 
       try { 
 
@@ -399,6 +399,8 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
                       },
                       orderBy: { id: 'DESC' }, 
                   }); 
+
+                  console.log('webhooksMedia:' +Imgentry);  
 
             if (ImgentryCount){
                   const MasterEntry = await strapi.service('api::master.master').FinOneReferencia(Nreferencia);             
