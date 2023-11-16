@@ -320,13 +320,15 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
 
   async FinOneReferencia(Nreferencia) {
 
+    const NReferencia = Nreferencia.toString().padEnd(7, '0');
+
       try { 
 
         const MasterEntry = await strapi.db.query('api::master.master').findOne({
             select: ['id','referencia', 'genderName', 'status'],    
             where: { 
               $and: [
-                { referencia: Nreferencia },             
+                { referencia: NReferencia },             
               ],          
             },
             populate: {
