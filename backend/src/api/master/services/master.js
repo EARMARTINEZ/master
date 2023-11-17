@@ -320,7 +320,7 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
 
   async FinOneReferencia(Nreferencia) {
 
-    const NReferencia = Nreferencia.substring(0, 7);
+   // const NReferencia = Nreferencia.substring(0, 7);
 
     
 
@@ -330,7 +330,7 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
             select: ['id','referencia', 'genderName', 'status'],    
             where: { 
               $and: [
-                { referencia: NReferencia },             
+                { referencia: Nreferencia },             
               ],          
             },
             populate: {
@@ -407,9 +407,9 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
                   
                         MasterEntry.drawings = Imgentry ? Imgentry : []
                   
-                  const NReferencia = Nreferencia.substring(0, 7);       
+                  //const NReferencia = Nreferencia.substring(0, 7);       
                   const Dataentry = await strapi.db.query('api::master.master').update({
-                    where: { referencia: NReferencia },    
+                    where: { referencia: Nreferencia },    
                     data: MasterEntry
                   });
 

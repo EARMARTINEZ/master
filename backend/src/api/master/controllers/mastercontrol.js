@@ -235,7 +235,52 @@ module.exports = {
       }    
       
         //return CreateRegistro;
-    },  
+    },
+    
+      async webhooksMediaV6(ctx){  
+      
+        console.log('webhooksMedia:');  
+        try {      
+        
+
+              const Nmedia = ctx.request.body.media.name.substring(0, 6)
+              const Nreferencia = Nmedia.toString().padEnd(6, '0');
+              const Stampmedia = ctx.request.body.media.name.substring(0, 6) 
+              const StampReferencia = Stampmedia.toString().padEnd(6, '0');        
+            
+              const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({        
+                where: {      
+                  name: {
+                    $contains: Nreferencia,
+                  },             
+              },
+              orderBy: { id: 'DESC' }, 
+          }); 
+
+        
+
+                if (ImgentryCount >= 1 ){ 
+
+                  console.log(Nreferencia);     
+                  console.log(ctx.request.body);     
+                
+                  if (StampReferencia.includes('S') ){                
+                    await strapi.service('api::stamp.stamp').FinOneImagesStamps(StampReferencia);
+                    return StampReferencia
+                  }  
+                  await strapi.service('api::master.master').FinOneImagesReferencia(Nreferencia);
+                  await strapi.service('api::master.master').FinOnePDFReferencia(Nreferencia);
+                  
+              } 
+                      
+        
+        
+        } catch (error) {
+          console.log("error", error);
+        }    
+        
+          //return CreateRegistro;
+      },
  
 
   async createreferencia(ctx){  
@@ -1306,130 +1351,191 @@ if(EntryCount){
   async getcontrol(ctx){
     const { Nreferencia } = ctx.params; 
 
-    const [MasterEntry, MasterEntryCount] = await strapi.db.query('api::masterbase.masterbase').findWithCount({        
-      where: {      
-        ref: {
-          $contains: Nreferencia,
-        },             
-    },
-    orderBy: { id: 'DESC' }, 
-}); 
+    console.log(Nreferencia);
 
-let CodigoSizes=[];
+ let MasterEntry=[];
+ let CodigoSizes=[];
+ let CodigoStatus=[];
 
-let arrSizes = Array.from(MasterEntry[0].sizelist.split(','),Number);
+    const Entry = await strapi.db.query('api::masterbase.masterbase').findOne({        
+      where: {   
+               
+            id_collection: Nreferencia,
+            masterserver: { $null: true },     
+                          
+     },
+      orderBy: { id: 'ASC' }, 
+    });
 
-arrSizes?.map((dataRef, index) => {  
+    if (Entry){      
+
+        const entry = await strapi.db.query('api::masterbase.masterbase').update({
+          where: { id: Entry.id },
+          data: {
+            masterserver: 'send',
+          },
+        });
+  }
+
+  MasterEntry.push(Entry); 
+
+    let arrSizes = Array.from(MasterEntry[0].sizelist.split(','),Number);
+
+    arrSizes?.map((dataRef, index) => {  
+      const result = {
+              "id": dataRef         
+          }
+          CodigoSizes.push(result); 
+    }); 
 
 
-  const result = {
+const ArrayData = [
+  {
+    "id_status": 1,
+    "name_status": "Pending",
+    "class": "textPending",
+    "deprecated": "1"
+  },
+  {
+    "id_status": 2,
+    "name_status": "Pending",
+    "class": "textOk",
+    "deprecated": "1"
+  },
+  {
+    "id_status": 3,
+    "name_status": "Pending",
+    "class": "textPending",
+    "deprecated": "0"
+  },
+  {
+    "id_status": 4,
+    "name_status": "Pending",
+    "class": "textOk",
+    "deprecated": "0"
+  },
+  {
+    "id_status": 5,
+    "name_status": "Pending",
+    "class": "textPending",
+    "deprecated": "0"
+  },
+  {
+    "id_status": 6,
+    "name_status": "Approved",
+    "class": "textOk",
+    "deprecated": "0"
+  },
+  {
+    "id_status": 7,
+    "name_status": "Cancelled",
+    "class": "textCancelled",
+    "deprecated": "0"
+  },
+  {
+    "id_status": 8,
+    "name_status": "Pending",
+    "class": "textPending",
+    "deprecated": "0"
+  },
+  {
+    "id_status": 0,
+    "name_status": "Pending",
+    "class": "textCancelled",
+    "deprecated": "1"
+  },
+  {
+    "id_status": 10,
+    "name_status": "Pending",
+    "class": "textPending",
+    "deprecated": "0"
+  },
+  {
+    "id_status": 11,
+    "name_status": "Pending",
+    "class": "textPending",
+    "deprecated": "0"
+  },
+  {
+    "id_status": 12,
+    "name_status": "Pending",
+    "class": "textPending",
+    "deprecated": "0"
+  },
+  {
+    "id_status": 13,
+    "name_status": "Pending",
+    "class": "textPending",
+    "deprecated": "0"
+  }
+]
 
-          "id": dataRef
-          
-      }
+ArrayData?.map((dataRef, index) => {  
+  if(MasterEntry[0].id_status==dataRef.id_status){
 
-      CodigoSizes.push(result);
-            
+    const result = {
+      "id": dataRef.id_status,
+      "name_status":dataRef.name_status         
+  }
+
+  CodigoStatus.push(result); 
+  }
  
 }); 
 
-const Data = {         
-         
-  "referencia": "",
-  "description": "Prueba Create Referencia",        
-          
-  "collection": { 
-     "id": MasterEntry[0].id_collection                     
-   },
-  "Composition": {                
-      
-      "gender": {  
-          "id": MasterEntry[0].id_gender    
-       },
 
-      "fabric": { 
 
-          "id": MasterEntry[0].id_fabric              
+  const axios = require('axios');
+  let data = JSON.stringify({
+    "status": CodigoStatus[0] ? CodigoStatus[0].name_status : 'Pending',
+    "referencia": "",
+    "description":  MasterEntry[0].description,
+    "similarRefs": MasterEntry[0].similar_ref,
+    "collection": {
+      "id": MasterEntry[0].id_collection 
+    },
+    "Composition": {
+      "gender": {
+        "id": MasterEntry[0].id_gender    
+      },
+      "fabric": {
+        "id": MasterEntry[0].id_fabric
       },
       "color": {
-
-          "id": MasterEntry[0].id_colorsifa       
-      },
-      
-      "typeproduct": {   
-
-          "id": MasterEntry[0].id_product            
+        "id": MasterEntry[0].id_colorsifa     
+      },           
+      "typeproduct": {
+        "id": MasterEntry[0].id_product      
       }
-  },
-
-  "theme": {   
-
-         "id": MasterEntry[0].id_theme ? MasterEntry[0].id_theme : 396  
-      },
-  
-  "sizes": CodigoSizes,        
-
-  "color_pantone": {
-
-    "id": MasterEntry[0].id_color ? MasterEntry[0].id_color : 4756
-},
-
-  
-   
-}
-
-
-const axios = require('axios');
-let data = JSON.stringify({
-  "status": 'Approved',
-  "referencia": "",
-  "description":  MasterEntry[0].description,
-  "similarRefs": MasterEntry[0].similar_ref,
-  "collection": {
-    "id": MasterEntry[0].id_collection 
-  },
-  "Composition": {
-    "gender": {
-      "id": MasterEntry[0].id_gender    
     },
-    "fabric": {
-      "id": MasterEntry[0].id_fabric
+    "color_pantone": {
+      "id": MasterEntry[0].id_color ? MasterEntry[0].id_color : 4756
     },
-    "color": {
-      "id": MasterEntry[0].id_colorsifa     
-    },           
-    "typeproduct": {
-      "id": MasterEntry[0].id_product      
+
+    "sizes": CodigoSizes, 
+
+    "provider": {
+      "id": Number(MasterEntry[0].id_provider)
+    },
+    // "stamp": {
+    //   "id": stamp ? stamp : ''
+    // },
+    "theme": {
+      "id": MasterEntry[0].id_theme ? MasterEntry[0].id_theme : 396  
     }
-  },
-  "color_pantone": {
-    "id": MasterEntry[0].id_color ? MasterEntry[0].id_color : 4756
-  },
-
-  "sizes": CodigoSizes, 
-
-  "provider": {
-    "id": Number(MasterEntry[0].id_provider)
-  },
-  // "stamp": {
-  //   "id": stamp ? stamp : ''
-  // },
-  "theme": {
-    "id": MasterEntry[0].id_theme ? MasterEntry[0].id_theme : 396  
-  }
 
 
-});
+  });
 
-let config = {
-  method: 'post',
-  maxBodyLength: Infinity,
-  url: 'https://devmaster.epkweb.com/api/mastercontrol/createreferencia/',
-  headers: { 
-    'Content-Type': 'application/json'
-  },
-  data : data
-};
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: 'https://devmaster.epkweb.com/api/mastercontrol/createreferencia/',
+    headers: { 
+      'Content-Type': 'application/json'
+    },
+    data : data
+  };
 
 axios.request(config)
 .then((response) => {
@@ -1443,7 +1549,7 @@ axios.request(config)
 
 console.log(MasterEntry);
 
-console.log(Data);
+// console.log(CodigoStatus);
 
 
 

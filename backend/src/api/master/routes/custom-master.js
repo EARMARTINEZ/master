@@ -144,6 +144,14 @@ module.exports = {
           },
           {
             "method": "POST",
+            "path": "/mastercontrol/webhooksMediaV6/",
+            "handler": "mastercontrol.webhooksMediaV6",
+            "config": {
+              "policies": ['api::master.my-policy']
+            }
+          },
+          {
+            "method": "POST",
             "path": "/mastercontrol/doUpdateSize/",
             "handler": "mastercontrol.doUpdateSize",
             "config": {
