@@ -591,7 +591,7 @@ async updateStatusReferencia(ctx){
 
       const [MasterEntry, EntryCount] = await strapi.db.query('api::master.master').findWithCount({
         select: ['id', 'referencia', 'status'],
-        where: { id: IdMaster },
+        where: { referencia: IdMaster },
         populate: {
           collection: {         
             populate: {
