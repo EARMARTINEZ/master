@@ -1356,9 +1356,9 @@ if(EntryCount){
   
     console.log('UpdateComment:');  
 
-    //console.log(...ctx.request.body.comments)
+    console.log(IdMaster)
   
-    try {
+    // try {
 
 
     //   const [MasterEntry, EntryCount] = await strapi.db.query('api::master.master').findWithCount({
@@ -1445,9 +1445,9 @@ if(EntryCount){
           
     //     }
   
-      } catch (error) {
-        console.log("error", error);
-      }       
+    //   } catch (error) {
+    //     console.log("error", error);
+    //   }       
   
   },
 
