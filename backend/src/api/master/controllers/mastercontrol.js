@@ -1452,7 +1452,7 @@ if(EntryCount){
   },
 
 
-  async Copiagetcontrol(ctx){
+  async getcontrol(ctx){
     const { Nreferencia } = ctx.params; 
 
     console.log(Nreferencia);
