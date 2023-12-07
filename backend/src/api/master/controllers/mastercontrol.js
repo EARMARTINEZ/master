@@ -1412,6 +1412,8 @@ if(EntryCount){
   
         if (EntryCount){
 
+          console.log(MasterEntry)
+
           const message = ctx.request.body.comments[0].comment
           const user = ctx.request.body.comments[0].user
           const toMaker = ctx.request.body.toMaker ? ctx.request.body.toMaker : false
