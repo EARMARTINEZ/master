@@ -1356,7 +1356,7 @@ if(EntryCount){
   
     console.log('UpdateComment:');  
 
-    console.log(IdMaster)
+    console.log(ctx)
   
     // try {
 
