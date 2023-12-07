@@ -13,6 +13,14 @@ module.exports = {
           "policies": ['api::master.my-policy']
         }
       },
+      {
+        "method": "PUT",
+        "path": "/mastercontrol/getUpdateComment/:IdMaster",
+        "handler": "mastercontrol.getUpdateComment",
+        "config": {
+          "policies": ['api::master.my-policy']
+        }
+      },
         {
             "method": "GET",
             "path": "/mastercontrol/getreferencia/:Nreferencia",

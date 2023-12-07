@@ -1349,7 +1349,7 @@ if(EntryCount){
 
 
 
-  async getcontrol(ctx){  
+  async getUpdateComment(ctx){  
    
     const { IdMaster } = ctx.params; 
     let Comment=[];
