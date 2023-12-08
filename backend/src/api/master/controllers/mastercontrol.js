@@ -1423,25 +1423,25 @@ if(EntryCount){
           
           MasterEntry[0].comments = MasterEntry ? Comment : []
 
-          // let UpdateRegistro = await strapi.entityService.update('api::master.master', MasterEntry[0].id, {      
-          //   data: MasterEntry[0],
-          // }); 
+          let UpdateRegistro = await strapi.entityService.update('api::master.master', MasterEntry[0].id, {      
+            data: MasterEntry[0],
+          }); 
           
-        //   if(toMaker){
-        //     await strapi.service('api::master.master').SendEmailCommentsMaker(UpdateRegistro.referencia, user, message);
-        //   }else{ 
-        //     await strapi.service('api::master.master').SendEmailComments(UpdateRegistro.referencia, user, message);
-        //   }
+          if(toMaker){
+            await strapi.service('api::master.master').SendEmailCommentsMaker(UpdateRegistro.referencia, user, message);
+          }else{ 
+            await strapi.service('api::master.master').SendEmailComments(UpdateRegistro.referencia, user, message);
+          }
           
 
-        //   let NumeroReferencia = {
-        //     "IdMastar": UpdateRegistro.id,
-        //     "GenderName":UpdateRegistro.genderName,
-        //     "ProductName":UpdateRegistro.productname,
-        //     "CountSequence": UpdateRegistro.referencia           
-        // };               
+          let NumeroReferencia = {
+            "IdMastar": UpdateRegistro.id,
+            "GenderName":UpdateRegistro.genderName,
+            "ProductName":UpdateRegistro.productname,
+            "CountSequence": UpdateRegistro.referencia           
+        };               
                     
-        //   return NumeroReferencia;         
+          return NumeroReferencia;         
           
         }
 
