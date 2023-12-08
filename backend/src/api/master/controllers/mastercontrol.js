@@ -1412,16 +1412,16 @@ if(EntryCount){
         },
     }); 
   
-        // if (EntryCount){         
+        if (EntryCount){         
 
-        //   const message = ctx.request.body.comments[0].comment
-        //   const user = ctx.request.body.comments[0].user
-        //   const toMaker = ctx.request.body.toMaker ? ctx.request.body.toMaker : false
-        //   const city = ctx.request.body.comments[0].city
+          const message = ctx.request.body.comments[0].comment
+          const user = ctx.request.body.comments[0].user
+          const toMaker = ctx.request.body.toMaker ? ctx.request.body.toMaker : false
+          const city = ctx.request.body.comments[0].city
 
-        //   Comment.push(...MasterEntry[0].comments, ...ctx.request.body.comments)
+          Comment.push(...MasterEntry[0].comments, ...ctx.request.body.comments)
           
-        //   MasterEntry[0].comments = MasterEntry ? Comment : []
+          MasterEntry[0].comments = MasterEntry ? Comment : []
 
         //   let UpdateRegistro = await strapi.entityService.update('api::master.master', MasterEntry[0].id, {      
         //     data: MasterEntry[0],
@@ -1443,7 +1443,7 @@ if(EntryCount){
                     
         //   return NumeroReferencia;         
           
-        // }
+        }
 
         return MasterEntry
   
