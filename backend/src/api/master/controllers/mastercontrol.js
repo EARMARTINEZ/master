@@ -1445,7 +1445,7 @@ if(EntryCount){
           
         // }
 
-        return EntryCount
+        return MasterEntry
   
       } catch (error) {
         console.log("error", error);
