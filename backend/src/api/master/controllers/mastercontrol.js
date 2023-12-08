@@ -1423,9 +1423,9 @@ if(EntryCount){
           
           MasterEntry[0].comments = MasterEntry ? Comment : []
 
-          let UpdateRegistro = await strapi.entityService.update('api::master.master', MasterEntry[0].id, {      
-            data: MasterEntry[0],
-          }); 
+          // let UpdateRegistro = await strapi.entityService.update('api::master.master', MasterEntry[0].id, {      
+          //   data: MasterEntry[0],
+          // }); 
           
         //   if(toMaker){
         //     await strapi.service('api::master.master').SendEmailCommentsMaker(UpdateRegistro.referencia, user, message);
