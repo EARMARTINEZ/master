@@ -1360,96 +1360,96 @@ if(EntryCount){
 
     //console.log(...ctx.request.body.comments)
   
-    // try {
+    try {
 
 
-    //   const [MasterEntry, EntryCount] = await strapi.db.query('api::master.master').findWithCount({
-    //     select: ['id', 'referencia', 'status'],
-    //     where: { referencia: IdMaster },
-    //     populate: {
-    //       collection: {         
-    //         populate: {
-    //           collection_type:{
-    //             fields: ['id'],  
-    //             },
-    //         },             
-    //       }, 
-    //       theme:{
-    //         fields: ['name'],  
-    //         },          
-    //       Composition: {
-    //           populate: {
-    //         gender:{
-    //           fields: ['id', 'startSequence'],  
-    //           },
-    //           fabric:{
-    //             fields: ['id'],  
-    //             },
-    //             color:{
-    //               fields: ['id'],  
-    //               },                 
-    //                 typeproduct:{
-    //                   fields: ['id'],  
-    //                   }                           
-    //         }
-    //       },
-    //       drawings:[{
-    //         fields: ['id'],
-    //       }],
-    //       sizes: {
-    //         fields: ['id'],
-    //       },
-    //       comments: [
-    //         {
-    //           fields: ['id', 'comment'],                   
-    //         }
-    //       ],
-    //       pendings: [
-    //         {
-    //           fields: ['id', 'comment'],                   
-    //         }
-    //       ],
-    //     },
-    // }); 
+      const [MasterEntry, EntryCount] = await strapi.db.query('api::master.master').findWithCount({
+        select: ['id', 'referencia', 'status'],
+        where: { referencia: IdMaster },
+        populate: {
+          collection: {         
+            populate: {
+              collection_type:{
+                fields: ['id'],  
+                },
+            },             
+          }, 
+          theme:{
+            fields: ['name'],  
+            },          
+          Composition: {
+              populate: {
+            gender:{
+              fields: ['id', 'startSequence'],  
+              },
+              fabric:{
+                fields: ['id'],  
+                },
+                color:{
+                  fields: ['id'],  
+                  },                 
+                    typeproduct:{
+                      fields: ['id'],  
+                      }                           
+            }
+          },
+          drawings:[{
+            fields: ['id'],
+          }],
+          sizes: {
+            fields: ['id'],
+          },
+          comments: [
+            {
+              fields: ['id', 'comment'],                   
+            }
+          ],
+          pendings: [
+            {
+              fields: ['id', 'comment'],                   
+            }
+          ],
+        },
+    }); 
   
-    //     if (EntryCount){         
+        if (EntryCount){         
 
-    //       const message = ctx.request.body.comments[0].comment
-    //       const user = ctx.request.body.comments[0].user
-    //       const toMaker = ctx.request.body.toMaker ? ctx.request.body.toMaker : false
-    //       const city = ctx.request.body.comments[0].city
+          const message = ctx.request.body.comments[0].comment
+          const user = ctx.request.body.comments[0].user
+          const toMaker = ctx.request.body.toMaker ? ctx.request.body.toMaker : false
+          const city = ctx.request.body.comments[0].city
 
-    //       Comment.push(...MasterEntry[0].comments, ...ctx.request.body.comments)
+          Comment.push(...MasterEntry[0].comments, ...ctx.request.body.comments)
           
-    //       MasterEntry[0].comments = MasterEntry ? Comment : []
+          MasterEntry[0].comments = MasterEntry ? Comment : []
 
-    //       let UpdateRegistro = await strapi.entityService.update('api::master.master', MasterEntry[0].id, {      
-    //         data: MasterEntry[0],
-    //       }); 
+          let UpdateRegistro = await strapi.entityService.update('api::master.master', MasterEntry[0].id, {      
+            data: MasterEntry[0],
+          }); 
           
-    //       if(toMaker){
-    //         await strapi.service('api::master.master').SendEmailCommentsMaker(UpdateRegistro.referencia, user, message);
-    //       }else{ 
-    //         await strapi.service('api::master.master').SendEmailComments(UpdateRegistro.referencia, user, message);
-    //       }
+          if(toMaker){
+            await strapi.service('api::master.master').SendEmailCommentsMaker(UpdateRegistro.referencia, user, message);
+          }else{ 
+            await strapi.service('api::master.master').SendEmailComments(UpdateRegistro.referencia, user, message);
+          }
           
 
-    //       let NumeroReferencia = {
-    //         "IdMastar": UpdateRegistro.id,
-    //         "GenderName":UpdateRegistro.genderName,
-    //         "ProductName":UpdateRegistro.productname,
-    //         "CountSequence": UpdateRegistro.referencia           
-    //     };               
+          let NumeroReferencia = {
+            "IdMastar": UpdateRegistro.id,
+            "GenderName":UpdateRegistro.genderName,
+            "ProductName":UpdateRegistro.productname,
+            "CountSequence": UpdateRegistro.referencia           
+        };               
                     
-    //       return NumeroReferencia;         
+          return NumeroReferencia;         
           
-    //     }
+        }
   
-    //   } catch (error) {
-    //     console.log("error", error);
-    //   }   
+      } catch (error) {
+        console.log("error", error);
+      }   
       
-      ctx.body = 'Hello World!:'  ;
+      //ctx.body = 'Hello World!:'  ;
   
   },
 
