@@ -1356,7 +1356,7 @@ if(EntryCount){
   
     console.log('UpdateComment:');  
 
-    console.log(ctx)
+    //console.log(ctx)
 
     //console.log(...ctx.request.body.comments)
   
