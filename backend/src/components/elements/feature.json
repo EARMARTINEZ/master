@@ -26,7 +26,7 @@
       "type": "enumeration",
       "enum": [
         "Pending",
-        "Receive"
+        "Received"
       ],
       "default": "Pending"
     },
