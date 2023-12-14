@@ -1455,6 +1455,101 @@ if(EntryCount){
   
   },
 
+  async getUpdatePendings(ctx){  
+   
+    const { IdMaster } = ctx.params; 
+    let Comment=[];
+  
+    console.log('UpdateComment:');  
+
+    //console.log(ctx)
+
+    //console.log(...ctx.request.body.comments)
+  
+    try {
+
+
+      const [MasterEntry, EntryCount] = await strapi.db.query('api::master.master').findWithCount({
+        select: ['id', 'referencia', 'status'],
+        where: { referencia: IdMaster },
+        populate: {
+          collection: {         
+            populate: {
+              collection_type:{
+                fields: ['id'],  
+                },
+            },             
+          }, 
+          theme:{
+            fields: ['name'],  
+            },          
+          Composition: {
+              populate: {
+            gender:{
+              fields: ['id', 'startSequence'],  
+              },
+              fabric:{
+                fields: ['id'],  
+                },
+                color:{
+                  fields: ['id'],  
+                  },                 
+                    typeproduct:{
+                      fields: ['id'],  
+                      }                           
+            }
+          },
+          drawings:[{
+            fields: ['id'],
+          }],
+          sizes: {
+            fields: ['id'],
+          },
+          comments: [
+            {
+              fields: ['id', 'comment'],                   
+            }
+          ],
+          pendings: [
+            {
+              fields: ['id', 'comment'],                   
+            }
+          ],
+        },
+    }); 
+  
+        if (EntryCount){
+        
+          Comment.push(...MasterEntry[0].pendings, ...ctx.request.body.pendings)
+          
+          MasterEntry[0].pendings = MasterEntry ? Comment : []
+
+          let UpdateRegistro = await strapi.entityService.update('api::master.master', MasterEntry[0].id, {
+            data: MasterEntry[0],
+          }); 
+         
+
+          let NumeroReferencia = {
+            "IdMastar": UpdateRegistro.id,
+            "GenderName":UpdateRegistro.genderName,
+            "ProductName":UpdateRegistro.productname,
+            "CountSequence": UpdateRegistro.referencia           
+        };       
+        
+                  
+        return NumeroReferencia;         
+          
+        }
+        return 'ok!:'
+  
+      } catch (error) {
+        console.log("error", error);
+      }   
+      
+      //ctx.body = 'Hello World!:'  ;
+  
+  },
+
 
   async getcontrol(ctx){
     const { Nreferencia } = ctx.params; 

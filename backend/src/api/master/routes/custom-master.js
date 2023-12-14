@@ -21,6 +21,14 @@ module.exports = {
           "policies": ['api::master.my-policy']
         }
       },
+      {
+        "method": "PUT",
+        "path": "/mastercontrol/getUpdatePendings/:IdMaster",
+        "handler": "mastercontrol.getUpdatePendings",
+        "config": {
+          "policies": ['api::master.my-policy']
+        }
+      },
         {
             "method": "GET",
             "path": "/mastercontrol/getreferencia/:Nreferencia",
