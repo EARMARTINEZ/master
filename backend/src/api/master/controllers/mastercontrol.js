@@ -1533,11 +1533,11 @@ if(EntryCount){
             "IdMastar": UpdateRegistro.id,
             "GenderName":UpdateRegistro.genderName,
             "ProductName":UpdateRegistro.productname,
-            "CountSequence": UpdateRegistro.referencia           
-        };       
+            "CountSequence": UpdateRegistro.referencia
+        };
         
                   
-        return NumeroReferencia;         
+        return NumeroReferencia;
           
         }
         return 'ok!:'
