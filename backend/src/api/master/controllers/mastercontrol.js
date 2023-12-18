@@ -1348,7 +1348,8 @@ if(EntryCount){
   },
 
 
-
+/*************************************** */
+/*************************************** */
   async getUpdateComment(ctx){  
    
     const { IdMaster } = ctx.params; 
@@ -1455,6 +1456,7 @@ if(EntryCount){
   
   },
 
+
   async getUpdatePendings(ctx){  
    
     const { IdMaster } = ctx.params; 
@@ -1540,6 +1542,107 @@ if(EntryCount){
         return NumeroReferencia;
           
         }
+        return 'ok!:'
+  
+      } catch (error) {
+        console.log("error", error);
+      }   
+      
+      //ctx.body = 'Hello World!:'  ;
+  
+  },
+
+
+  async getUpdateStamp(ctx){  
+   
+    const { IdMaster } = ctx.params; 
+    let Comment=[];
+  
+    console.log('getUpdateStamp:');  
+
+    //console.log(ctx)
+
+    //console.log(...ctx.request.body.comments)
+  
+    try {
+
+
+      const [MasterEntry, EntryCount] = await strapi.db.query('api::master.master').findWithCount({
+        select: ['id', 'referencia', 'status'],
+        where: { referencia: IdMaster },
+        populate: {
+          collection: {         
+            populate: {
+              collection_type:{
+                fields: ['id'],  
+                },
+            },             
+          }, 
+          theme:{
+            fields: ['name'],  
+            },          
+          Composition: {
+              populate: {
+            gender:{
+              fields: ['id', 'startSequence'],  
+              },
+              fabric:{
+                fields: ['id'],  
+                },
+                color:{
+                  fields: ['id'],  
+                  },                 
+                    typeproduct:{
+                      fields: ['id'],  
+                      }                           
+            }
+          },
+          stamp:{
+            fields: ['id'],  
+            },    
+          drawings:[{
+            fields: ['id'],
+          }],
+          sizes: {
+            fields: ['id'],
+          },
+          comments: [
+            {
+              fields: ['id', 'comment'],                   
+            }
+          ],
+          pendings: [
+            {
+              fields: ['id', 'comment'],                   
+            }
+          ],
+        },
+    }); 
+  
+        if (EntryCount){         
+
+          const stampid = ctx.request.body.stamp        
+         
+          
+          MasterEntry[0].stamp = MasterEntry ? stampid : null
+
+          // let UpdateRegistro = await strapi.entityService.update('api::master.master', MasterEntry[0].id, {      
+          //   data: MasterEntry[0],
+          // }); 
+          
+            console.log(MasterEntry[0]);    
+
+          let NumeroReferencia = {
+            "IdMastar": UpdateRegistro.id,
+            "GenderName":UpdateRegistro.genderName,
+            "ProductName":UpdateRegistro.productname,
+            "CountSequence": UpdateRegistro.referencia           
+        };               
+                    
+          return NumeroReferencia;         
+          
+        }
+
         return 'ok!:'
   
       } catch (error) {

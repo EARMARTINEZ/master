@@ -29,6 +29,14 @@ module.exports = {
           "policies": ['api::master.my-policy']
         }
       },
+      {
+        "method": "PUT",
+        "path": "/mastercontrol/getUpdateStamp/:IdMaster",
+        "handler": "mastercontrol.getUpdateStamp",
+        "config": {
+          "policies": ['api::master.my-policy']
+        }
+      },
         {
             "method": "GET",
             "path": "/mastercontrol/getreferencia/:Nreferencia",
