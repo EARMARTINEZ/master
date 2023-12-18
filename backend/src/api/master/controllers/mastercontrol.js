@@ -1626,9 +1626,9 @@ if(EntryCount){
           
           MasterEntry[0].stamp = MasterEntry ? stampid : null
 
-          // let UpdateRegistro = await strapi.entityService.update('api::master.master', MasterEntry[0].id, {      
-          //   data: MasterEntry[0],
-          // }); 
+          let UpdateRegistro = await strapi.entityService.update('api::master.master', MasterEntry[0].id, {      
+            data: MasterEntry[0],
+          }); 
           
             console.log(MasterEntry[0]);    
 
