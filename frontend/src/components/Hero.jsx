@@ -80,7 +80,7 @@ export function Hero() {
           
               <div className="relative z-10 md:text-center lg:text-left">              
                       <div className="relative">
-                        <p className="inline bg-gradient-to-r from-indigo-200 via-blue-600 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
+                        <p className="inline bg-gradient-to-r from-indigo-100 via-indigo-100 to-indigo-100 bg-clip-text font-display text-5xl tracking-tight text-transparent">
                         Master Collection
                         </p>                  
                       
