@@ -925,7 +925,7 @@ export async function getCollectionReference({ NCollection }) {
             publicationState: PREVIEW
             sort:"id:desc"
             filters:{collection:{id:{eq:$NCollection}}}
-            pagination:{limit:30 }
+            pagination:{limit:300 }
           ){
             data {
               id
