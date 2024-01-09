@@ -60,11 +60,11 @@ async function MasterStamp(Entry) {
                 id: StampObjet.id_theme,
             },
             
-            populate: {
+           
               masters:{
                 fields: ['referencia'],  
                 },   
-            },
+          
               orderBy: { id: 'ASC' }, 
             });
 
