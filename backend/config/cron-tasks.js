@@ -55,16 +55,18 @@ async function MasterStamp(Entry) {
 
             Mastertheme.push(EntryMaster); 
 
-            const EntryyMaster = await strapi.db.query('api::theme.theme').findOne({        
+            const EntryyMaster = await strapi.db.query('api::theme.theme').findOne({ 
+                  
               where: { 
                 id: StampObjet.id_theme,
             },
             
-           
+            populate: {
+              select: ['referencia'],    
               masters:{
                 fields: ['referencia'],  
                 },   
-          
+            },
               orderBy: { id: 'ASC' }, 
             });
 
