@@ -46,68 +46,69 @@ async function MasterStamp(Entry) {
 
         let StampObjet = ArrayTheme.find((element) => element.id_theme == ArrayMasterData.id_theme )
 
-            const EntryMaster = await strapi.db.query('api::master.master').findOne({        
-              where: { 
-                    referencia: ArrayMasterData.ref,
-            },
-              orderBy: { id: 'ASC' }, 
-            });
+
+
+        const EntryMaster = await strapi.db.query('api::master.master').findOne({        
+          where: { 
+                referencia: ArrayMasterData.ref,
+        },
+          orderBy: { id: 'ASC' }, 
+        });
 
             Mastertheme.push(EntryMaster); 
 
-            const EntryyMaster = await strapi.db.query('api::theme.theme').findOne({ 
-                  
-              where: { 
-                id: StampObjet.id_theme,
-            },
-            
-            populate: {
-               masters:{
-                fields: ['referencia'],  
-                },   
-            },
-              orderBy: { id: 'ASC' }, 
+
+
+        const EntryyMaster = await strapi.db.query('api::theme.theme').findOne({ 
+              
+          where: { 
+            id: StampObjet.id_theme,
+        },
+        
+        populate: {
+            masters:{
+            fields: ['referencia'],  
+            },   
+        },
+          orderBy: { id: 'ASC' }, 
+        });
+
+        if(EntryyMaster){
+
+              EntryyMaster.masters?.map((Sizes, index) => {      
+                const IdSizes = Sizes.id ? Sizes.id : '0'        
+                Response.push(IdSizes );     
             });
+  
+               Response.push(Mastertheme[0].id );  
+              console.log(Response);
 
-            EntryyMaster.masters?.map((Sizes, index) => {      
-              const IdSizes = Sizes.id ? Sizes.id : '0'        
-              Response.push(IdSizes );     
-          });
 
-           Response.push(Mastertheme[0].id );  
-            console.log(Response);
+              if(StampObjet){         
+             
+        
+                      const result = {
+                        "id": StampObjet.id_theme,
+                        "name": StampObjet.name_theme,
+                        "collection": StampObjet.id_collection,
+                        "masters": Response,
+                      }
+        
+                      ThemeData.push(result);         
+        
+        
+                    let UpdateRegistro = await strapi.entityService.update('api::theme.theme', StampObjet.id_theme, {      
+                      data: result,
+                    });  
+                
+              }
+        }
+
+        
        
       
       
-       if(StampObjet){   
-        
-        // console.log(Mastertheme[0].id);
-        // console.log(StampObjet);
-        
-
-              const result = {
-                "id": StampObjet.id_theme,
-                "name": StampObjet.name_theme,
-                "collection": StampObjet.id_collection,
-                "masters": Response,
-              }
-
-              ThemeData.push(result); 
-
-           
-
-
-            // const entry = await strapi.db.query('api::theme.theme').update({
-            //   where: { id: StampObjet.id_theme },
-            //   data: ThemeData,
-            // });
-
-
-            // let UpdateRegistro = await strapi.entityService.update('api::theme.theme', StampObjet.id_theme, {      
-            //   data: result,
-            // });  
-        
-      }
+     
 
     }
 
