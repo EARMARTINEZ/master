@@ -121,7 +121,7 @@ module.exports = {
            
       },
           options: {
-              rule: '*/2 * * * * *',
+              rule: '*/20 * * * * *',
               VE: 'America/Caracas',
           },
       },
