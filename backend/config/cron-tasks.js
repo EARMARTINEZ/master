@@ -74,9 +74,9 @@ async function MasterStamp(Entry) {
               Response.push(IdSizes );     
           });
 
-
-          
-      
+           Response.push(Mastertheme[0].id );  
+            console.log(Response);
+       
       
       
        if(StampObjet){   
@@ -89,12 +89,12 @@ async function MasterStamp(Entry) {
                 "id": StampObjet.id_theme,
                 "name": StampObjet.name_theme,
                 "collection": StampObjet.id_collection,
-                "masters":Response
+                "masters": Response,
               }
 
               ThemeData.push(result); 
 
-              console.log(ThemeData);
+           
 
 
             // const entry = await strapi.db.query('api::theme.theme').update({
