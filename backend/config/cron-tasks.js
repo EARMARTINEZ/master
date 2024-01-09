@@ -88,8 +88,8 @@ module.exports = {
  taskMaster: {
       task: async ({ strapi }) => {    
 
-        console.log('taskMaster: ' + new Date());
         
+
         const entries = await strapi.entityService.findMany('api::settingsglobal.settingsglobal', {
           populate: '*',
         });  
@@ -106,11 +106,13 @@ module.exports = {
          },
           orderBy: { id: 'ASC' }, 
         });
+
+        console.log(Entry);
   
         if (Entry){ 
   
           if(entries.EnableMailingSISOC.sendEmail){
-           
+            console.log('taskMaster: ' + new Date());
               await MasterStamp(Entry);
   
           }
