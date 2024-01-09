@@ -39,6 +39,8 @@ async function MasterStamp(Entry) {
 
  let ArrayMasterData = ArrayMaster.find((element) => element.ref == MasterEntry[0].referencia );
 
+ console.log(Entry);
+
     if(ArrayMasterData){
 
         let StampObjet = ArrayTheme.find((element) => element.id_theme == ArrayMasterData.id_theme )
