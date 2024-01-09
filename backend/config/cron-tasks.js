@@ -102,11 +102,12 @@ module.exports = {
   
         const Entry = await strapi.db.query('api::master.master').findOne({        
           where: {   
-                   
+                
+            referencia: '2240001',
                 //id_collection: Nreferencia,
 
-                slug: { $ne: 'send' },
-                slug: { $null: true },     
+                // slug: { $ne: 'send' },
+                // slug: { $null: true },     
                               
          },
           orderBy: { id: 'ASC' }, 
