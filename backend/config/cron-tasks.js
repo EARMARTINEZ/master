@@ -75,7 +75,7 @@ async function MasterStamp(Entry) {
           });
 
 
-            console.log(Response);
+          
       
       
       
@@ -94,7 +94,7 @@ async function MasterStamp(Entry) {
 
               ThemeData.push(result); 
 
-           
+              console.log(ThemeData);
 
 
             // const entry = await strapi.db.query('api::theme.theme').update({
