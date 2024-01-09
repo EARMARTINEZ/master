@@ -42,8 +42,7 @@ async function MasterStamp(Entry) {
  
 
     if(ArrayMasterData){
-
-      console.log(ArrayMasterData);
+      
 
         let StampObjet = ArrayTheme.find((element) => element.id_theme == ArrayMasterData.id_theme )
 
@@ -55,6 +54,8 @@ async function MasterStamp(Entry) {
             });
 
             Mastertheme.push(EntryMaster); 
+
+            console.log(EntryMaster);
 
       if(StampObjet.length>0){   
         
