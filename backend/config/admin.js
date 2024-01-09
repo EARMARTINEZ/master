@@ -2,7 +2,7 @@ const GoogleStrategy = require("passport-google-oauth2");
 
 module.exports = ({ env }) => ({
   auth: {
-    secret:  env('ADMIN_JWT_SECRET', '62ec6d0c9e454821e1e7f67b2e70d24a'),
+    secret:  env('ADMIN_JWT_SECRET', 'iO3quoYg265hlzq30E8RelQc0LOKle4R0yk6CMbgeHgGNcm_mR'),
     options: {
       expiresIn: "1d"
     },
