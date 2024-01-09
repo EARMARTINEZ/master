@@ -77,15 +77,15 @@ async function MasterStamp(Entry) {
             console.log(result);
 
 
-            const entry = await strapi.db.query('api::theme.theme').update({
-              where: { id: StampObjet.id_theme },
-              data: ThemeData,
-            });
-
-
-            // let UpdateRegistro = await strapi.entityService.update('api::theme.theme', StampObjet.id_theme, {      
+            // const entry = await strapi.db.query('api::theme.theme').update({
+            //   where: { id: StampObjet.id_theme },
             //   data: ThemeData,
-            // });  
+            // });
+
+
+            let UpdateRegistro = await strapi.entityService.update('api::theme.theme', StampObjet.id_theme, {      
+              data: ThemeData,
+            });  
         
       }
 
