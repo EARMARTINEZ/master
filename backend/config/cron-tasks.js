@@ -68,7 +68,7 @@ async function MasterStamp(Entry) {
                 "name": StampObjet.name_theme,
                 "collection": StampObjet.id_collection,
                 "masters": [            
-            
+                    Mastertheme[0].id,
                 ]
               }
 
