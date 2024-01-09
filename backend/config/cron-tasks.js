@@ -10,177 +10,122 @@
  * See more details here: https://strapi.io/documentation/developer-docs/latest/concepts/configurations.html#cron-tasks
  */
 
-const axios = require('axios');
+const ArrayMaster = require('./ArrayData/ArrayMaster.js');
+const ArrayUser = require('./ArrayData/ArrayUser.js');
+const ArrayTypeComent = require('./ArrayData/ArrayTypeComent.js');
+const ArrayCity = require('./ArrayData/ArrayCity.js');
+const ArrayComment = require('./ArrayData/ArrayComment.js');
+
+const ArrayPending = require('./ArrayData/ArrayPending.js');
+const ArrayTypePending = require('./ArrayData/ArrayTypePending.js');
 
 
-async function MercadoRentaVariable(rentavariable,cotizacion ) {
+const ArrayStamp = require('./ArrayData/ArrayStamp.js');
+const ArrayTheme = require('./ArrayData/ArrayTheme.js');
 
-  var host_url = "http://localhost:1337/";
-  var response = await axios.post(host_url + "admin/login", {
-    email: process.env.ADMIN_EMAIL,
-    password: process.env.ADMIN_PASS,
-  });
-  const data_jwt = response.data.data.token; 
+
+
+async function MasterStamp(Entry) {
+
+  let MasterEntry=[];
+  let Mastertheme=[];
+  let CodigoData=[];
+  let CodigoCity=[];
+  let CodigoUser=[];
+  let Response=[];
+  let ThemeData=[];  
   
+  MasterEntry.push(Entry); 
+
+ let ArrayMasterData = ArrayMaster.find((element) => element.ref == MasterEntry[0].referencia );
+
+    if(ArrayMasterData){
+
+        let StampObjet = ArrayTheme.find((element) => element.id_theme == ArrayMasterData.id_theme )
+
+            const EntryMaster = await strapi.db.query('api::master.master').findOne({        
+              where: { 
+                    referencia: referencia,
+            },
+              orderBy: { id: 'ASC' }, 
+            });
+
+            Mastertheme.push(EntryMaster); 
+
+      if(StampObjet.length>0){   
+        
+        console.log(Mastertheme[0].id);
+        console.log(StampObjet);
+        
+
+              const result = {
+                "id": StampObjet.id_theme,
+                "name": StampObjet.name_theme,
+                "collection": StampObjet.id_collection,
+                "masters": [            
+            
+                ]
+              }
+
+              ThemeData.push(result); 
+
+            console.log(result);
+        
+      }
+
+    }
+
+
   
-     var data = JSON.stringify({
-        "locale":"es",
-        "metadata":{"metaTitle":"Mercado Renta Variable",
-        "metaDescription":"Mercado Renta Variable titulos",
-        "twitterCardType":"summary",
-        "twitterUsername":null,
-        "shareImage":null},
-        "contentSections":[
-            {"__component":"sections.mercado-renta-variable",
-                    "rentavariable":
-                        rentavariable
 
-                    },
-
-
-         {"__component":"sections.mercado",
-        "cotizacion":
-
-            cotizacion
-             }    
-    
-    
-        ],
-
-
-
-        "localizations":[]});      
-
-    var config = {
-      method: 'put',
-      url: 'http://localhost:1337/content-manager/collection-types/api::page.page/106',
-      headers: { 
-        Authorization: "Bearer " + data_jwt,
-        'Content-Type': 'application/json'
-      },
-      data : data
-    };
-    
-    axios(config)
-    .then(function (response) {
-      //console.log(JSON.stringify(response.data));
-      console.log('PUT-Mercado Renta Variable: ' + new Date());
-    })
-    .catch(function (error) {
-      console.log(error);
-    }); 
-
-    /*  */
-
-    var dashdata = JSON.stringify({
-      "locale":"es",
-      "metadata":{"metaTitle":"dashboard",
-      "metaDescription":"dashboard",
-      "twitterCardType":"summary",
-      "twitterUsername":"dashboard",
-      "shareImage":null},
-      "contentSections":[
-          {"__component":"sections.dashboard",
-                  "rentavariable":
-                      rentavariable,
-                      cotizacion
-                  },                  
-  
-  
-      ], 
-
-
-      "localizations":[]});   
-
-    var dashconfig = {
-      method: 'put',
-      url: 'http://localhost:1337/content-manager/collection-types/api::page.page/112',
-      headers: { 
-        Authorization: "Bearer " + data_jwt,
-        'Content-Type': 'application/json'
-      },
-      data : dashdata
-    };
-    
-    axios(dashconfig)
-    .then(function (response) {
-      //console.log(JSON.stringify(response.data));
-      console.log('PUT-Mercado Renta Variable: ' + new Date());
-    })
-    .catch(function (error) {
-      console.log(error);
-    }); 
-
-};
-
-async function DetalleMercadoTitulos( ) {
-
-    console.log('Tarea-Mercado Renta Variable: ' + new Date());
-
-    var host_url = "https://www.bolsadecaracas.com/api/mercado/renta-variable/titulos";       
-
-        var response =  await axios.get(
-            host_url,
-            {
-              headers: {
-                ContentType : 'application/json', 
-                Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEzIiwibmFtZSI6IktvaSBJbnZlc3QiLCJlbWFpbCI6Im5pdXdlckBnbjNrLm1lIn0.MrC_Y27aXCJ54dDSYRqnFg1pZey_c_C34WOvhbNlbQA',
-              },
-            }
-          );
-          const data = response.data;
-
-          //console.log(data);
-    
-    //console.log(Dmercado);
-    return data
-};
-
-async function CotizacionesMercado( ) {
-
-    console.log('Tarea-Cotizaciones Mercado: ' + new Date());
-
-    var host_url = "https://www.bolsadecaracas.com/api/mercado/cotizaciones";       
-
-        var response =  await axios.get(
-            host_url,
-            {
-              headers: {
-                ContentType : 'application/json', 
-                Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEzIiwibmFtZSI6IktvaSBJbnZlc3QiLCJlbWFpbCI6Im5pdXdlckBnbjNrLm1lIn0.MrC_Y27aXCJ54dDSYRqnFg1pZey_c_C34WOvhbNlbQA',
-              },
-            }
-          );
-          const data = response.data;
-
-          //console.log(data);
-    
-    //console.log(Dmercado);
-    return data
+      
 };
 
 module.exports = {
 
 /************************************************* */
 /************************************************* */      
-taskMercados: {
-    task: async ({ strapi }) => {          
-
+ taskMaster: {
+      task: async ({ strapi }) => {  
+  
        
-          const rentavariable = await DetalleMercadoTitulos() ;
-          const cotizacion = await CotizacionesMercado() ;
+  
+        const entries = await strapi.entityService.findMany('api::settingsglobal.settingsglobal', {
+          populate: '*',
+        });   
+        
+       
+  
+        const Entry = await strapi.db.query('api::master.master').findOne({        
+          where: {   
+                   
+                //id_collection: Nreferencia,
 
-          console.log('Consulta Mercados');
-          if (rentavariable != null | rentavariable != null ) {    
-
-            MercadoRentaVariable(rentavariable.response, cotizacion.response )
+                slug: { $ne: 'send' },
+                slug: { $null: true },     
+                              
+         },
+          orderBy: { id: 'ASC' }, 
+        });
+  
+        if (Entry){ 
+  
+          if(entries.EnableMailingSISOC.sendEmail){
+             console.log('taskMaster: ' + new Date());
+              await MasterStamp(Entry);
+  
+          }
+  
         }
-    },
-        options: {
-            rule: '*/2 * * * *',
-            VE: 'America/Caracas',
-        },
-    },
+        
+           
+      },
+          options: {
+              rule: '*/2 * * * * *',
+              VE: 'America/Caracas',
+          },
+      },
+  
     
 /************************************************* */
 /************************************************* */  
