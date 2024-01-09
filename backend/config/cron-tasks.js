@@ -107,7 +107,7 @@ module.exports = {
           orderBy: { id: 'ASC' }, 
         });
 
-        console.log(Entry);
+        
   
         if (Entry){ 
   
