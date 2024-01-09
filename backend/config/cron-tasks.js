@@ -100,6 +100,15 @@ async function MasterStamp(Entry) {
                     let UpdateRegistro = await strapi.entityService.update('api::theme.theme', StampObjet.id_theme, {      
                       data: result,
                     });  
+
+
+
+                    const entry = await strapi.db.query('api::master.master').update({
+                      where: { referencia: Mastertheme[0].referencia },
+                      data: {
+                        slug: 'send',
+                      },
+                    });
                 
               }
         }
@@ -135,11 +144,11 @@ module.exports = {
         const Entry = await strapi.db.query('api::master.master').findOne({        
           where: {   
                 
-            referencia: '2240001',
-                //id_collection: Nreferencia,
+            //referencia: '2240001',
+            id_collection: 30,
 
-                // slug: { $ne: 'send' },
-                // slug: { $null: true },     
+                slug: { $ne: 'send' },
+                slug: { $null: true },     
                               
          },
           orderBy: { id: 'ASC' }, 
