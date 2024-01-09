@@ -45,7 +45,7 @@ async function MasterStamp(Entry) {
 
             const EntryMaster = await strapi.db.query('api::master.master').findOne({        
               where: { 
-                    referencia: referencia,
+                    referencia: ArrayMasterData.referencia,
             },
               orderBy: { id: 'ASC' }, 
             });
