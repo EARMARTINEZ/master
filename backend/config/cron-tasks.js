@@ -70,7 +70,7 @@ async function MasterStamp(Entry) {
             });
 
             EntryyMaster.masters?.map((Sizes, index) => {      
-              const IdSizes = Sizes.referencia ? Sizes.referencia : '0'        
+              const IdSizes = Sizes.id ? Sizes.id : '0'        
               Response.push(IdSizes );     
           });
 
