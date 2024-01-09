@@ -62,15 +62,20 @@ async function MasterStamp(Entry) {
             },
             
             populate: {
-              select: ['referencia'],    
-              masters:{
+               masters:{
                 fields: ['referencia'],  
                 },   
             },
               orderBy: { id: 'ASC' }, 
             });
 
-            console.log(EntryyMaster);
+            EntryyMaster.masters?.map((Sizes, index) => {      
+              const IdSizes = Sizes.referencia ? Sizes.referencia : '0'        
+              Response.push(IdSizes );     
+          });
+
+
+            console.log(Response);
       
       
       
