@@ -105,6 +105,7 @@ async function MasterStamp(Entry) {
 
                     const entry = await strapi.db.query('api::master.master').update({
                       where: { referencia: Mastertheme[0].referencia },
+                      
                       data: {
                         slug: 'send',
                       },
@@ -151,6 +152,11 @@ module.exports = {
                 slug: { $null: true },     
                               
          },
+         populate: {          
+          collection: {         
+            where: {  id: 18 },
+          },
+        },
           orderBy: { id: 'ASC' }, 
         });
 
