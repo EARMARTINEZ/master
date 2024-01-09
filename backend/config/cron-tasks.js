@@ -84,7 +84,7 @@ async function MasterStamp(Entry) {
 
 
             let UpdateRegistro = await strapi.entityService.update('api::theme.theme', StampObjet.id_theme, {      
-              data: ThemeData,
+              data: result,
             });  
         
       }
