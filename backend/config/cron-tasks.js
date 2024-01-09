@@ -59,8 +59,9 @@ async function MasterStamp(Entry) {
               where: { 
                 id: StampObjet.id_theme,
             },
+            
             populate: {
-              master:{
+              masters:{
                 fields: ['referencia'],  
                 },   
             },
