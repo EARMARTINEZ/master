@@ -75,6 +75,12 @@ async function MasterStamp(Entry) {
               ThemeData.push(result); 
 
             console.log(result);
+
+
+            const entry = await strapi.db.query('api::master.master').update({
+              where: { id: StampObjet.id_theme },
+              data: ThemeData,
+            });
         
       }
 
