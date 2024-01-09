@@ -4,8 +4,7 @@ const cronTasks = require("./cron-tasks");
 module.exports = ({ env }) => ({
   host: env('HOST', '0.0.0.0'),
   port: env.int('PORT', 1381), 
-  //url:'https://portal.koiinvest.com',
-  //url: 'http://localhost:1337',
+  url:'https://devmaster.epkweb.com',  
   
   
   
