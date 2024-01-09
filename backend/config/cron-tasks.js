@@ -39,7 +39,7 @@ async function MasterStamp(Entry) {
 
  let ArrayMasterData = ArrayMaster.find((element) => element.ref == MasterEntry[0].referencia );
 
- console.log(Entry);
+ console.log(MasterEntry[0]);
 
     if(ArrayMasterData){
 
