@@ -57,7 +57,7 @@ async function MasterStamp(Entry) {
 
             //console.log(EntryMaster);
 
-      if(StampObjet.length>0){   
+      if(StampObjet){   
         
         console.log(Mastertheme[0].id);
         console.log(StampObjet);
