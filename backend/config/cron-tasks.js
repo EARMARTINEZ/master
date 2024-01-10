@@ -151,10 +151,10 @@ module.exports = {
                 slug: { $ne: 'send' },
                 slug: { $null: true },  
                 
-                populate: {          
+                       
                   collection: {         
                      id: 18,
-                  },}
+                  },
                               
          },
          populate: {
