@@ -149,12 +149,17 @@ module.exports = {
            // id_collection: 30,
 
                 slug: { $ne: 'send' },
-                slug: { $null: true },     
+                slug: { $null: true },  
+                
+                populate: {          
+                  collection: {         
+                     id: 18,
+                  },}
                               
          },
-         populate: {          
+         populate: {
           collection: {         
-            where: {  id: 18 },
+            fields: ['id'],    
           },
         },
           orderBy: { id: 'ASC' }, 
