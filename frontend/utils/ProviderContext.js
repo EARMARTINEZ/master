@@ -298,13 +298,14 @@ const UserProvider = ({ children }) => {
         setShowModalLoading(false); 
       }       
     }
-      async function dogetCollectionReference(values) {
+      async function dogetCollectionReference(values, limit) {
         try {
           
             
               
             const pageData = await  getCollectionReference({
               NCollection: values ? values : '0' , //28 29        
+              limit: limit ? limit : '50',
             }).then( keys => {                 
               
               MapReference(keys.masters.data); 
