@@ -46,7 +46,7 @@ export default function CardTableSearchReference() {
       
           
       useEffect(() => {            
-        IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('30', '300');   
+        IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('30', 300);   
         IdCollection ? dofetchIDCollection(IdCollection) : dofetchIDCollection('30');       
       }, [IdCollection]);     
 

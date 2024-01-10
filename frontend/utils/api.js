@@ -908,7 +908,7 @@ export async function getCollectionReference({ NCollection, limit  }) {
   // Find the pages that match this slug  
   const gqlEndpoint = getStrapiURL("/graphql");
 
-  const limite = limit ? limit : '50'
+  const limite = limit ? limit : 50
    
   const pagesRes = await fetch(gqlEndpoint, {    
     method: "POST",
