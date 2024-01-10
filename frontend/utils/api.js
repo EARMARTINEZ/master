@@ -923,7 +923,7 @@ export async function getCollectionReference({ NCollection }) {
                     
           masters(
             publicationState: PREVIEW
-            sort:"id:desc"
+            sort:"referencia:asc"
             filters:{collection:{id:{eq:$NCollection}}}
             pagination:{limit:50 }
           ){
