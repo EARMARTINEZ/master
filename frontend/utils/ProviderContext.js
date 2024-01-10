@@ -30,12 +30,12 @@ const UserProvider = ({ children }) => {
           let CodigoSizes=[]; 
           let ItemMap = [];             
                   
-          setFiltersReferenceMap([]);
+        
           setStaticReferenceMap([]);
         
           MapValues?.map((dataRef, index) => {  
             
-             
+            
                 const {                   
                   referencia,
                   description = description ? description : '', 
@@ -58,8 +58,8 @@ const UserProvider = ({ children }) => {
                     const IdSizes = Sizes.attributes ? Sizes.attributes.name : 'null'        
                     CodigoSizes.push(IdSizes);     
                   });  
-                   //Filtro referencia en FiltersTable
-                   let FiltersTableReferences = {
+                  //Filtro referencia en FiltersTable
+                  let FiltersTableReferences = {
                     value: referencia,
                     text: referencia
                   };            
@@ -79,7 +79,7 @@ const UserProvider = ({ children }) => {
                       'collection': collection.data.attributes.name,
                       'gender': genderName,
                       'typeproduct': Composition.typeproduct.data.attributes.name,
-                      'theme': theme.data.attributes.name,
+                      'theme': theme.data ? theme.data.attributes.name : '',
                       'sizeref':CodigoSizes.join(' '),
                       'drawings':<div className="flex mb-5 -space-x-4">
                                   {dataRef.attributes.drawings.data?.map((_ImgRef) => (       
@@ -99,7 +99,7 @@ const UserProvider = ({ children }) => {
                               </Button>,
                       
                     
-                   
+                  
                   };     
                   CodigoSizes=[''];
                   FilterRefMap.push(TableDataSource,);                        
@@ -111,14 +111,14 @@ const UserProvider = ({ children }) => {
           });
 
         
-          setSoloReferenceMap([...ItemMap]); 
+          //setSoloReferenceMap([...ItemMap]); 
           setFiltersReferenceMap([...FilterRefMap]);         
           setStaticReferenceMap([...RefMap]);
 
           return FilterRefMap;
 
         }        
-           
+          
         function MapReference(MapValues) {
           let RefMap = [];
           let FilterRefMap = [];
@@ -126,11 +126,11 @@ const UserProvider = ({ children }) => {
           let CodigoSizes=[]; 
           let ItemMap = [];
           
-       
+      
                   // setReferencia();
                   // setDescription();
                   // setSimilarRefs();
-                   setStatusReference([]);                 
+                  setStatusReference([]);                 
                   //setCollection([]);//[]
                   //setNameCollection();
                   //setIdPrefixCollection();
@@ -146,9 +146,9 @@ const UserProvider = ({ children }) => {
                   // setRefeComments([]);//[]
                   // setRefePendings([]);//[]
                   
-          //setFiltersReferenceMap([]);
+          setFiltersReferenceMap([]);
           setReferenceMap([]);
-         
+        
           MapValues?.map((dataRef, index) => {  
             
                 setIdMaster(dataRef ? dataRef.id : '0'); 
@@ -197,14 +197,67 @@ const UserProvider = ({ children }) => {
                   setRefeCommentstamp(commentstamp);//[]
                   setRefePendingstamp(pendingstamp);//[]          
               
-                 
+                
+                  sizes.data?.map((Sizes, index) => {      
+                    const IdSizes = Sizes.attributes ? Sizes.attributes.name : 'null'        
+                    CodigoSizes.push(IdSizes);     
+                  });  
+                  //Filtro referencia en FiltersTable
+                  let FiltersTableReferences = {
+                    value: referencia,
+                    text: referencia
+                  };            
+                  ItemMap.push(FiltersTableReferences,);                                  
+
+                  let TableDataSource = {                   
+                    
+                      'key': dataRef ? dataRef.id : '0',
+                      'references': referencia,
+                      'reference':<Button type="link" 
+                                          onClick={() => { 
+                                          doshowDrawer( dataRef.attributes.referencia), 
+                                          dogetSystemColor() 
+                                          }}  
+                                  >{referencia}</Button>,
+
+                      'collection': collection.data.attributes.name,
+                      'gender': genderName,
+                      'typeproduct': Composition.typeproduct.data.attributes.name,
+                      'theme': theme.data ? theme.data.attributes.name : '',
+                      'sizeref':CodigoSizes.join(' '),
+                      'drawings':<div className="flex mb-5 -space-x-4">
+                                  {dataRef.attributes.drawings.data?.map((_ImgRef) => (       
+
+                                    _ImgRef.attributes.name===referencia+'.jpg' &&  <ImgReference  key={ _ImgRef.attributes.url} url={ _ImgRef.attributes.formats.thumbnail.url} UrlId={_ImgRef.attributes.id} compact={true} />
+                                                            
+                                  ))}
+                                </div>,
+                      'status': status,
+
+                      'stamps':stamp.data ? stamp.data.attributes.name :'',                    
+                      'stamp':<Button type="link" 
+                                      onClick={() => {                             
+                                      doShowStampsDrawer(true, dataRef.attributes.referencia ) 
+                                      }} 
+                              >{stamp.data ? stamp.data.attributes.name :''} 
+                              </Button>,
+                      
+                    
+                  
+                  };     
+                  CodigoSizes=[''];
+                  FilterRefMap.push(TableDataSource,);   
+
+
+
+
                   RefMap.push(dataRef );
-                 
+                
           });
 
-         
-         
-          //setFiltersReferenceMap([...FilterRefMap]);
+        
+        
+          setFiltersReferenceMap([...FilterRefMap]);
           setTableStampsMap([...FilterTableStampsMap]);
           setReferenceMap([...RefMap]);
 
