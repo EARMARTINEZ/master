@@ -1589,18 +1589,25 @@ const UserProvider = ({ children }) => {
     let UrlDrawings=[];
    
     Drawings?.map((Img, index) => {    
-        const UrlImg = Img.attributes ? Img.attributes.url : 'null'         
-        const UrlId = Img ? Img.id : 'null'     
-         
-        const DrawingsUrl = {
-            'url': UrlImg,
-            'id': UrlId
-        } 
-        UrlDrawings.push(DrawingsUrl);              
-         
-    });
+      const UrlImg = Img.attributes ? Img.attributes.url : 'null'       
+      const NameImg = Img.attributes ? Img.attributes.name : 'null'     
+      const UrlId = Img ? Img.id : 'null'     
+       
+      const OrdenImg = NameImg.includes('os-back') ? 'D' : UrlImg.includes('os') ? 'C' : UrlImg.includes('page_2') ? 'B' : 'A'        
 
-      return UrlDrawings;
+      const DrawingsUrl = {
+          'orden': OrdenImg,
+          'url': UrlImg,
+          'name':NameImg,
+          'id': UrlId,
+      } 
+      
+      UrlDrawings.push(DrawingsUrl);         
+  });
+
+  const objetoOrdenado = UrlDrawings.sort((a, b) => a.orden.localeCompare(b.orden));
+
+    return objetoOrdenado;
    };
   const doMapDrawingsPDF = () => {
     
