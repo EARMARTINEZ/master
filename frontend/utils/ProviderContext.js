@@ -111,8 +111,8 @@ const UserProvider = ({ children }) => {
           });
 
         
-          //setSoloReferenceMap([...ItemMap]); 
-          setFiltersReferenceMap([...FilterRefMap]);         
+          setFiltersReferenceMap([...FilterRefMap]);
+          setSoloReferenceMap([...ItemMap]);          
           setStaticReferenceMap([...RefMap]);
 
           return FilterRefMap;
@@ -258,6 +258,7 @@ const UserProvider = ({ children }) => {
         
         
           setFiltersReferenceMap([...FilterRefMap]);
+          setSoloReferenceMap([...ItemMap]);
           setTableStampsMap([...FilterTableStampsMap]);
           setReferenceMap([...RefMap]);
 
