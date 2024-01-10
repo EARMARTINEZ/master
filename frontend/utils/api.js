@@ -919,7 +919,8 @@ export async function getCollectionReference({ NCollection, limit  }) {
     body: JSON.stringify({
       query: `
       query GetCollection(
-        $NCollection: ID!){                    
+        $NCollection: ID!
+        $limite: Int){                    
                     
           masters(
             publicationState: PREVIEW
