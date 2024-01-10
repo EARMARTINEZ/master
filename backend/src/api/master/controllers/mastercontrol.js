@@ -418,6 +418,10 @@ async updateStatusReferencia(ctx){
         .innerJoin('genders', ' masters.gender_name ', ' genders.name ')             
         .whereLike('referencia', '%' + PrefixColection +'%')       
         .groupBy("gender_name", "genders.id", "start_sequence" )
+        .orderBy('referencia')
+        .limit(50)
+        
+        
 
 
       //  .select(
