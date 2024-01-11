@@ -139,12 +139,12 @@ export function CatalogView() {
     setOpenCatalog(false);    
   };
 
-   useEffect(() => { 
-    doReferenceMapFilters(StaticReferenceMap);       
+//    useEffect(() => { 
+//     doReferenceMapFilters(StaticReferenceMap);       
 
-}, [IdCollection]); 
+// }, [IdCollection]); 
 
-console.log(ItemSelectProduct);
+// console.log(ItemSelectProduct);
 
    
   return (
