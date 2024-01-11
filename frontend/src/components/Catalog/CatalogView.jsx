@@ -218,7 +218,8 @@ export function CatalogView() {
           <Drawer 
               title="Close" 
               placement="right" 
-              onClose={() => { doReferenceMapFilters(FilterCatalogSelect), 
+              onClose={() => { 
+                              //doReferenceMapFilters(FilterCatalogSelect), 
                                onClose(true)
                               }} 
               open={open} 
