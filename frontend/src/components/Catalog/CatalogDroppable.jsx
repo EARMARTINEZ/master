@@ -192,7 +192,7 @@ export function CatalogDroppable() {
     useEffect(() => {          
 
         setState(state)
-        setCaptureReport(state)
+        // setCaptureReport(state)
   
       }, [state]);
   
