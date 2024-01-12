@@ -74,7 +74,7 @@ export function FormItemGender({ItemFilter, SelectGender }) {
            let ArryFilterGender = ArryFilterTheme.filter(type => type.attributes.genderName === value)
 
            console.log(ArryFilterGender);
-           if(ArryFilterGender.length>=0){
+           if(ArryFilterGender.length>=1){
          
             setReferenceMapStatus(false); 
             doReferenceMapFilters(ArryFilterGender); 
