@@ -80,7 +80,8 @@ export function CatalogDroppable() {
 
   const {    
     PrintMode,
-    setCaptureReport    
+    setCaptureReport,
+    ItemGender    
   } = BasicTasks();  
 
   const [state, setState] = useState([]);
