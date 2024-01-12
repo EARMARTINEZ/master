@@ -183,7 +183,8 @@ export function CatalogDroppable() {
         
             console.log([ItemMap, ItemRandomMap,  ItemRestMap ])
     }   
-            setState([ItemMap, ItemRandomMap, ItemRestMap])
+            const flattenedArray = [].concat(...ItemMap, ...ItemRandomMap, ...ItemRestMap);
+            setState([flattenedArray])
             setCaptureReport([ItemMap, ItemRandomMap, ItemRestMap])
 
     }, [ReferenceMap]);
@@ -282,7 +283,7 @@ export function CatalogDroppable() {
               <Droppable key={uuid() } droppableId={`${ind}`} >
                 {(provided, snapshot) => (
                   <div
-                  className="overflow-hidden dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]"
+                  className="grid grid-cols-3 overflow-hidden dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]"
                     ref={provided.innerRef}
                     // style={getListStyle(snapshot.isDraggingOver)}
                     {...provided.droppableProps}
@@ -297,7 +298,7 @@ export function CatalogDroppable() {
                         
                       >
                         {(provided, snapshot) => (
-                          
+                        <div className="col-span-6 sm:col-span-1  ">   
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
@@ -336,7 +337,7 @@ export function CatalogDroppable() {
                                 </Button>}
                             
                           </div>
-                        
+                        </div>
                         )}
                       </Draggable>
                     
