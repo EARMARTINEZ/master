@@ -96,7 +96,7 @@ export function CatalogDroppable() {
 
       let ArryFilter = ReferenceMap.filter(type => type.attributes.genderName === ItemGender ? ItemGender : 'Baby Girl')
 
-      ArryFilter?.map((dataRef, index) => {
+      ReferenceMap?.map((dataRef, index) => {
             const { referencia, drawings } = dataRef ? dataRef.attributes : '0';               
             
                 drawings.data?.map((comments, index) => { 
