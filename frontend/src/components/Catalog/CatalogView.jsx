@@ -71,7 +71,7 @@ export function CatalogView() {
 
   
 useEffect(() => {            
-   IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('29');   
+  IdCollection ? dogetCollectionReference(IdCollection, 300) : dogetCollectionReference('30', 300);   
  
 }, []);     
 
