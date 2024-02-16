@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "parts",
+  "info": {
+    "singularName": "part",
+    "pluralName": "parts",
+    "displayName": "Part"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    }
+  }
+}

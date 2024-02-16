@@ -40,6 +40,9 @@
       "relation": "manyToMany",
       "target": "api::size.size",
       "inversedBy": "genders"
+    },
+    "order_show": {
+      "type": "biginteger"
     }
   }
 }
