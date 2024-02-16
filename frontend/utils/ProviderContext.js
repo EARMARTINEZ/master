@@ -35,7 +35,7 @@ const UserProvider = ({ children }) => {
         
           MapValues?.map((dataRef, index) => {  
             
-            
+             
                 const {                   
                   referencia,
                   description = description ? description : '', 
@@ -58,8 +58,8 @@ const UserProvider = ({ children }) => {
                     const IdSizes = Sizes.attributes ? Sizes.attributes.name : 'null'        
                     CodigoSizes.push(IdSizes);     
                   });  
-                  //Filtro referencia en FiltersTable
-                  let FiltersTableReferences = {
+                   //Filtro referencia en FiltersTable
+                   let FiltersTableReferences = {
                     value: referencia,
                     text: referencia
                   };            
@@ -99,7 +99,7 @@ const UserProvider = ({ children }) => {
                               </Button>,
                       
                     
-                  
+                   
                   };     
                   CodigoSizes=[''];
                   FilterRefMap.push(TableDataSource,);                        
@@ -118,7 +118,7 @@ const UserProvider = ({ children }) => {
           return FilterRefMap;
 
         }        
-          
+           
         function MapReference(MapValues) {
           let RefMap = [];
           let FilterRefMap = [];
@@ -126,11 +126,11 @@ const UserProvider = ({ children }) => {
           let CodigoSizes=[]; 
           let ItemMap = [];
           
-      
+       
                   // setReferencia();
                   // setDescription();
                   // setSimilarRefs();
-                  setStatusReference([]);                 
+                   setStatusReference([]);                 
                   //setCollection([]);//[]
                   //setNameCollection();
                   //setIdPrefixCollection();
@@ -148,7 +148,7 @@ const UserProvider = ({ children }) => {
                   
           setFiltersReferenceMap([]);
           setReferenceMap([]);
-        
+         
           MapValues?.map((dataRef, index) => {  
             
                 setIdMaster(dataRef ? dataRef.id : '0'); 
@@ -197,13 +197,13 @@ const UserProvider = ({ children }) => {
                   setRefeCommentstamp(commentstamp);//[]
                   setRefePendingstamp(pendingstamp);//[]          
               
-                
+                 
                   sizes.data?.map((Sizes, index) => {      
                     const IdSizes = Sizes.attributes ? Sizes.attributes.name : 'null'        
                     CodigoSizes.push(IdSizes);     
                   });  
-                  //Filtro referencia en FiltersTable
-                  let FiltersTableReferences = {
+                   //Filtro referencia en FiltersTable
+                   let FiltersTableReferences = {
                     value: referencia,
                     text: referencia
                   };            
@@ -243,7 +243,7 @@ const UserProvider = ({ children }) => {
                               </Button>,
                       
                     
-                  
+                   
                   };     
                   CodigoSizes=[''];
                   FilterRefMap.push(TableDataSource,);   
@@ -252,11 +252,11 @@ const UserProvider = ({ children }) => {
 
 
                   RefMap.push(dataRef );
-                
+                 
           });
 
-        
-        
+         
+         
           setFiltersReferenceMap([...FilterRefMap]);
           setSoloReferenceMap([...ItemMap]);
           setTableStampsMap([...FilterTableStampsMap]);
@@ -352,14 +352,13 @@ const UserProvider = ({ children }) => {
         setShowModalLoading(false); 
       }       
     }
-      async function dogetCollectionReference(values, limit) {
+      async function dogetCollectionReference(values) {
         try {
           
-            
+            console.log(values)
               
             const pageData = await  getCollectionReference({
               NCollection: values ? values : '0' , //28 29        
-              limit: limit ? limit : 50,
             }).then( keys => {                 
               
               MapReference(keys.masters.data); 
@@ -1644,25 +1643,27 @@ const UserProvider = ({ children }) => {
     let UrlDrawings=[];
    
     Drawings?.map((Img, index) => {    
-      const UrlImg = Img.attributes ? Img.attributes.url : 'null'       
-      const NameImg = Img.attributes ? Img.attributes.name : 'null'     
-      const UrlId = Img ? Img.id : 'null'     
+        const UrlImg = Img.attributes ? Img.attributes.url : 'null'       
+        const NameImg = Img.attributes ? Img.attributes.name : 'null'     
+        const UrlId = Img ? Img.id : 'null'     
+         
+        const OrdenImg = NameImg.includes('os-back') ? 'D' : UrlImg.includes('os') ? 'C' : UrlImg.includes('page_2') ? 'B' : 'A'   
        
-      const OrdenImg = NameImg.includes('os-back') ? 'D' : UrlImg.includes('os') ? 'C' : UrlImg.includes('page_2') ? 'B' : 'A'        
 
-      const DrawingsUrl = {
-          'orden': OrdenImg,
-          'url': UrlImg,
-          'name':NameImg,
-          'id': UrlId,
-      } 
-      
-      UrlDrawings.push(DrawingsUrl);         
-  });
+        const DrawingsUrl = {
+            'orden': OrdenImg,
+            'url': UrlImg,
+            'name':NameImg,
+            'id': UrlId,
+            
+        } 
+        
+        UrlDrawings.push(DrawingsUrl);         
+    });
 
-  const objetoOrdenado = UrlDrawings.sort((a, b) => a.orden.localeCompare(b.orden));
+    const objetoOrdenado = UrlDrawings.sort((a, b) => a.orden.localeCompare(b.orden));
 
-    return objetoOrdenado;
+      return objetoOrdenado;
    };
   const doMapDrawingsPDF = () => {
     

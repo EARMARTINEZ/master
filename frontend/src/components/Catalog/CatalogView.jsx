@@ -3,8 +3,8 @@ import { useSession } from 'next-auth/react';
 import  'flowbite'
 import {useEffect, useState } from "react"; 
 import {getStrapiURL} from "utils/api";
-import { Button, Checkbox, Form, Input, Select, Space, Radio, Card, Drawer  } from 'antd';
-import {  ExclamationCircleFilled, PrinterOutlined } from '@ant-design/icons'
+import { Button, Form, Drawer  } from 'antd';
+import { PrinterOutlined } from '@ant-design/icons'
 
 import { BasicTasks } from "utils/Provider/BasicProvider";
 import { useTasks } from "utils/ProviderContext";
@@ -17,84 +17,12 @@ import ReporViewer from '@/components/Catalog/ReporViewer'
 import ButtonRecharge from '@/components/Cards/DetailReference/buttonRecharge'
 import {FormItemTheme,
         FormItemGender,
-        FormItemProduct
+        FormItemProduct,
+        FormSelectCatalog
        } from '@/components/Catalog/FormItemFilter'
 
 
-export function FormItemStatus({CatalogSelec, SelectTheme, SelectProduct}) {   
-  const {
-    IdCollection,         
-    doReferenceMapFilters, 
-    StaticReferenceMap,
-            
-   } = useTasks();  
-      
-   const { 
-        setReferenceMapStatus,   
-   } = BasicTasks();
 
-        const { Option } = Select;
-        const Status = [
-          {
-            label: 'Collection Catalog',
-            value: 'Collection Catalog',
-          },
-          {
-            label: 'Gender / Product Catalog',
-            value: 'Gender / Product Catalog',
-          },
-         
-        ];
-    
-       
-        const handleChange = (value) => {          
-          console.log(value);
-          CatalogSelec(value);
-          SelectTheme();
-          SelectProduct();
-
-          setReferenceMapStatus(true);
-          doReferenceMapFilters(StaticReferenceMap);   
-        };
-      return (
-      <>
-       
-        <div className="grid grid-cols-1 gap-1 m-0">      
-              <div className="col-span-6 sm:col-span-1  ">    
-                  
-                  <Form.Item
-                      name="status"
-                      label="Select Catalog type"
-                      initialValue={ 'Collection Catalog' }   
-                      rules={[
-                      {
-                          required: false,
-                          message: '',
-                      },
-                      ]}
-                  >
-                      <Select 
-                      options={Status}                
-                      showSearch   
-                      defaultValue={'Collection Catalog'}
-                      onChange={handleChange}       
-                      placeholder="Search to Select"
-                      optionFilterProp="children"
-                      filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                      filterSort={(optionA, optionB) =>
-                          (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                        
-                      }
-                      
-                      />
-                  </Form.Item>       
-              </div> 
-        
-      </div> 
-      </>
-    
-    )
-    }
 
 export function CatalogView() {   
     
@@ -102,12 +30,14 @@ export function CatalogView() {
     IdCollection,
     StaticReferenceMap,
     NameCollection,          
-    dogetCollectionReference,    
+    dogetCollectionReference, 
+    dofetchIDCollection,   
     onClose,
     open,
     StampsOpen, 
     onCloseStamps, 
-    doReferenceMapFilters,          
+    doReferenceMapFilters,
+    ItemGender          
    } = useTasks();  
       
    const {     
@@ -120,7 +50,7 @@ export function CatalogView() {
    const [ ItemSelectGender, setItemSelectGender] = useState();
    const [ ItemSelectTheme, setItemSelectTheme] = useState();
    const [ ItemSelectProduct, setItemSelectProduct] = useState();
-   
+   const [form] = Form.useForm();
 
    const [openCatalog, setOpenCatalog] = useState(false);
    
@@ -139,10 +69,12 @@ export function CatalogView() {
     setOpenCatalog(false);    
   };
 
-//    useEffect(() => { 
-//     doReferenceMapFilters(StaticReferenceMap);       
+  
+useEffect(() => {            
+   IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('29');   
+ 
+}, []);     
 
-// }, [IdCollection]); 
 
 // console.log(ItemSelectProduct);
 
@@ -158,14 +90,15 @@ export function CatalogView() {
       
 
       <div className="grid grid-cols-2 gap-1"> 
-
+      
           <div className="col-span-6 sm:col-span-1  "> 
-          {<FormItemStatus 
+          {<Form >
+            <FormSelectCatalog 
             CatalogSelec={setCatalogSelect}
             SelectTheme={setItemSelectTheme}
-            SelectProduct={setItemSelectProduct}
-          
-          />}
+            SelectProduct={setItemSelectProduct}          
+          />
+          </Form>}
           </div>   
 
           <div className="col-span-6 sm:col-span-1  "> 
@@ -174,28 +107,43 @@ export function CatalogView() {
 
       </div> 
           
-          
+        <Form form={form}>  
           <div className="grid grid-cols-2 gap-1"> 
                
-              
+         
               <div className="col-span-6 sm:col-span-1  "> 
-              {<FormItemGender ItemFilter={ItemFilterSelect} SelectGender={setItemSelectGender}  />}    
+              {
+                <FormItemGender 
+                  ItemFilter={ItemFilterSelect} 
+                  SelectGender={setItemSelectGender}
+                  form={form}  
+                  />
+                  }    
               </div>
               
               {isCatalogSelec &&
                   <div className="col-span-6 sm:col-span-1  "> 
-                  <FormItemTheme SelectTheme={setItemSelectTheme} />
+                
+                    <FormItemTheme 
+                      SelectTheme={setItemSelectTheme} 
+                      form={form}
+                   />
+                
                   </div>
               }        
               
               {isProductCatalog &&
                 <div className="col-span-6 sm:col-span-1  "> 
-                <FormItemProduct SelectProduct={setItemSelectProduct}  />
+              
+                  <FormItemProduct 
+                    SelectProduct={setItemSelectProduct}  
+                  />
+               
                 </div>
               }
-
+        
           </div> 
-
+        </Form>
            <div className="grid grid-cols-1 gap-1">
 
             <div className="col-span-6 sm:col-span-1 py-5 "> 

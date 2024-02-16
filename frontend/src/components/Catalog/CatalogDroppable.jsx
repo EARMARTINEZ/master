@@ -66,7 +66,16 @@ padding: grid,
 width: 350
 });
 
+function divideEnPartesIguales(array) {
+  const longitudParte = Math.ceil(array.length / 3); // Calcular la longitud de cada parte
 
+  const partes = [];
+  for (let i = 0; i < array.length; i += longitudParte) {
+    partes.push(array.slice(i, i + longitudParte));
+  }
+
+  return partes;
+}
 
 export function CatalogDroppable() {   
     
@@ -74,6 +83,7 @@ export function CatalogDroppable() {
           IdCollection,
           dogetSystemColor, 
           ReferenceMap, 
+          setReferenceMap,
           StaticReferenceMap,
           doshowDrawer, 
           NameCollection } = useTasks();
@@ -81,58 +91,91 @@ export function CatalogDroppable() {
   const {    
     PrintMode,
     setCaptureReport,
-    ItemGender    
+    ItemGender,
+    ItemTheme    
   } = BasicTasks();  
 
   const [state, setState] = useState([]);
   const [StopState, setStopState] = useState(true);  
  
   let ItemMap = [];
-  let ItemBaseMap = [];
+  let newDataDrawings = [];
   let ItemRandomMap = [];
   let ItemRestMap = [];
+  let ItemBaseMap = [];
+
+  let ItemRMap = [];
   
   useEffect(() => {   
     if(StopState){
 
-      let ArryFilter = ReferenceMap.filter(type => type.attributes.genderName == ItemGender ? ItemGender : 'Baby Girl');
+     
+      
+      
+      const ArryFilter = ItemGender ?      
+             ReferenceMap.filter(type => type.attributes.genderName == ItemGender )
+            :ReferenceMap.filter(type => type.attributes.genderName == 'Baby Girl' )
+      
+      
+        
+      console.log(ItemGender);
+      
 
       ArryFilter?.map((dataRef, index) => {
-            const { referencia, drawings } = dataRef ? dataRef.attributes : '0';               
-            
-                drawings.data?.map((comments, index) => { 
+            const { referencia, drawings, Composition, status } = dataRef ? dataRef.attributes : '0';               
+            const {id_part } = Composition ? Composition.typeproduct.data.attributes  : '0';               
                 
-                if(comments.attributes.name===referencia+'.jpg'){
+            drawings.data?.map((dataDrawings, index) => { 
 
-                    ItemBaseMap.push({...comments, "reference": referencia}, );
-                } 
+                const isCatalogSelec = status != 'Cancelled' 
+                const isImgReferencia = dataDrawings.attributes.name===referencia+'.jpg'
+                
+                if(isCatalogSelec){
+                  if(isImgReferencia){
+
+                      newDataDrawings.push({
+                        ...dataDrawings, 
+                        "reference": referencia,
+                        order_Part: id_part ? id_part.data.id : null,
+                        orderShowProduct:  Composition.typeproduct.data.attributes.order_show,
+                        orderShowGender: Composition.gender.data.attributes.order_show,
+                        },);
+
+                        newDataDrawings.sort((a, b) => a.order_Part - b.order_Part);
+                    
+                  } 
+              }  
             });  
 
             }); 
                 
-              // console.log(ItemBaseMap );   
+               //console.log(newDataDrawings );   
             
             //ItemRandomMap
-            ItemBaseMap?.map((comments, index) => {             
-                const valor = Math.trunc (Object.keys(ItemBaseMap).length / 3 )
-                
-                if(index < valor) {
+            newDataDrawings?.map((dataDrawings, index) => {             
+                // const valor = Math.trunc (Object.keys(ItemBaseMap).length / 3 )        
+               
 
                         let FiltersTableReferences = {
-                            id: comments.id,
-                            content: comments.attributes.name,
-                            url: comments.attributes.url,
-                            reference:comments.reference,
-                        
+                            id: dataDrawings.id,
+                            content: dataDrawings.attributes.name,
+                            url: dataDrawings.attributes.url,
+                            reference:dataDrawings.reference,
+                            order_Part:dataDrawings.order_Part,
+                            orderShowProduct:dataDrawings.orderShowProduct,
+                            orderShowGender:dataDrawings.orderShowGender,
                         };     
-                        ItemRandomMap.push(FiltersTableReferences);              
-                }             
+                        ItemRandomMap.push(FiltersTableReferences);  
+                                 
+                      //  ItemRandomMap.sort((a, b) => a.orderShowProduct - b.orderShowProduct);            
             }); 
 
                 //ItemMap
                 ItemBaseMap?.map((comments, index) => {   
                     
-                    const valor = Math.trunc (Object.keys(ItemBaseMap).length / 1 )
+                    // const valor = Math.trunc (Object.keys(ItemBaseMap).length / 3 )
+
+                    const valor = (ItemBaseMap.length / 2 )
                 
                     if(index <= valor) {
                         const random = Math.floor(Math.random() * ItemBaseMap.length);     
@@ -157,52 +200,57 @@ export function CatalogDroppable() {
 
                 //ItemRestMap           
                 ItemBaseMap?.map((comments, index) => {  
-                        const random = Math.floor(Math.random() * ItemBaseMap.length);
-                    
-                        if (!ItemRandomMap.find( id => id.id === ItemBaseMap[index].id) ){
+                        const random = Math.floor(Math.random() * ItemBaseMap.length);                   
+                
+                       
+                          if (!ItemRandomMap.find( id => id.id === ItemBaseMap[index].id) ){
 
-                            if (!ItemMap.find( id => id.id === ItemBaseMap[index].id) ){
-                            
-                                if (!ItemRestMap.find( id => id.id === ItemBaseMap[index].id) ){
+                              if (!ItemMap.find( id => id.id === ItemBaseMap[index].id) ){
+                              
+                                  if (!ItemRestMap.find( id => id.id === ItemBaseMap[index].id) ){
 
-                                let FiltersTableReferences = {
-                                    id: ItemBaseMap[index].id,
-                                    content: ItemBaseMap[index].attributes.name,
-                                    url: ItemBaseMap[index].attributes.url,
-                                    reference: ItemBaseMap[index].reference,
-                                    };  
+                                  let FiltersTableReferences = {
+                                      id: ItemBaseMap[index].id,
+                                      content: ItemBaseMap[index].attributes.name,
+                                      url: ItemBaseMap[index].attributes.url,
+                                      reference: ItemBaseMap[index].reference,
+                                      };  
 
-                                    ItemRestMap.push(FiltersTableReferences);
-                                }
+                                      ItemRestMap.push(FiltersTableReferences);
+                                  }
 
 
-                            }
-                        }
-                            
+                              }
+                        
+                      }    
                 });       
         
-            console.log([ItemMap, ItemRandomMap,  ItemRestMap ])
+           // console.log([ItemMap, ItemRandomMap,  ItemRestMap ])
+            
+
     }   
-            setState([ItemMap, ItemRandomMap, ItemRestMap])
-            setCaptureReport([ItemMap, ItemRandomMap, ItemRestMap])
+   
+            //const flattenedArray = [].concat(...ItemRandomMap, ...ItemMap,  ...ItemRestMap);
+            // setState([flattenedArray])
+            // setCaptureReport([flattenedArray])
+
+            const PartesIgualesArray = divideEnPartesIguales(ItemRandomMap);           
+
+    
+
+            //console.log([ItemRandomMap, ItemMap,  ItemRestMap])
+            //console.log(PartesIgualesArray )
+
+            setState(PartesIgualesArray)
+            setCaptureReport(PartesIgualesArray)
 
     }, [ReferenceMap]);
 
-    useEffect(() => {          
-
+    useEffect(() => {         
         setState(state)
         setCaptureReport(state)
   
       }, [state]);
-  
-
-
-  //console.log(state)
-  
-//   state.map((dataRef, index) => {
-//     console.log(dataRef)
-
-//   });  
  
 
 
@@ -276,9 +324,9 @@ export function CatalogDroppable() {
     <Row justify="start" gutter={[16, 24]} >
       <Col className="gutter-row" span={18}>
         <div style={{ display: "flex" }}>
-          <DragDropContext onDragEnd={onDragEnd}>
-            
-            {state.map((el, ind) => (
+          <DragDropContext onDragEnd={onDragEnd}>       
+
+          {state.map((el, ind) => (
               <Droppable key={uuid() } droppableId={`${ind}`} >
                 {(provided, snapshot) => (
                   <div
@@ -288,16 +336,17 @@ export function CatalogDroppable() {
                     {...provided.droppableProps}
                   
                   >
+                  
                     {el.map((item, index) => (
-                      
+                    <div key={item.id} className="flex items-center">  
                       <Draggable
                         key={item.id}
                         draggableId={item.id}
                         index={index}
                         
                       >
-                        {(provided, snapshot) => (
-                          
+                        {(provided, snapshot) => (                   
+                  //  <div className="col-span-6 sm:col-span-1  "> 
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
@@ -315,7 +364,7 @@ export function CatalogDroppable() {
                                       }}                          
                             ><DeleteTwoTone twoToneColor='#eb2f96' /></Button>}
                             
-                          
+                         
                             <div
                               style={{
                                 display: "flex",
@@ -325,7 +374,7 @@ export function CatalogDroppable() {
                                 {/* {item.url} */}
                                 {item.url  && <ImgReference  key={item.url} url={item.url} UrlId={item.id} compact={true} />}                           
                             </div>
-
+                         
                           
                           
                         
@@ -336,16 +385,20 @@ export function CatalogDroppable() {
                                 </Button>}
                             
                           </div>
-                        
+                      // </div>
+                       
                         )}
                       </Draggable>
-                    
+                    </div>
                     ))}
+                 
                     {provided.placeholder}
                   </div>
                 )}
               </Droppable>
             ))}
+
+
             
           </DragDropContext>
         </div>

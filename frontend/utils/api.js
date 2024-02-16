@@ -904,11 +904,11 @@ export async function getReference({ NReference }) {
   return pagesData.data;
 }
 
-export async function getCollectionReference({ NCollection, limit  }) {
+export async function getCollectionReference({ NCollection }) {
   // Find the pages that match this slug  
   const gqlEndpoint = getStrapiURL("/graphql");
 
-  const limite = limit ? limit : 50
+  
    
   const pagesRes = await fetch(gqlEndpoint, {    
     method: "POST",
@@ -919,14 +919,13 @@ export async function getCollectionReference({ NCollection, limit  }) {
     body: JSON.stringify({
       query: `
       query GetCollection(
-        $NCollection: ID!
-        $limite: Int){                    
+        $NCollection: ID!){                    
                     
           masters(
             publicationState: PREVIEW
             sort:"referencia:asc"
             filters:{collection:{id:{eq:$NCollection}}}
-            pagination:{limit: $limite }
+            pagination:{limit:30 }
           ){
             data {
               id
@@ -968,6 +967,7 @@ export async function getCollectionReference({ NCollection, limit  }) {
                       id
                       attributes{
                         name
+                        order_show
                       }
                     }
                   }
@@ -976,6 +976,8 @@ export async function getCollectionReference({ NCollection, limit  }) {
                       id
                       attributes {
                         name
+                        id_part{data{id attributes{name}}}
+                        order_show
                       }
                     }
                   }
@@ -1032,8 +1034,7 @@ export async function getCollectionReference({ NCollection, limit  }) {
           }
        }
       `, variables: {
-         NCollection,
-         limite
+         NCollection
         
       },
      
