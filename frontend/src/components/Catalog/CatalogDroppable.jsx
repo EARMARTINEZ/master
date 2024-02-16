@@ -167,7 +167,7 @@ export function CatalogDroppable() {
                         };     
                         ItemRandomMap.push(FiltersTableReferences);  
                                  
-                      //  ItemRandomMap.sort((a, b) => a.orderShowProduct - b.orderShowProduct);            
+                        ItemRandomMap.sort((a, b) => a.orderShowProduct - b.orderShowProduct);            
             }); 
 
                 //ItemMap
