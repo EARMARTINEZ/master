@@ -52,7 +52,7 @@ const ButtonRecharge = ({}) => {
 
           <Button 
           onClick={() => {                             
-            IdCollection ? dogetCollectionReference(IdCollection, 300) : dogetCollectionReference('29', 300); 
+            IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('29'); 
             enterLoading(2);
             setReferenceMapStatus(true);
             }} 
