@@ -33,7 +33,7 @@ const UserProvider = ({ children }) => {
         
           setStaticReferenceMap([]);
         
-          MapValues?.map((dataRef, index) => {  
+          MapValues.data?.map((dataRef, index) => {  
             
              
                 const {                   
@@ -149,7 +149,7 @@ const UserProvider = ({ children }) => {
           setFiltersReferenceMap([]);
           setReferenceMap([]);
          
-          MapValues?.map((dataRef, index) => {  
+          MapValues.data?.map((dataRef, index) => {  
             
                 setIdMaster(dataRef ? dataRef.id : '0'); 
 
@@ -255,12 +255,12 @@ const UserProvider = ({ children }) => {
                  
           });
 
-         
-         
-          setFiltersReferenceMap([...FilterRefMap]);
-          setSoloReferenceMap([...ItemMap]);
-          setTableStampsMap([...FilterTableStampsMap]);
-          setReferenceMap([...RefMap]);
+       
+           setMetaReferenceMap(MapValues.meta);
+           setFiltersReferenceMap([...FilterRefMap]);
+           setSoloReferenceMap([...ItemMap]);
+           setTableStampsMap([...FilterTableStampsMap]);
+           setReferenceMap([...RefMap]);
 
           return FilterRefMap;
 
@@ -321,7 +321,7 @@ const UserProvider = ({ children }) => {
         IDReference: values, //1240001 2230003        
         }).then( keys => {
                     
-          const Map = MapReference(keys.masters.data);
+          const Map = MapReference(keys.data);
           return Map;
       });    
     
@@ -342,7 +342,7 @@ const UserProvider = ({ children }) => {
             NReference: Prefix, //1240001 2230003        
           }).then( keys => {
                       
-          const Map = MapReference(keys.masters.data);
+          const Map = MapReference(keys.masters);
             return Map;
         });                
     
@@ -352,24 +352,26 @@ const UserProvider = ({ children }) => {
         setShowModalLoading(false); 
       }       
     }
-      async function dogetCollectionReference(values, Limite) {
+      async function dogetCollectionReference(values, Start ) {
         try {
           
             console.log(values)
               
             const pageData = await  getCollectionReference({
               NCollection: values ? values : '0' , //28 29
-              limit: Limite ? Limite : 50       
+              start: Start ? Start : 1,
+                          
             }).then( keys => {                 
               
-              MapReference(keys.masters.data); 
-              MapStaticReference(keys.masters.data);  
+              MapReference(keys.masters); 
+              MapStaticReference(keys.masters);  
             
-              return keys.masters.data;
+              return keys.masters;
           }); 
             setTimeout(() => {
               setShowModalLoading(false);
-            },20000);  
+            },20000); 
+            setLoading(false);   
           return pageData;
             
           } catch (error) {
@@ -383,10 +385,11 @@ const UserProvider = ({ children }) => {
               const pageData = await  getCollectionFilters({ 
                 FILTERS: Filters ? Filters : ' ', 
               }).then( keys => {                 
-                
-                MapReference(keys.masters.data);   
+               
+                 //MapReference(keys.masters);   
+                 
               
-                return keys.masters.data;
+                return keys.masters;
             }); 
             
             return pageData;
@@ -397,9 +400,11 @@ const UserProvider = ({ children }) => {
               }          
         } 
           async function doReferenceMapFilters(ArrayMap) {
-            try {              
+            try {  
+              
+              let data = {data: ArrayMap ? ArrayMap : [] };
                   
-              const pageData= MapReference(ArrayMap); 
+                  MapReference(data); 
                 
               } catch (error) {
                   console.log("error", error)
@@ -1705,6 +1710,7 @@ const UserProvider = ({ children }) => {
   }
   
   const { data: session } = useSession();
+  const [loading, setLoading] = useState(true);
   const [SessionUser, setSessionUser] = useState();
   const [SessiontoMaker, setSessiontoMaker] = useState();
   const [SessionUserCity, setSessionUserCity] = useState();
@@ -1718,6 +1724,7 @@ const UserProvider = ({ children }) => {
   const [CollectionMap, setCollectionMap] = useState([]);
   const [StaticReferenceMap, setStaticReferenceMap] = useState([]);
   const [ReferenceMap, setReferenceMap] = useState([]);
+  const [MetaReferenceMap, setMetaReferenceMap] = useState({});
   const [SoloReferenceMap, setSoloReferenceMap] = useState([]);
   const [FiltersReferenceMap, setFiltersReferenceMap] = useState([]);
   const [TableStampsMap, setTableStampsMap] = useState([]);  
@@ -1806,6 +1813,9 @@ setIsModalOpen(false);
 
     setSessionUser:setSessionUser,
     SessionUser:SessionUser,
+
+    setLoading:setLoading,
+    loading:loading,
 
     setSessiontoMaker:setSessiontoMaker,
     SessiontoMaker:SessiontoMaker,
@@ -1906,6 +1916,7 @@ setIsModalOpen(false);
     setProvider:setProvider,
     setStamp:setStamp,
     doShowStampsDrawer:doShowStampsDrawer,
+    
 
     
     setCollectionMap:setCollectionMap,
@@ -1914,6 +1925,8 @@ setIsModalOpen(false);
     StaticReferenceMap:StaticReferenceMap,    
     setReferenceMap:setReferenceMap,
     ReferenceMap:ReferenceMap,
+    setMetaReferenceMap:setMetaReferenceMap,
+    MetaReferenceMap:MetaReferenceMap,
     setFiltersReferenceMap:setFiltersReferenceMap,
     FiltersReferenceMap:FiltersReferenceMap,
     setTableStampsMap:setTableStampsMap,

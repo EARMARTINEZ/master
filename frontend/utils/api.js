@@ -883,6 +883,14 @@ export async function getReference({ NReference }) {
                 pendings(sort: ["status:asc", "id:desc"] ){id comment date user status type{data{id attributes{name}}}}
               }
             }
+            meta {
+              pagination {        
+                page
+                pageSize
+                total
+                pageCount
+              }
+            }
         }  
        }
       `, variables: {
@@ -904,11 +912,13 @@ export async function getReference({ NReference }) {
   return pagesData.data;
 }
 
-export async function getCollectionReference({ NCollection, limit }) {
+export async function getCollectionReference({ NCollection, start }) {
   // Find the pages that match this slug  
   const gqlEndpoint = getStrapiURL("/graphql");
-
-  const Limite = limit ? limit :50
+   
+  const Start = start ? start : 1
+  const Limite = 10
+  
    
   const pagesRes = await fetch(gqlEndpoint, {    
     method: "POST",
@@ -919,14 +929,14 @@ export async function getCollectionReference({ NCollection, limit }) {
     body: JSON.stringify({
       query: `
       query GetCollection(
-        $NCollection: ID!
-        $Limite: Int){                    
+        $NCollection: ID!       
+        $Start: Int!, $Limite: Int!){                    
                     
           masters(
             publicationState: PREVIEW
             sort:"referencia:asc"
             filters:{collection:{id:{eq:$NCollection}}}
-            pagination:{limit: $Limite }
+            pagination:{page: $Start ,pageSize: $Limite }
           ){
             data {
               id
@@ -1032,11 +1042,20 @@ export async function getCollectionReference({ NCollection, limit }) {
                 pendings(sort: ["status:asc", "id:desc"] ){id comment date user status type{data{id attributes{name}}}}
               }
             }
+            meta {
+              pagination {        
+                page
+                pageSize
+                total
+                pageCount
+              }
+            }
           }
        }
       `, variables: {
          NCollection,
-         Limite
+         Start,
+         Limite,
       },
      
     }),
@@ -1789,6 +1808,7 @@ export async function getCollectionFilters({FILTERS} ) {
                       id
                       attributes{
                         name
+                        order_show
                       }
                     }
                   }
@@ -1797,6 +1817,8 @@ export async function getCollectionFilters({FILTERS} ) {
                       id
                       attributes {
                         name
+                        id_part{data{id attributes{name}}}
+                        order_show
                       }
                     }
                   }
@@ -1835,7 +1857,8 @@ export async function getCollectionFilters({FILTERS} ) {
                   }
                 }
                 stamp{data{id attributes{
-                  name  
+                  name 
+                  masters( publicationState: PREVIEW){data{attributes{ referencia}}} 
                   status
                   picture{data{id attributes{url formats}}}
                   commentstamp(sort: ["id:desc"] ){id comment date user status type{data{id attributes{name}}}}
@@ -1847,6 +1870,14 @@ export async function getCollectionFilters({FILTERS} ) {
                 drawingsPDF{ data {id attributes {url } } }
                 comments(sort: ["id:desc"] ){id comment date user status type{data{id attributes{name}}}}
                 pendings(sort: ["status:asc", "id:desc"] ){id comment date user status type{data{id attributes{name}}}}
+              }
+            }
+            meta {
+              pagination {        
+                page
+                pageSize
+                total
+                pageCount
               }
             }
           }
@@ -1866,3 +1897,5 @@ export async function getCollectionFilters({FILTERS} ) {
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
+
+

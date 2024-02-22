@@ -1,18 +1,23 @@
-import  'flowbite'
-import {useEffect, useState, useRef} from "react"; 
+
+import {useEffect, useState, useRef, useCallback} from "react"; 
 import Highlighter from 'react-highlight-words';
 import { useTasks } from "utils/ProviderContext";
 import { SearchOutlined } from '@ant-design/icons';
-import {  Input, Space, Table  } from 'antd';
-import { Button } from '@/components/Button'
+import { Button, Input, Space, Table  } from 'antd';
+// import { Button } from '@/components/Button'
 import ButtonExport from '@/components/Cards/DetailReference/button-ExportXLSX'
 import ButtonRecharge from '@/components/Cards/DetailReference/buttonRecharge'
 import {ExportZipImg} from '@/components/ExporImg/ExportZipImg'
 import SearchReference from '@/components/Cards/DetailReference/SearchReference'
 
+import ImgReference from '@/components/Cards/DetailReference/ImgReference'
+
+
 const FiltersTable = () => {
     
     const { 
+        setLoading,
+        loading,
         dogetCollectionReference,
         dofetchReference,    
         FiltersReferenceMap,
@@ -23,63 +28,165 @@ const FiltersTable = () => {
         filtersStampsMap,               
         IdCollection,     
         SoloReferenceMap,
-        ReferenceMap   
+        ReferenceMap,
+        MetaReferenceMap,
+        dofindCollectionFilters,
+        setFiltersReferenceMap, 
+        setMetaReferenceMap,
+        doshowDrawer,
+        dogetSystemColor,
+     
             } = useTasks();
 
           
-            let ItemStatusMap = [];  
-          
-          
-            const [filtersStatusMap, setfiltersStatusMap] = useState([]);                      
+            let ItemStatusMap = [];                     
+            const{pagination}=MetaReferenceMap          
+            const [filtersStatusMap, setfiltersStatusMap] = useState([]);  
+            const [searchText, setSearchText] = useState('');
+            const [searchedColumn, setSearchedColumn] = useState('');
+            const searchInput = useRef(null);
+            const valueRef = useRef('');   
+
+            let datos = FiltersReferenceMap;   
+      
+            const tableProps = {       
+                loading,        
+            };    
+
+       let newStatusMap = [];       
+
+
+       useEffect(() => {            
+        ReferenceMap?.map((dataRef, index) => {  
+                const { referencia, genderName, Composition,  status, theme, stamp } = dataRef ? dataRef.attributes : '0'; 
             
-            useEffect(() => {            
-                ReferenceMap?.map((dataRef, index) => {  
-                     const { referencia, genderName, Composition,  status, theme, stamp } = dataRef ? dataRef.attributes : '0'; 
-                    
-                     //Filtros columns Table                 
-                    
-                    if (!ItemStatusMap.find((type) => type.value ===  status) ){
-                        let FiltersTable = {
-                            value: status,
-                            text:  status
-                        };             
-                        ItemStatusMap.push(FiltersTable,); 
-                    }               
+                //Filtros columns Table                 
+            
+            if (!ItemStatusMap.find((type) => type.value ===  status) ){
+                let FiltersTable = {
+                    value: status,
+                    text:  status
+                };             
+                ItemStatusMap.push(FiltersTable,); 
+            }               
+            
+        }); 
+        
+        
+        setfiltersStatusMap([...ItemStatusMap])                                
+        
+
+        }, [ReferenceMap]) 
+    
+        useEffect( () => {            
+            
+            
+            console.log( valueRef.current)
+            const fetchData = async () => {
+
+                function MapReference(MapValues) {
+         
+                  
+                    let FilterRefMap = [];               
+                    let CodigoSizes=[]; 
+                    let ItemMap = [];                  
                    
-                }); 
-               
-             
-                setfiltersStatusMap([...ItemStatusMap])                                
-              
 
-                }, [ReferenceMap]);  
-
-        const data = FiltersReferenceMap;     
-        
-        
-        const [searchText, setSearchText] = useState('');
-        const [searchedColumn, setSearchedColumn] = useState('');
-        const searchInput = useRef(null);
-
-        const [loading, setLoading] = useState(false); 
-        const tableProps = {       
-         loading,        
-       };
-      // console.log(filtersStampsMap)
-
-            // useEffect(() => {
-            //     data ? setLoading(true) : setLoading(false);
-            // }, [data]);
-
-            // useEffect(() => {
-            //     if(data.length>1) setLoading(false);
-            // }, [data]);
+                        MapValues.data?.map((dataRef, index) => {  
+                      
+                     
+                            const {                   
+                              referencia,
+                              description = description ? description : '', 
+                              genderName, 
+                              status,
+                              collection,                            
+                              theme, 
+                              Composition, 
+                              sizes,                            
+                              stamp } = dataRef ? dataRef.attributes : '0';             
+                                                         
+                             
+                              sizes.data?.map((Sizes, index) => {      
+                                const IdSizes = Sizes.attributes ? Sizes.attributes.name : 'null'        
+                                CodigoSizes.push(IdSizes);     
+                              });  
+                               //Filtro referencia en FiltersTable
+                               let FiltersTableReferences = {
+                                value: referencia,
+                                text: referencia
+                              };            
+                              ItemMap.push(FiltersTableReferences,);                                  
             
-            // useEffect(() => {
-            //     setTimeout(() => {
-            //         if(data.length===0) setLoading(false);
-            //     },50000);
-            // }, [data, IdCollection]);
+                              let TableDataSource = {                   
+                                
+                                  'key': dataRef ? dataRef.id : '0',
+                                  'references': referencia,
+                                  'reference':<Button type="link" 
+                                                      onClick={() => { 
+                                                      doshowDrawer( dataRef.attributes.referencia), 
+                                                      dogetSystemColor() 
+                                                      }}  
+                                              >{referencia}</Button>,
+            
+                                  'collection': collection.data.attributes.name,
+                                  'gender': genderName,
+                                  'typeproduct': Composition.typeproduct.data.attributes.name,
+                                  'theme': theme.data ? theme.data.attributes.name : '',
+                                  'sizeref':CodigoSizes.join(' '),
+                                  'drawings':<div className="flex mb-5 -space-x-4">
+                                              {dataRef.attributes.drawings.data?.map((_ImgRef) => (       
+            
+                                                _ImgRef.attributes.name===referencia+'.jpg' &&  <ImgReference  key={ _ImgRef.attributes.url} url={ _ImgRef.attributes.formats.thumbnail.url} UrlId={_ImgRef.attributes.id} compact={true} />
+                                                                        
+                                              ))}
+                                            </div>,
+                                  'status': status,
+            
+                                  'stamps':stamp.data ? stamp.data.attributes.name :'',                    
+                                  'stamp':<Button type="link" 
+                                                  onClick={() => {                             
+                                                  doShowStampsDrawer(true, dataRef.attributes.referencia ) 
+                                                  }} 
+                                          >{stamp.data ? stamp.data.attributes.name :''} 
+                                          </Button>,
+                                  
+                                
+                               
+                              };     
+                              CodigoSizes=[''];
+                              FilterRefMap.push(TableDataSource,);                      
+                             
+                      });                   
+          
+                 
+                    setMetaReferenceMap(MapValues.meta);
+                    setFiltersReferenceMap([...FilterRefMap]);
+                    
+                   
+          
+                }; 
+
+                try {
+                await dofindCollectionFilters(valueRef.current)
+                .then(  keys => {                    
+                  
+                    if(keys.data.length>= 1){           
+                     MapReference(keys);
+                     console.log( keys) 
+                     
+                    }                         
+                   
+                });    
+                } catch (error) {
+                    console.error('Error fetching collection filters:', error);
+                }
+            };
+    
+            fetchData();
+           
+            
+            }, [valueRef.current]); 
 
         const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -203,7 +310,7 @@ const FiltersTable = () => {
             }}
             />
         ),
-        onFilter: (value, record) =>
+        onFilter: (value, record) =>        
             record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownOpenChange: (visible) => {
             if (visible) {
@@ -224,123 +331,212 @@ const FiltersTable = () => {
             ) : (
             text
             ),
-        });
-
-  
-    
-        const columns = [
-        {
-            title: 'REFS',
-            align: 'center',
-            dataIndex: 'reference',
-            key: 'reference',
-            width: '10%', 
-            filters:SoloReferenceMap,            
-              onFilter: (value, record) => record.references.startsWith(value),
-              filterSearch: true,            
-            // ...getColumnSearchProps('reference'),
-            sorter: (a, b) => a.references - b.references,
-        },
-        {
-            title: 'DRAWING',
-            align: 'center',
-            dataIndex: 'drawings',
-            key: 'drawings',
-            width: '8%',
-        
-        },
-        {
-            title: 'COLLECTION',
-            align: 'center',
-            dataIndex: 'collection',
-            key: 'collection',
-            width: '15%', 
-            
-        },
-        {
-            title: 'GENDER',
-            align: 'center',
-            dataIndex: 'gender',
-            key: 'gender',
-            width: '10%', 
-            
-            filters: filtersGenderMap,            
-              onFilter: (value, record) => record.gender.startsWith(value),
-              filterSearch: true,
-        
-        },
-        {
-            title: 'PRODUCT',
-            align: 'center',
-            dataIndex: 'typeproduct',
-            key: 'typeproduct',
-            width: '10%', 
-            filters: filtersProductMap,            
-              onFilter: (value, record) => record.typeproduct.startsWith(value),
-              filterSearch: true,
-        
-        },
-        {
-            title: 'THEME',
-            align: 'center',
-            dataIndex: 'theme',
-            key: 'theme',  
-            width: '10%',           
-            filters: filtersThemesMap,            
-              onFilter: (value, record) => record.theme.startsWith(value),
-              filterSearch: true,
-        
-        },
-        {
-            title: 'STAMP',
-            align: 'center',
-            dataIndex: 'stamp',
-            key: 'stamp', 
-            width: '10%',            
-            filters: filtersStampsMap,            
-              onFilter: (value, record) => record.stamps.startsWith(value),
-              filterSearch: true,
-        
-        },
-        {
-            title: 'SIZE',
-            align: 'center',
-            dataIndex: 'sizeref',
-            key: 'sizeref',
-            width: '25%',          
-            filters: filtersSizeMap,            
-              onFilter: (value, record) => record.sizeref.includes(value),
-              filterSearch: true,
-        
-        },        
-        {
-            title: 'STATUS',
-            align: 'center',
-            dataIndex: 'status',
-            key: 'status', 
-            filters: filtersStatusMap,            
-              onFilter: (value, record) => record.status.includes(value),
-              filterSearch: true,
-        
-        },
+        });      
        
-        // {
-        //     title: 'ACTION',
-        //     align: 'center',
-        //     dataIndex: 'Action',
-        //     key: 'Action',
-        //     fixed: 'right',
-        //     width: 100,
-        
-        // },
-        
-        
-        ];
+            
+        const generateFilters = (IdCollection, newStatusMap, columnKey) => {
+            const newStatusArr = Object.values(newStatusMap).flat(); 
+            let response;
+
+            const columnKeys = {
+                theme: 'theme',
+                typeproduct: 'productname',
+                gender: 'genderName',
+                stamp:'stamp', 
+                sizeref:'sizes',
+                status:'status'              
+            };
+            const defaultColumnKey = 'theme'; 
+            const selectedColumnKey = columnKeys[columnKey] || defaultColumnKey;
+
+            console.log(selectedColumnKey)
+
+            switch (selectedColumnKey) {
+                case 'theme':
+                    response = `collection:{
+                        id:{eq:"${IdCollection || null}"}}                   
+                        ${selectedColumnKey}:{name:{in: ${JSON.stringify(newStatusArr)}}}`;
+                    break;
+                case 'stamp':
+                        response = `collection:{
+                            id:{eq:"${IdCollection || null}"}}                   
+                            ${selectedColumnKey}:{name:{in: ${JSON.stringify(newStatusArr)}}}`;
+                        break;     
+            
+                default:
+                    response = `collection:{
+                        id:{eq:"${IdCollection || null}"}}                   
+                        ${selectedColumnKey}:{in: ${JSON.stringify(newStatusArr)}}`;
+                    break;
+            }
+                if (newStatusArr.length > 0) {
+                    switch (selectedColumnKey) {
+                        case 'theme':
+                        case 'stamp':
+                        case 'sizes':                            
+                            response = `collection:{
+                                id:{eq:"${IdCollection || null}"}}                   
+                                ${selectedColumnKey}:{name:{in: ${JSON.stringify(newStatusArr)}}}`;
+                            break;                          
+                    
+                        case 'productname':
+                        case 'status':
+                            response = `collection:{
+                                id:{eq:"${IdCollection || null}"}}                   
+                                ${selectedColumnKey}:{in: ${JSON.stringify(newStatusArr)}}`;
+                            break;
+                    }               
+                }
+                    return response;   
+            };     
+
+        const handleFilterChange =  (columnKey, newFilteredValues) => {                     
+  
+                const newFilteredValueString = JSON.stringify(newFilteredValues);
+                const prevFilteredValueString = JSON.stringify(newFilteredValues);
+
+                    if (!newStatusMap[columnKey]) {
+                        newStatusMap[newFilteredValues] = [...newFilteredValues]               
+                    }
+                    
+                    if (newFilteredValueString === prevFilteredValueString) {
+
+                        const newStatusArr = Object.values(newStatusMap).flat();                             
+                        const FILTERS = generateFilters("29", newStatusMap, columnKey);
+                         //console.log('Filtered Values:', FILTERS);    
+                
+                        valueRef.current = FILTERS
+                        return newFilteredValues;
+                    }          
+                  
+                return {
+                   
+                  ...newFilteredValues,
+                  [columnKey]: newFilteredValues,
+                };
+               
+           
+         
+        };
 
         const onChange = (pagination, filters, sorter, extra) => {
             //console.log('params', pagination, filters, sorter, extra);
-          };
+            //console.log( pagination);
+            const current = pagination ? pagination.current : 1
+            setLoading(true);
+         
+            IdCollection ? 
+            dogetCollectionReference(IdCollection,current) : 
+            dogetCollectionReference('29', current);   
+           
+        };
 
+        const columns = [
+            {
+                title: 'REFS',
+                align: 'center',
+                dataIndex: 'reference',
+                key: 'reference',
+                width: '10%', 
+                filters:SoloReferenceMap,            
+                onFilter: (value, record) => record.references.startsWith(value),
+                filterSearch: true,            
+                // ...getColumnSearchProps('reference'),
+                sorter: (a, b) => a.references - b.references,
+            },
+            {
+                title: 'DRAWING',
+                align: 'center',
+                dataIndex: 'drawings',
+                key: 'drawings',
+                width: '8%',
+            
+            },
+            {
+                title: 'COLLECTION',
+                align: 'center',
+                dataIndex: 'collection',
+                key: 'collection',
+                width: '15%', 
+                
+            },
+            {
+                title: 'GENDER',
+                align: 'center',
+                dataIndex: 'gender',
+                key: 'gender',
+                width: '10%',             
+                filters: filtersGenderMap, 
+                onFilter: (value, record) => record.gender.startsWith(value),               
+                filterSearch: true,        
+            },
+            {
+                title: 'PRODUCT',
+                align: 'center',
+                dataIndex: 'typeproduct',
+                key: 'typeproduct',
+                width: '10%', 
+                filters: filtersProductMap,            
+                onFilter: (value, record) => record.typeproduct.startsWith(value), 
+                filterSearch: true,
+            
+            },
+            {
+                title: 'THEME',
+                align: 'center',
+                dataIndex: 'theme',
+                key: 'theme',  
+                width: '10%',           
+                filters: filtersThemesMap,           
+                onFilter: (value, record) => record.theme.startsWith(value),
+                filterSearch: true,
+            
+            },
+            {
+                title: 'STAMP',
+                align: 'center',
+                dataIndex: 'stamp',
+                key: 'stamp', 
+                width: '10%',            
+                filters: filtersStampsMap,            
+                onFilter: (value, record) => record.stamps.startsWith(value),
+                filterSearch: true,
+            
+            },
+            {
+                title: 'SIZE',
+                align: 'center',
+                dataIndex: 'sizeref',
+                key: 'sizeref',
+                width: '25%',          
+                filters: filtersSizeMap,            
+                onFilter: (value, record) => record.sizeref.includes(value),
+                filterSearch: true,
+            
+            },        
+            {
+                title: 'STATUS',
+                align: 'center',
+                dataIndex: 'status',
+                key: 'status', 
+                filters: filtersStatusMap,            
+                onFilter: (value, record) => record.status.includes(value),
+                filterSearch: true,
+            
+            },
+           
+            // {
+            //     title: 'ACTION',
+            //     align: 'center',
+            //     dataIndex: 'Action',
+            //     key: 'Action',
+            //     fixed: 'right',
+            //     width: 100,
+            
+            // },
+            
+            
+            ];
      
   return (  
     
@@ -352,28 +548,42 @@ const FiltersTable = () => {
         }}
       >
          <ButtonExport  /> 
-         <ExportZipImg /> 
-         <SearchReference /> 
-         <ButtonRecharge /> 
-      </Space>   
 
-     <Table 
-        {...tableProps}
-        bordered
-        columns={columns} 
-        dataSource={data}
-        onChange={onChange}
-        pagination={{
-            pageSize: 10,
-          }}
-        scroll={{
-            x: 1000,
+         <ExportZipImg /> 
+
+         <SearchReference /> 
+
+         <ButtonRecharge />
+         
+      </Space>   
+     {datos.length > 0 && ( 
+        <Table 
+            {...tableProps}
+            bordered
+            columns={columns.map(column => ({
+                ...column,
+                onFilter: (value, record) => {
+                  const result = column.onFilter(value, record);
+                  handleFilterChange(column.key, result ? [value] : [value]);
+                 
+                  return result;
+                },
+              }))}
+            dataSource={datos}
+            onChange={onChange}
             
-          }}
-          className=" font-medium text-gray-900 whitespace-nowrap dark:text-white"
-        
-         />         
+            pagination={{
+                pageSize: pagination.pageSize,
+                total: pagination.total
+            }}
+            scroll={{
+                x: 1000,                
+            }}
+            className=" font-medium text-gray-900 whitespace-nowrap dark:text-white"
             
+            />         
+         )}   
+             
     </>
    
   )
