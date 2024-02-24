@@ -175,7 +175,7 @@ useEffect(() => {
               title="Close" 
               placement="right" 
               onClose={() => { 
-                              //doReferenceMapFilters(FilterCatalogSelect), 
+                               doReferenceMapFilters(FilterCatalogSelect), 
                                onClose(true)
                               }} 
               open={open} 
