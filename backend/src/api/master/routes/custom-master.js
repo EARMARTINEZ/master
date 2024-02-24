@@ -13,30 +13,6 @@ module.exports = {
           "policies": ['api::master.my-policy']
         }
       },
-      {
-        "method": "PUT",
-        "path": "/mastercontrol/getUpdateComment/:IdMaster",
-        "handler": "mastercontrol.getUpdateComment",
-        "config": {
-          "policies": ['api::master.my-policy']
-        }
-      },
-      {
-        "method": "PUT",
-        "path": "/mastercontrol/getUpdatePendings/:IdMaster",
-        "handler": "mastercontrol.getUpdatePendings",
-        "config": {
-          "policies": ['api::master.my-policy']
-        }
-      },
-      {
-        "method": "PUT",
-        "path": "/mastercontrol/getUpdateStamp/:IdMaster",
-        "handler": "mastercontrol.getUpdateStamp",
-        "config": {
-          "policies": ['api::master.my-policy']
-        }
-      },
         {
             "method": "GET",
             "path": "/mastercontrol/getreferencia/:Nreferencia",
