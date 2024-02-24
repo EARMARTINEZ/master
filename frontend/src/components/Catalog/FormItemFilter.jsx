@@ -266,24 +266,24 @@ export function FormItemTheme({form, ItemFilter, SelectTheme}) {
       if(ItemGender){
                
 
-        const FILTERS = dogenerateFilters(IdCollection, [value], 'theme');
-        const response = await dofindCollectionFilters(FILTERS)
-        .then(  keys => {                    
+        // const FILTERS = dogenerateFilters(IdCollection, [value], 'theme');
+        // const response = await dofindCollectionFilters(FILTERS)
+        // .then(  keys => {                    
           
-            if(keys.data.length>= 1){         
-              doReferenceMapFilters(keys.data); 
-            }                         
+        //     if(keys.data.length>= 1){         
+        //       doReferenceMapFilters(keys.data); 
+        //     }                         
            
-        });    
+        // });    
 
-        let ArryFilterTheme = ReferenceMap.filter(type => type.attributes.theme.data.attributes.name === value)      
+        let ArryFilterTheme = StaticReferenceMap.filter(type => type.attributes.theme.data.attributes.name === value)      
         let ArryFilterGender = ArryFilterTheme.filter(type => type.attributes.genderName === ItemGender)      
         
         console.log(ArryFilterGender)
         
-        // setReferenceMapStatus(false); 
-         //doReferenceMapFilters(ArryFilterTheme); 
-        // setFilterCatalogSelect(ArryFilterGender);
+        setReferenceMapStatus(false); 
+         doReferenceMapFilters(ArryFilterTheme); 
+        setFilterCatalogSelect(ArryFilterGender);
         
        }
           
