@@ -28,6 +28,7 @@ export function CatalogView() {
     
   const {
     IdCollection,
+    ReferenceMap,
     StaticReferenceMap,
     NameCollection,          
     dogetCollectionReference, 
@@ -43,14 +44,16 @@ export function CatalogView() {
    const {     
     PrintMode,   
     CaptureReport, 
-    FilterCatalogSelect,   
+    FilterCatalogSelect,
+    formRef,   
    } = BasicTasks();
 
+   
 
    const [ ItemSelectGender, setItemSelectGender] = useState();
    const [ ItemSelectTheme, setItemSelectTheme] = useState();
    const [ ItemSelectProduct, setItemSelectProduct] = useState();
-   const [form] = Form.useForm();
+   const [formCatalogView] = Form.useForm();
 
    const [openCatalog, setOpenCatalog] = useState(false);
    
@@ -71,8 +74,8 @@ export function CatalogView() {
 
   
 useEffect(() => {            
-  IdCollection ? dogetCollectionReference(IdCollection, 300) : dogetCollectionReference('30', 300);   
- 
+   IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('29');   
+   IdCollection ? dofetchIDCollection(IdCollection) : dofetchIDCollection('29');
 }, []);     
 
 
@@ -92,7 +95,7 @@ useEffect(() => {
       <div className="grid grid-cols-2 gap-1"> 
       
           <div className="col-span-6 sm:col-span-1  "> 
-          {<Form >
+          {<Form  >
             <FormSelectCatalog 
             CatalogSelec={setCatalogSelect}
             SelectTheme={setItemSelectTheme}
@@ -106,8 +109,12 @@ useEffect(() => {
           </div>   
 
       </div> 
-          
-        <Form form={form}>  
+     
+        <Form 
+        form={formCatalogView}
+        name="form_CatalogViewFilterSelect"
+       
+        >  
           <div className="grid grid-cols-2 gap-1"> 
                
          
@@ -116,7 +123,7 @@ useEffect(() => {
                 <FormItemGender 
                   ItemFilter={ItemFilterSelect} 
                   SelectGender={setItemSelectGender}
-                  form={form}  
+                  form={formCatalogView}  
                   />
                   }    
               </div>
@@ -126,7 +133,7 @@ useEffect(() => {
                 
                     <FormItemTheme 
                       SelectTheme={setItemSelectTheme} 
-                      form={form}
+                      form={formCatalogView}
                    />
                 
                   </div>
@@ -144,6 +151,7 @@ useEffect(() => {
         
           </div> 
         </Form>
+        
            <div className="grid grid-cols-1 gap-1">
 
             <div className="col-span-6 sm:col-span-1 py-5 "> 

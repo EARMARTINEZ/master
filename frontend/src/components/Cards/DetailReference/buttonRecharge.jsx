@@ -12,7 +12,8 @@ const ButtonRecharge = ({}) => {
     
     const {          
         IdCollection,
-        dogetCollectionReference
+        dogetCollectionReference,
+        dofetchIDCollection
        } = useTasks(); 
 
        const { 
@@ -53,6 +54,7 @@ const ButtonRecharge = ({}) => {
           <Button 
           onClick={() => {                             
             IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('29'); 
+            IdCollection ? dofetchIDCollection(IdCollection) : dofetchIDCollection('29');
             enterLoading(2);
             setReferenceMapStatus(true);
             }} 

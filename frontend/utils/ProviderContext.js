@@ -65,44 +65,44 @@ const UserProvider = ({ children }) => {
                   };            
                   ItemMap.push(FiltersTableReferences,);                                  
 
-                  let TableDataSource = {                   
+                  // let TableDataSource = {                   
                     
-                      'key': dataRef ? dataRef.id : '0',
-                      'references': referencia,
-                      'reference':<Button type="link" 
-                                          onClick={() => { 
-                                          doshowDrawer( dataRef.attributes.referencia), 
-                                          dogetSystemColor() 
-                                          }}  
-                                  >{referencia}</Button>,
+                  //     'key': dataRef ? dataRef.id : '0',
+                  //     'references': referencia,
+                  //     'reference':<Button type="link" 
+                  //                         onClick={() => { 
+                  //                         doshowDrawer( dataRef.attributes.referencia), 
+                  //                         dogetSystemColor() 
+                  //                         }}  
+                  //                 >{referencia}</Button>,
 
-                      'collection': collection.data.attributes.name,
-                      'gender': genderName,
-                      'typeproduct': Composition.typeproduct.data.attributes.name,
-                      'theme': theme.data ? theme.data.attributes.name : '',
-                      'sizeref':CodigoSizes.join(' '),
-                      'drawings':<div className="flex mb-5 -space-x-4">
-                                  {dataRef.attributes.drawings.data?.map((_ImgRef) => (       
+                  //     'collection': collection.data.attributes.name,
+                  //     'gender': genderName,
+                  //     'typeproduct': Composition.typeproduct.data.attributes.name,
+                  //     'theme': theme.data ? theme.data.attributes.name : '',
+                  //     'sizeref':CodigoSizes.join(' '),
+                  //     'drawings':<div className="flex mb-5 -space-x-4">
+                  //                 {dataRef.attributes.drawings.data?.map((_ImgRef) => (       
 
-                                    _ImgRef.attributes.name===referencia+'.jpg' &&  <ImgReference  key={ _ImgRef.attributes.url} url={ _ImgRef.attributes.formats.thumbnail.url} UrlId={_ImgRef.attributes.id} compact={true} />
+                  //                   _ImgRef.attributes.name===referencia+'.jpg' &&  <ImgReference  key={ _ImgRef.attributes.url} url={ _ImgRef.attributes.formats.thumbnail.url} UrlId={_ImgRef.attributes.id} compact={true} />
                                                             
-                                  ))}
-                                </div>,
-                      'status': status,
+                  //                 ))}
+                  //               </div>,
+                  //     'status': status,
 
-                      'stamps':stamp.data ? stamp.data.attributes.name :'',                    
-                      'stamp':<Button type="link" 
-                                      onClick={() => {                             
-                                      doShowStampsDrawer(true, dataRef.attributes.referencia ) 
-                                      }} 
-                              >{stamp.data ? stamp.data.attributes.name :''} 
-                              </Button>,
+                  //     'stamps':stamp.data ? stamp.data.attributes.name :'',                    
+                  //     'stamp':<Button type="link" 
+                  //                     onClick={() => {                             
+                  //                     doShowStampsDrawer(true, dataRef.attributes.referencia ) 
+                  //                     }} 
+                  //             >{stamp.data ? stamp.data.attributes.name :''} 
+                  //             </Button>,
                       
                     
                    
-                  };     
-                  CodigoSizes=[''];
-                  FilterRefMap.push(TableDataSource,);                        
+                  // };     
+                  // CodigoSizes=[''];
+                  // FilterRefMap.push(TableDataSource,);                        
 
                   
                 
@@ -111,8 +111,8 @@ const UserProvider = ({ children }) => {
           });
 
         
-          setFiltersReferenceMap([...FilterRefMap]);
-          setSoloReferenceMap([...ItemMap]);          
+         // setFiltersReferenceMap([...FilterRefMap]);
+         // setSoloReferenceMap([...ItemMap]);          
           setStaticReferenceMap([...RefMap]);
 
           return FilterRefMap;
@@ -399,6 +399,7 @@ const UserProvider = ({ children }) => {
                 
               }          
         } 
+
           async function doReferenceMapFilters(ArrayMap) {
             try {  
               
@@ -411,6 +412,49 @@ const UserProvider = ({ children }) => {
                   
                 }          
           } 
+            const dogenerateFilters = (IdCollection, newStatusMap, columnKey) => {
+              const newStatusArr = Object.values(newStatusMap).flat(); 
+              let response;
+
+              const columnKeys = {
+                  theme: 'theme',
+                  typeproduct: 'productname',
+                  gender: 'genderName',
+                  stamp:'stamp', 
+                  sizeref:'sizes',
+                  status:'status'              
+              };
+              const defaultColumnKey = 'theme'; 
+              const selectedColumnKey = columnKeys[columnKey] || defaultColumnKey;
+
+              console.log(selectedColumnKey)
+
+            
+                  if (newStatusArr.length > 0) {
+                      switch (selectedColumnKey) {
+                          case 'theme':
+                          case 'stamp':
+                          case 'sizes':                            
+                              response = `collection:{
+                                  id:{eq:"${IdCollection || null}"}}                   
+                                  ${selectedColumnKey}:{name:{in: ${JSON.stringify(newStatusArr)}}}`;
+                              break;                          
+                      
+                          case 'productname':
+                          case 'status':
+                              response = `collection:{
+                                  id:{eq:"${IdCollection || null}"}}                   
+                                  ${selectedColumnKey}:{in: ${JSON.stringify(newStatusArr)}}`;
+                              break;
+                          default:
+                                response = `collection:{
+                                    id:{eq:"${IdCollection || null}"}}                   
+                                    ${selectedColumnKey}:{in: ${JSON.stringify(newStatusArr)}}`;
+                                break;       
+                      }               
+                  }
+                      return response;   
+              };  
 
   /******************************************** */ 
   async function dofetchCollection(values) {
@@ -446,7 +490,7 @@ const UserProvider = ({ children }) => {
             MapIDCollection(keys.collections.data);
             return keys.collections.data                
         });    
-    
+        return pageData 
             setShowModalLoading(false);         
       } catch (error) {
         console.log("error", error)
@@ -469,9 +513,10 @@ const UserProvider = ({ children }) => {
 
             MapGender?.map((dataRef, index) => {           
               let filtersGender = {
-                text: dataRef.gender_name ? dataRef.gender_name: '',
+
                 value: dataRef.gender_name ? dataRef.gender_name: '',
-                
+                text: dataRef.gender_name ? dataRef.gender_name: '',             
+                order_show: dataRef.order_show ? dataRef.order_show: '',
               };      
               filtersGenderMap.push(filtersGender,);         
             
@@ -1861,6 +1906,7 @@ setIsModalOpen(false);
     doupdateStatusStamp:doupdateStatusStamp,
 
     doReferenceMapFilters:doReferenceMapFilters,
+    dogenerateFilters:dogenerateFilters,
 
 
     IdCollection:IdCollection,  

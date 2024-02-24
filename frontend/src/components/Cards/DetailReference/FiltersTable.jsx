@@ -35,7 +35,8 @@ const FiltersTable = () => {
         setMetaReferenceMap,
         doshowDrawer,
         dogetSystemColor,
-     
+        dogenerateFilters,
+        
             } = useTasks();
 
           
@@ -334,61 +335,7 @@ const FiltersTable = () => {
         });      
        
             
-        const generateFilters = (IdCollection, newStatusMap, columnKey) => {
-            const newStatusArr = Object.values(newStatusMap).flat(); 
-            let response;
-
-            const columnKeys = {
-                theme: 'theme',
-                typeproduct: 'productname',
-                gender: 'genderName',
-                stamp:'stamp', 
-                sizeref:'sizes',
-                status:'status'              
-            };
-            const defaultColumnKey = 'theme'; 
-            const selectedColumnKey = columnKeys[columnKey] || defaultColumnKey;
-
-            console.log(selectedColumnKey)
-
-            switch (selectedColumnKey) {
-                case 'theme':
-                    response = `collection:{
-                        id:{eq:"${IdCollection || null}"}}                   
-                        ${selectedColumnKey}:{name:{in: ${JSON.stringify(newStatusArr)}}}`;
-                    break;
-                case 'stamp':
-                        response = `collection:{
-                            id:{eq:"${IdCollection || null}"}}                   
-                            ${selectedColumnKey}:{name:{in: ${JSON.stringify(newStatusArr)}}}`;
-                        break;     
-            
-                default:
-                    response = `collection:{
-                        id:{eq:"${IdCollection || null}"}}                   
-                        ${selectedColumnKey}:{in: ${JSON.stringify(newStatusArr)}}`;
-                    break;
-            }
-                if (newStatusArr.length > 0) {
-                    switch (selectedColumnKey) {
-                        case 'theme':
-                        case 'stamp':
-                        case 'sizes':                            
-                            response = `collection:{
-                                id:{eq:"${IdCollection || null}"}}                   
-                                ${selectedColumnKey}:{name:{in: ${JSON.stringify(newStatusArr)}}}`;
-                            break;                          
-                    
-                        case 'productname':
-                        case 'status':
-                            response = `collection:{
-                                id:{eq:"${IdCollection || null}"}}                   
-                                ${selectedColumnKey}:{in: ${JSON.stringify(newStatusArr)}}`;
-                            break;
-                    }               
-                }
-                    return response;   
-            };     
+         
 
         const handleFilterChange =  (columnKey, newFilteredValues) => {                     
   
@@ -402,7 +349,7 @@ const FiltersTable = () => {
                     if (newFilteredValueString === prevFilteredValueString) {
 
                         const newStatusArr = Object.values(newStatusMap).flat();                             
-                        const FILTERS = generateFilters("29", newStatusMap, columnKey);
+                        const FILTERS = dogenerateFilters(IdCollection, newStatusMap, columnKey);
                          //console.log('Filtered Values:', FILTERS);    
                 
                         valueRef.current = FILTERS
@@ -428,7 +375,7 @@ const FiltersTable = () => {
             IdCollection ? 
             dogetCollectionReference(IdCollection,current) : 
             dogetCollectionReference('29', current);   
-           
+        
         };
 
         const columns = [
