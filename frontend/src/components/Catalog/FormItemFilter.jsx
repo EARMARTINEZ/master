@@ -59,7 +59,8 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
     useEffect(() => {       
       groupGender();        
       form.setFieldsValue({genders: initialValue.current}); 
-
+      form.setFieldsValue({theme: 'Search to Select'}); 
+      form.setFieldsValue({product: 'Search to Select'});
 
       if(filtersGenderMap.length>= 1){   
 
