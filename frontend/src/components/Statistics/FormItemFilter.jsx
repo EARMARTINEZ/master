@@ -43,7 +43,7 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
 
     
 
-    const groupGenderPart = function(data){
+    const groupGenderPart =  function(data) {
 
       const newStatusMap = {};        
       console.log('groupGenderPart',data)
@@ -63,7 +63,10 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
               
           });
           const newPartArr = Object.values(newStatusMap); 
-        
+          
+          
+          console.log('groupGenderPartB',newPartArr)
+
       return newPartArr
   
       }
@@ -73,9 +76,7 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
           let ItemMap = [];
           let ItemArryFilter = [];
           //const newPartArr = groupGenderPart(data);
-          console.log('groupGenderProducto',ReferenceMap)
-
-          
+          console.log('groupGenderProducto',ReferenceMap)          
 
           newPartArr?.forEach((dataPart) => {
   
@@ -171,7 +172,7 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
           .then(  keys => {                    
             
             if(keys.data.length>= 1){
-                // doReferenceMapFilters(keys.data);           
+                 doReferenceMapFilters(keys.data);           
                   const responsePart = groupGenderPart(keys.data)                                    
                   const response = groupGenderProducto(responsePart) 
                   setitemsGenderPart(responsePart)
