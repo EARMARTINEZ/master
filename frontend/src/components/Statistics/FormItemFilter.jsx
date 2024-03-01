@@ -66,9 +66,18 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
             } = {}
         } = dataRef || {};
     
+        const { Composition } = dataRef.attributes || {}; // Acceder a las propiedades de manera segura
+        const { typeproduct } = Composition || {};
+       if(typeproduct.data){
         if (name && !newStatusMap[name]) {
-            newStatusMap[name] = { value: name, label: name, order: id || 0 };
+          newStatusMap[name] = { value: name, label: name, order: id || 0 };
         }
+
+       }
+      
+
+   
+       
     });
           const newPartArr = Object.values(newStatusMap); 
           
@@ -189,10 +198,10 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
             
             if(keys.data.length>= 1){
                  doReferenceMapFilters(keys.data);           
-                  // const responsePart = groupGenderPart(keys.data) 
-                  // setitemsGenderPart(responsePart)                                   
-                  // const response = groupGenderProducto(responsePart)                  
-                  // setitemsProducto(response)               
+                  const responsePart = groupGenderPart(keys.data) 
+                  setitemsGenderPart(responsePart)                                   
+                  const response = groupGenderProducto(responsePart)                  
+                  setitemsProducto(response)               
                   
             
               
