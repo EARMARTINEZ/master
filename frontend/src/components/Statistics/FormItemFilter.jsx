@@ -206,8 +206,8 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
     
     useEffect(() => {   
                                      
-      const response = groupGenderProducto(itemsGenderPart) 
-      setitemsProducto(response)               
+      // const response = groupGenderProducto(itemsGenderPart) 
+      // setitemsProducto(response)               
 
       }, [ReferenceMap]) 
   
