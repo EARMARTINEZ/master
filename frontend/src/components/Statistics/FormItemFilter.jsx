@@ -189,8 +189,8 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
             
             if(keys.data.length>= 1){
                  doReferenceMapFilters(keys.data);           
-                  const responsePart = groupGenderPart(keys.data) 
-                  setitemsGenderPart(responsePart)                                   
+                  // const responsePart = groupGenderPart(keys.data) 
+                  // setitemsGenderPart(responsePart)                                   
                   // const response = groupGenderProducto(responsePart)                  
                   // setitemsProducto(response)               
                   
