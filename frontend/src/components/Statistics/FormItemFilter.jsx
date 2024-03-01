@@ -75,6 +75,18 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
       //   }
 
       //  }
+
+      const { Composition } = dataRef.attributes || {}; // Acceder a las propiedades de manera segura
+    const { typeproduct } = Composition || {};
+    
+    if (!newStatusMap[typeproduct.data.attributes.id_part.data.attributes.name]) {
+        newStatusMap[typeproduct.data ? typeproduct.data.attributes.id_part.data.attributes.name : null] = {
+        // value: typeproduct.data.attributes.id_part.data.attributes.name,
+        // label: typeproduct.data.attributes.id_part.data.attributes.name,
+        // order: typeproduct.data.attributes.id_part.data.id || 0
+      
+    };
+    }
       
        console.log('groupGenderPartB',dataRef)
    
