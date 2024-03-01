@@ -72,7 +72,7 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
           let ItemMap = [];
           let ItemArryFilter = [];
           //const newPartArr = groupGenderPart(data);
-      
+          console.log(ReferenceMap)
 
           newPartArr?.forEach((dataPart) => {
   
@@ -160,7 +160,7 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
       form.setFieldsValue({genders: initialValue.current}); 
       form.setFieldsValue({theme: 'Search to Select'}); 
       form.setFieldsValue({product: 'Search to Select'});
-
+     
       if(filtersGenderMap.length>= 1){   
 
         const FILTERS = dogenerateFilters(IdCollection, [initialValue.current], 'gender');
@@ -168,10 +168,10 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
         .then(  keys => {                    
           
           if(keys.data.length>= 1){
-            doReferenceMapFilters(keys.data);
-                const responsePart = groupGenderPart(keys.data)                            
-                const response = groupGenderProducto(responsePart)                       
-                setitemsProducto(response)
+              doReferenceMapFilters(keys.data);           
+                const responsePart = groupGenderPart(keys.data)                                    
+                const response = groupGenderProducto(responsePart) 
+                setitemsProducto(response)               
                 setitemsGenderPart(responsePart)
            
             
@@ -180,8 +180,16 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
         });       
       }
      
-    }, [filtersGenderMap]);     
-      
+    }, [filtersGenderMap ]);     
+    
+    
+    useEffect(() => {   
+                                     
+      const response = groupGenderProducto(itemsGenderPart) 
+      setitemsProducto(response)               
+
+      }, [ReferenceMap]) 
+  
     const genders = filtersGenderMap;    
           
 
@@ -196,15 +204,17 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
 
         console.log(value)
         const FILTERS = dogenerateFilters(IdCollection, [value], 'gender');
-        const response = await dofindCollectionFilters(FILTERS)
+         await dofindCollectionFilters(FILTERS)
         .then(  keys => {                    
-          
+         
             if(keys.data.length>= 1){
-              doReferenceMapFilters(keys.data);
+               doReferenceMapFilters(keys.data);              
                 const responsePart = groupGenderPart(keys.data)                            
-                const response = groupGenderProducto(responsePart)                       
+                const response = groupGenderProducto(responsePart)  
+                console.log('Prueba',keys.data)
                 setitemsProducto(response)
                 setitemsGenderPart(responsePart)
+                initialValue.current = value
             }                         
            
         });   

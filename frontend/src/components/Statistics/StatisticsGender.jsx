@@ -4,38 +4,20 @@ import { BasicTasks } from "utils/Provider/BasicProvider";
 import { Collapse, Card, List, Form, Divider   } from 'antd';
 
 
-export function StatisticsGender ({Producto, Part}) {
+const Comenta = ({Producto, Part}) => {
 
-    const { Panel } = Collapse;    
-    
-    
-    const data = [
-        {
-          ref: '1230047',
-          theme: 'Crochet',
-          color: 'Denim same as 2220017 salesman sample',
-          fabric: 'Denim',
-        },
-        {
-            ref: '1230020',
-            theme: 'Crochet',
-            color: 'Denim same as 2220017 salesman sample',
-            fabric: 'Denim',
-          },
-        ];
-
-        console.log(Producto)
-        console.log(Part)
+    const { Panel } = Collapse;  
+  
     return (
         <>
   
-     <ul>
+  <ul>
      {Part?.map((itemPart, index) => (
         <li key={index}>
             <span className="subtitle">{` ${itemPart.value}`}</span>
             <span className="subtitleGrey"></span>
            
-            <Collapse>
+            <Collapse key={index}>
              {Producto?.map((itemProduct, index) => ( 
                 itemProduct.part == itemPart.value && (
                 <Panel header={`${itemProduct.productname}/
@@ -71,6 +53,31 @@ export function StatisticsGender ({Producto, Part}) {
         </li>
         ))}
         </ul>  
+  
+  
+      </>
+  
+    )
+  };
+
+export function StatisticsGender ({Producto, Part}) {
+
+    const { Panel } = Collapse;    
+    
+    
+    const items = [
+        {
+          key: '1',
+          children: <Comenta Producto={Producto} Part={Part} />,
+        },
+        
+      ];
+
+        // console.log(Producto)
+        // console.log(Part)
+    return (
+        <>
+   <Comenta Producto={Producto} Part={Part} />
   
       </>
   

@@ -112,7 +112,8 @@ const UserProvider = ({ children }) => {
 
         
          // setFiltersReferenceMap([...FilterRefMap]);
-         // setSoloReferenceMap([...ItemMap]);          
+         // setSoloReferenceMap([...ItemMap]);
+          setMetaReferenceMap(MapValues.meta);          
           setStaticReferenceMap([...RefMap]);
 
           return FilterRefMap;

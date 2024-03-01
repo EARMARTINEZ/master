@@ -39,9 +39,9 @@ const FiltersTable = () => {
         
             } = useTasks();
 
+            console.log(MetaReferenceMap)
           
-            let ItemStatusMap = [];                     
-            const{pagination}=MetaReferenceMap ? MetaReferenceMap: {}          
+            let ItemStatusMap = [];               
             const [filtersStatusMap, setfiltersStatusMap] = useState([]);  
             const [searchText, setSearchText] = useState('');
             const [searchedColumn, setSearchedColumn] = useState('');
@@ -520,8 +520,8 @@ const FiltersTable = () => {
             onChange={onChange}
             
             pagination={{
-                pageSize: pagination.pageSize,
-                total: pagination.total
+                pageSize:MetaReferenceMap ? MetaReferenceMap.pagination.pageSize : 0,
+                total: MetaReferenceMap ? MetaReferenceMap.pagination.total : 0
             }}
             scroll={{
                 x: 1000,                
