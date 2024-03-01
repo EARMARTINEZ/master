@@ -1770,7 +1770,7 @@ export async function getCollectionFilters({FILTERS} ) {
               ${FILTERS}
           
             }
-            pagination:{limit:30 }
+            pagination:{limit:5 }
           ){
             data {
               id
