@@ -700,6 +700,8 @@ export async function getIDReference({ IDReference }) {
                       id
                       attributes {
                         name
+                        id_part{data{id attributes{name}}}
+                        order_show
                       }
                     }
                   }
@@ -837,6 +839,8 @@ export async function getReference({ NReference }) {
                       id
                       attributes {
                         name
+                        id_part{data{id attributes{name}}}
+                        order_show
                       }
                     }
                   }
@@ -1143,6 +1147,8 @@ export async function getCollectionNavigation({ NCollection }) {
                       id
                       attributes {
                         name
+                        id_part{data{id attributes{name}}}
+                        order_show
                       }
                     }
                   }
