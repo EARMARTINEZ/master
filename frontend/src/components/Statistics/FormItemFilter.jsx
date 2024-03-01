@@ -46,7 +46,8 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
     const groupGenderPart = function(data){
 
       const newStatusMap = {};        
-  
+      console.log('groupGenderPart',data)
+      
           data?.forEach((dataRef) => {
               const { Composition } = dataRef.attributes || {}; // Acceder a las propiedades de manera segura
               const { typeproduct } = Composition || {};
@@ -72,7 +73,7 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
           let ItemMap = [];
           let ItemArryFilter = [];
           //const newPartArr = groupGenderPart(data);
-          console.log(ReferenceMap)
+          console.log('groupGenderProducto',ReferenceMap)
 
           
 
@@ -170,7 +171,7 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
           .then(  keys => {                    
             
             if(keys.data.length>= 1){
-                doReferenceMapFilters(keys.data);           
+                // doReferenceMapFilters(keys.data);           
                   const responsePart = groupGenderPart(keys.data)                                    
                   const response = groupGenderProducto(responsePart) 
                   setitemsGenderPart(responsePart)
