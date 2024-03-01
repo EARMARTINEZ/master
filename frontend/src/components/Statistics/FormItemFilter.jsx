@@ -68,6 +68,7 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
     
         const { Composition } = dataRef.attributes || {}; // Acceder a las propiedades de manera segura
         const { typeproduct } = Composition || {};
+
        if(typeproduct.data){
         if (name && !newStatusMap[name]) {
           newStatusMap[name] = { value: name, label: name, order: id || 0 };
@@ -75,14 +76,14 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
 
        }
       
-
+       console.log('groupGenderPartB',dataRef)
    
        
     });
           const newPartArr = Object.values(newStatusMap); 
           
           
-          console.log('groupGenderPartB',newPartArr)
+          
 
       return newPartArr
   
