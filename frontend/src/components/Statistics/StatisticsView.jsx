@@ -1,81 +1,16 @@
 import  React, {useEffect, useState, useCallback  } from "react"; 
 import { useTasks } from "utils/ProviderContext";
 import { BasicTasks } from "utils/Provider/BasicProvider";
-import { Collapse, Card, List, Divider   } from 'antd';
+import { Collapse, Card, List, Form, Divider   } from 'antd';
 import {  ExclamationCircleFilled, DeleteTwoTone } from '@ant-design/icons'
+import ButtonRecharge from '@/components/Cards/DetailReference/buttonRecharge'
+import {StatisticsGender } from '@/components/Statistics/StatisticsGender'
+import {FormItemTheme,
+    FormItemGender,
+    FormItemProduct,
+    FormSelectCatalog
+   } from '@/components/Statistics/FormItemFilter'
 
-
-const Comenta = ({Producto, Part}) => {
-
-    const { Panel } = Collapse;    
-    
-    
-    const data = [
-        {
-          ref: '1230047',
-          theme: 'Crochet',
-          color: 'Denim same as 2220017 salesman sample',
-          fabric: 'Denim',
-        },
-        {
-            ref: '1230020',
-            theme: 'Crochet',
-            color: 'Denim same as 2220017 salesman sample',
-            fabric: 'Denim',
-          },
-        ];
-
-        console.log(Producto)
-        console.log(Part)
-    return (
-        <>
-  
-     <ul>
-     {Part?.map((itemPart, index) => (
-        <li key={index}>
-            <span className="subtitle">{` ${itemPart.value}`}</span>
-            <span className="subtitleGrey"></span>
-           
-            <Collapse>
-             {Producto?.map((itemProduct, index) => ( 
-                itemProduct.part == itemPart.value && (
-                <Panel header={`${itemProduct.productname}/
-                                ${itemProduct.typeProductLength}/
-                                ${itemProduct.totalLength}%`
-                            } 
-                key={index}>
-                <Card>
-                    <List
-                    size="small"
-                    dataSource={Producto}
-                    renderItem={dataItem => (
-                        dataItem.part == itemPart.value && dataItem.productname == itemProduct.productname && (
-                            dataItem.ArryFilter?.map((itemReference, index) => ( 
-                            <List.Item>
-                            <div>
-                                <div><strong>Ref:</strong> <a href={`#`}>{itemReference.attributes.referencia}</a></div>
-                                <div><strong>Theme:</strong> {itemReference.attributes.theme.data ? itemReference.attributes.theme.data.attributes.name: null }</div>
-                                <div><strong>Color:</strong> { itemReference.attributes.color_pantone.data ? itemReference.attributes.color_pantone.data.attributes.name : null}</div>
-                                <div><strong>Fabric:</strong> {itemReference.attributes.Composition.fabric.data ? itemReference.attributes.Composition.fabric.data.attributes.name : null}</div>
-                            </div>
-                            </List.Item>
-                            ))
-                        )
-                    )}
-                    />
-                </Card>
-                </Panel>
-               )
-             ))}  
-            </Collapse>
-        </li>
-        ))}
-        </ul>  
-  
-      </>
-  
-    )
-  };
 
 export function StatisticsView() {   
     
@@ -94,15 +29,10 @@ export function StatisticsView() {
         
          } = useTasks();      
           const { 
-             ItemGender,          
-             ItemTheme,
-             ItemProduct, 
-             setItemGender,
-             setItemTheme,
-             setItemProduct,
-             ReferenceMapStatus,
-             setReferenceMapStatus,
-                 
+            setitemsGenderPart,
+            itemsGenderPart,
+            setitemsProducto,
+            itemsProducto                 
               } = BasicTasks();      
     
                     
@@ -211,39 +141,49 @@ export function StatisticsView() {
 
         }        
               
-        const [items, setitems] = useState([]); 
-        const [itemsProducto, setitemsProducto] = useState([]);
-        const [itemsGenderPart, setitemsGenderPart] = useState([]);
+        const [ ItemSelectGender, setItemSelectGender] = useState();
+        const [ ItemSelectTheme, setItemSelectTheme] = useState();
+        const [ ItemSelectProduct, setItemSelectProduct] = useState();
+        const [formCatalogView] = Form.useForm();
+        
+        
+        const [ CatalogSelect, setCatalogSelect] = useState("Collection Catalog");
 
-        useEffect(() => {      
+        let isCatalogSelec = CatalogSelect === 'Collection Catalog'
+        let isProductCatalog = CatalogSelect === 'Gender / Product Catalog'
+
+        let ItemFilterSelect = isCatalogSelec ? ['theme','genderName'] : 
+                                isProductCatalog ? ['typeproduct','genderName'] : []
+       
+
+
+        useEffect(() => {            
+            IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('29');   
+            IdCollection ? dofetchIDCollection(IdCollection) : dofetchIDCollection('29');
+         }, []);
+
+        // useEffect(() => {      
         
     
-            const FILTERS = dogenerateFilters("29", ['Baby Girl'], 'gender');
+        //     const FILTERS = dogenerateFilters("29", ['Baby Girl'], 'gender');
 
-            dofindCollectionFilters(FILTERS)
-            .then(  keys => {
+        //     dofindCollectionFilters(FILTERS)
+        //     .then(  keys => {
             
-                if(keys.data.length>= 1){
-                    doReferenceMapFilters(keys.data);
-
-                        const responsePart = groupGenderPart(keys.data)                            
-                        const response = groupGenderProducto(responsePart)
-                    
-                       // console.log(responsePart)  
-                        
-                     
-
-                                 
-                        setitemsProducto(response)
-                        setitemsGenderPart(responsePart)
+        //         if(keys.data.length>= 1){
+        //             doReferenceMapFilters(keys.data);
+        //                 const responsePart = groupGenderPart(keys.data)                            
+        //                 const response = groupGenderProducto(responsePart)                       
+        //                 setitemsProducto(response)
+        //                 setitemsGenderPart(responsePart)
                    
                     
-                }
+        //         }
             
-            });
+        //     });
         
         
-        }, []);  
+        // }, []);  
 
         
        
@@ -255,18 +195,86 @@ export function StatisticsView() {
     
   <>
  
- <div  className="">  
-        <header className="relative">
+ <div className="overflow-hidden bg-white dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]">
+  <div className="py-1 sm:px-2 lg:relative lg:px-0 lg:py-1">
+      <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-1 px-4 lg:max-w-8xl lg:grid-cols-1 lg:px-8 xl:gap-x-16 xl:px-12">
+
+      <header className="relative">
             <h1 className="font-display  text-xl tracking-tight text-slate-900 dark:text-white">Statistics</h1>
             <p className="font-display text-sm font-medium text-blue-500"></p>
-        </header>   
-      
-        <Comenta Producto={itemsProducto} Part={itemsGenderPart} />
-        
-        {/* <Collapse items={items} defaultActiveKey={['1']} onChange={onChange} />   */}
+        </header> 
 
-          
- </div>
+      {/* <div className="grid grid-cols-2 gap-1"> 
+      
+          <div className="col-span-6 sm:col-span-1  "> 
+          {<Form  >
+            <FormSelectCatalog 
+            CatalogSelec={setCatalogSelect}
+            SelectTheme={setItemSelectTheme}
+            SelectProduct={setItemSelectProduct}          
+          />
+          </Form>}
+          </div>   
+
+          <div className="col-span-6 sm:col-span-1  "> 
+          {<ButtonRecharge />}
+          </div>   
+
+      </div>  */}
+     
+        <Form 
+        form={formCatalogView}
+        name="form_CatalogViewFilterSelect"
+       
+        >  
+          <div className="grid grid-cols-2 gap-1"> 
+               
+         
+              <div className="col-span-6 sm:col-span-1  "> 
+              {
+                <FormItemGender 
+                  ItemFilter={ItemFilterSelect} 
+                  SelectGender={setItemSelectGender}
+                  form={formCatalogView}  
+                  />
+                  }    
+              </div>
+              
+              {isCatalogSelec &&
+                  <div className="col-span-6 sm:col-span-1  "> 
+                
+                    {/* <FormItemTheme 
+                      SelectTheme={setItemSelectTheme} 
+                      form={formCatalogView}
+                   /> */}
+                
+                  </div>
+              }        
+              
+              {isProductCatalog &&
+                <div className="col-span-6 sm:col-span-1  "> 
+              
+                  <FormItemProduct 
+                    SelectProduct={setItemSelectProduct}  
+                  />
+               
+                </div>
+              }
+        
+          </div> 
+        </Form>
+        
+
+            {itemsProducto.length > 0 && ( 
+            <StatisticsGender Producto={itemsProducto} Part={itemsGenderPart} />
+        )}    
+         
+         
+         </div>
+      </div>
+    </div>
+
+ 
    
   </>
 

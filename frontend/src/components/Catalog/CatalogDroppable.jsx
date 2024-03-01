@@ -66,16 +66,7 @@ padding: grid,
 width: 350
 });
 
-function divideEnPartesIguales(array) {
-  const longitudParte = Math.ceil(array.length / 3); // Calcular la longitud de cada parte
 
-  const partes = [];
-  for (let i = 0; i < array.length; i += longitudParte) {
-    partes.push(array.slice(i, i + longitudParte));
-  }
-
-  return partes;
-}
 
 export function CatalogDroppable() {   
     
@@ -88,7 +79,8 @@ export function CatalogDroppable() {
           doshowDrawer, 
           NameCollection } = useTasks();
 
-  const {    
+  const {
+    doDivideEnPartesIguales,    
     PrintMode,
     setCaptureReport,
     ItemGender,
@@ -234,7 +226,7 @@ export function CatalogDroppable() {
             // setState([flattenedArray])
             // setCaptureReport([flattenedArray])
 
-            const PartesIgualesArray = divideEnPartesIguales(ItemRandomMap);           
+            const PartesIgualesArray = doDivideEnPartesIguales(ItemRandomMap);           
 
     
 

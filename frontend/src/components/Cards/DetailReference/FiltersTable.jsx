@@ -41,7 +41,7 @@ const FiltersTable = () => {
 
           
             let ItemStatusMap = [];                     
-            const{pagination}=MetaReferenceMap          
+            const{pagination}=MetaReferenceMap ? MetaReferenceMap: {}          
             const [filtersStatusMap, setfiltersStatusMap] = useState([]);  
             const [searchText, setSearchText] = useState('');
             const [searchedColumn, setSearchedColumn] = useState('');

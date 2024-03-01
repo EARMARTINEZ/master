@@ -583,6 +583,8 @@ const [ItemTheme, setItemTheme] = useState();
 const [ReferenceMapStatus, setReferenceMapStatus] = useState(true); 
 const [ FilterCatalogSelect, setFilterCatalogSelect] = useState([]);
 
+const [itemsProducto, setitemsProducto] = useState([]);
+const [itemsGenderPart, setitemsGenderPart] = useState([]);
 
 const formRef = React.useRef(null);
 const onformReset = () => {
@@ -660,7 +662,13 @@ const useract = {
   doReportCapture:doReportCapture,
 
   setFilterCatalogSelect:setFilterCatalogSelect,
-  FilterCatalogSelect:FilterCatalogSelect
+  FilterCatalogSelect:FilterCatalogSelect,
+
+  setitemsGenderPart:setitemsGenderPart,
+  itemsGenderPart:itemsGenderPart,
+  setitemsProducto:setitemsProducto,
+  itemsProducto:itemsProducto,
+
 
 };
 
