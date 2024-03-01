@@ -32,6 +32,10 @@ const navigation = [
       { title: 'Recent Comments', href: '/docs/recent-comments' },
 
       { title: 'Catalog', href: '/docs/catalog-view' },
+
+      { title: 'Combinations', href: '/docs/combination-view' },
+
+      { title: 'Statistics', href: '/docs/statistics-view' },
       
     ],
   },

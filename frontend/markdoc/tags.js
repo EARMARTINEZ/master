@@ -6,6 +6,8 @@ import  TableSearchStamp  from '@/components/DetailStamp/TableSearchStamp'
 import  TableSearchPendings  from '@/components/RecentComment/TableSearchPendings'
 import  TableSearchComments  from '@/components/RecentComment/TableSearchComments'
 import  {CatalogView}  from '@/components/Catalog/CatalogView'
+import  {CombinationView}  from '@/components/Combinations/CombinationView'
+import  {StatisticsView}  from '@/components/Statistics/StatisticsView'
 
 const tags = {
   callout: {
@@ -75,6 +77,15 @@ const tags = {
 
 'catalog-view': {
   render: CatalogView,
+ 
+},
+
+'combination-view': {
+  render: CombinationView,
+ 
+},
+'statistics-view': {
+  render: StatisticsView,
  
 },
 

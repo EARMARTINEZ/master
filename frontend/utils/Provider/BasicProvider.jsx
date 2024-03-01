@@ -547,7 +547,14 @@ const BasicProvider = ({ children }) => {
         }          
   }
 
-
+  function doDivideEnPartesIguales(array) {
+    const longitudParte = Math.ceil(array.length / 3); 
+    const partes = [];
+    for (let i = 0; i < array.length; i += longitudParte) {
+      partes.push(array.slice(i, i + longitudParte));
+    }
+    return partes;
+  }
  
 
 const [CaptureReport, setCaptureReport] = useState([]); 
@@ -576,6 +583,7 @@ const [ItemTheme, setItemTheme] = useState();
 const [ReferenceMapStatus, setReferenceMapStatus] = useState(true); 
 const [ FilterCatalogSelect, setFilterCatalogSelect] = useState([]);
 
+
 const formRef = React.useRef(null);
 const onformReset = () => {
   formRef.current?.resetFields();
@@ -594,7 +602,7 @@ const useract = {
   dofindStamps:dofindStamps,
   dofindSizes:dofindSizes,
   dofindTypecomments:dofindTypecomments,
-
+  doDivideEnPartesIguales:doDivideEnPartesIguales,
   
  
 
@@ -632,6 +640,7 @@ const useract = {
   ItemGender:ItemGender,
   setItemTheme:setItemTheme,
   ItemTheme:ItemTheme,
+
 
   setReferenceMapStatus:setReferenceMapStatus,
   ReferenceMapStatus:ReferenceMapStatus,

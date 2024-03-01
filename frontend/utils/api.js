@@ -1390,7 +1390,11 @@ export async function getThemesCollection({ NCollection }) {
           themes(
            
             sort:"id:asc"
-            filters:{collection:{id:{eq:$NCollection}}}
+
+            filters:{
+              masters:{collection:{id:{eq:$NCollection}}}
+             
+            }
           ){
             data{
               id
@@ -1774,6 +1778,7 @@ export async function getCollectionFilters({FILTERS} ) {
                 referencia
                 description
                 genderName
+                productname
                 status
                 collection {
                   data {
