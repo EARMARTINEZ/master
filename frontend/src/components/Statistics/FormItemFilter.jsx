@@ -43,12 +43,12 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
 
     
 
-    const groupGenderPart =  function(data) {
+    const groupGenderPart =  function(dataPart) {
 
       const newStatusMap = {};        
-      console.log('groupGenderPart',data)
+      console.log('groupGenderPart',dataPart)
       
-      data?.forEach((dataRef) => {
+      dataPart?.forEach((dataRef) => {
         const {
             attributes: {
                 Composition: {
