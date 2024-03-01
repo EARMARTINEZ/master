@@ -1,83 +1,122 @@
 import  React, {useEffect, useState, useCallback  } from "react"; 
 import { useTasks } from "utils/ProviderContext";
 import { BasicTasks } from "utils/Provider/BasicProvider";
-import { Collapse, Card, List, Form, Divider   } from 'antd';
+import { Collapse, Card, List, Form, Divider, Accordion  } from 'antd';
 
 
 const Comenta = ({Producto, Part}) => {
 
-    const { Panel } = Collapse;  
-  
+    const [activeIndex, setActiveIndex] = useState(null);
+
+    const toggleAccordion = (index) => {
+        setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
+    };
+
     return (
-        <>
-  
-  <ul>
-     {Part?.map((itemPart, index) => (
-        <li key={index}>
-            <span className="subtitle">{` ${itemPart.value}`}</span>
-            <span className="subtitleGrey"></span>
-           
-            <Collapse key={index}>
-             {Producto?.map((itemProduct, index) => ( 
-                itemProduct.part == itemPart.value && (
-                <Panel header={`${itemProduct.productname}/
-                                ${itemProduct.typeProductLength}/
-                                ${itemProduct.totalLength}%`
-                            } 
-                key={index}>
-                <Card>
-                    <List
-                    size="small"
-                    key={index}
-                    dataSource={Producto}
-                    renderItem={dataItem => (
-                        dataItem.part == itemPart.value && dataItem.productname == itemProduct.productname && (
-                            dataItem.ArryFilter?.map((itemReference, index) => ( 
-                            <List.Item>
-                            <div>
-                                <div><strong>Ref:</strong> <a href={`#`}>{itemReference.attributes.referencia}</a></div>
-                                <div><strong>Theme:</strong> {itemReference.attributes.theme.data ? itemReference.attributes.theme.data.attributes.name: null }</div>
-                                <div><strong>Color:</strong> { itemReference.attributes.color_pantone.data ? itemReference.attributes.color_pantone.data.attributes.name : null}</div>
-                                <div><strong>Fabric:</strong> {itemReference.attributes.Composition.fabric.data ? itemReference.attributes.Composition.fabric.data.attributes.name : null}</div>
-                            </div>
-                            </List.Item>
-                            ))
-                        )
-                    )}
-                    />
-                </Card>
-                </Panel>
-               )
-             ))}  
-            </Collapse>
-        </li>
-        ))}
-        </ul>  
-  
-  
-      </>
-  
-    )
+        <ul>
+            {Part?.map((itemPart, index) => (
+                <li key={index} className="mb-4 ">
+                    <span className="subtitle text-2xl">{itemPart.value}</span>
+                   
+
+                    <div className="mt-2">
+                        {Producto?.map((itemProduct, productIndex) => (
+                            itemProduct.part === itemPart.value && (
+                                <div key={productIndex} className="mb-4">
+                                    <div
+                                        className="border-b-2 border-gray-200 py-2 flex justify-between cursor-pointer"
+                                        onClick={() => toggleAccordion(productIndex)}
+                                    >
+                                        <div>
+                                            {`${itemProduct.productname}/${itemProduct.typeProductLength}/${itemProduct.totalLength}%`}
+                                        </div>
+                                        <div>
+                                            {activeIndex === productIndex ? (
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-6 w-6 text-gray-500"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M5 15l7-7 7 7"
+                                                    />
+                                                </svg>
+                                            ) : (
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-6 w-6 text-gray-500"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth="2"
+                                                        d="M19 9l-7 7-7-7"
+                                                    />
+                                                </svg>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {activeIndex === productIndex && (
+                                        <div className="mt-2">
+                                            {/* Aquí puedes renderizar el contenido que deseas mostrar */}
+                                            {/* Por ejemplo, una lista de elementos */}
+                                            <ul className="border border-gray-200">
+                                                {itemProduct.ArryFilter?.map((itemReference, referenceIndex) => (
+                                                    <li key={referenceIndex} className="py-2 px-4 border-b border-gray-200">
+                                                        <div>
+                                                            <strong className="font-semibold">Ref:</strong>{' '}
+                                                            <a href={`#`} className="text-blue-500">{itemReference.attributes?.referencia}</a>
+                                                        </div>
+                                                        <div>
+                                                            <strong className="font-semibold">Theme:</strong>{' '}
+                                                            {itemReference.attributes?.theme?.data?.attributes?.name || null}
+                                                        </div>
+                                                        <div>
+                                                            <strong className="font-semibold">Color:</strong>{' '}
+                                                            {itemReference.attributes?.color_pantone?.data?.attributes?.name || null}
+                                                        </div>
+                                                        <div>
+                                                            <strong className="font-semibold">Fabric:</strong>{' '}
+                                                            {itemReference.attributes?.Composition?.fabric?.data?.attributes?.name || null}
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            )
+                        ))}
+                    </div>
+                </li>
+            ))}
+        </ul>
+    );
   };
 
 export function StatisticsGender ({Producto, Part}) {
-
-    const { Panel } = Collapse;    
-    
-    
     const items = [
         {
           key: '1',
-          children: <Comenta Producto={Producto} Part={Part} />,
+          label: 'Comments',
+          children: <Comenta Producto={Producto} Part={Part} />
         },
         
       ];
-
-        // console.log(Producto)
-        // console.log(Part)
+   
     return (
         <>
-   <Comenta Producto={Producto} Part={Part} />
+     <Collapse items={items} defaultActiveKey={['1']}  /> 
+
+   {/* <Comenta Producto={Producto} Part={Part} /> */}
   
       </>
   
