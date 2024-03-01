@@ -93,24 +93,32 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
           const ArryFilterPart = ReferenceMap.filter(type => type.attributes.Composition.typeproduct.data.attributes.id_part.data.attributes.name == dataPart.label )
       
           ArryFilterPart?.forEach((dataRef) => {
-              const { productname, genderName, Composition } = dataRef.attributes || {}; // Acceder a las propiedades de manera segura
-              const { typeproduct } = Composition || {};
-
-              if (!newProductMap[productname]) {
-                  newProductMap[productname] = {
-                  value:ArryFilterPart.length,
-                  label: productname,
-                  order_show: Composition?.gender?.data?.attributes?.order_show || 0, // Acceder a la propiedad de manera segura
-              };
-              }
-              
-          });
+            const {
+                attributes: {
+                    productname,
+                    Composition: {
+                        typeproduct
+                    } = {},
+                    genderName
+                } = {}
+            } = dataRef || {};
+        
+            if (productname && !newProductMap[productname]) {
+                newProductMap[productname] = {
+                    value: ArryFilterPart.length,
+                    label: productname,
+                    order_show: typeproduct?.data?.attributes?.order_show || 0
+                };
+            }
+        });
           const newProductArr = Object.values(newProductMap);
           
           newProductArr?.forEach((dataProduct) => {
 
-              const ArryFilter = ArryFilterPart.filter(type => type.attributes.productname == dataProduct.label 
-                  && type.attributes.Composition.typeproduct.data.attributes.id_part.data.attributes.name == dataPart.label)
+              const ArryFilter = ArryFilterPart.filter(type => 
+                type.attributes.productname == dataProduct.label && 
+                type.attributes.Composition.typeproduct.data.attributes.id_part.data.attributes.name == dataPart.label
+                );
               
               const idPartLength = ArryFilterPart.length;
               const typeProductLength = ArryFilter.length;
