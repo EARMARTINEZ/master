@@ -74,6 +74,8 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
           //const newPartArr = groupGenderPart(data);
           console.log(ReferenceMap)
 
+          
+
           newPartArr?.forEach((dataPart) => {
   
           const newProductMap = {};                           
@@ -161,24 +163,25 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
       form.setFieldsValue({theme: 'Search to Select'}); 
       form.setFieldsValue({product: 'Search to Select'});
      
-      if(filtersGenderMap.length>= 1){   
+        if(filtersGenderMap.length>= 1){   
 
-        const FILTERS = dogenerateFilters(IdCollection, [initialValue.current], 'gender');
-         dofindCollectionFilters(FILTERS)
-        .then(  keys => {                    
-          
-          if(keys.data.length>= 1){
-              doReferenceMapFilters(keys.data);           
-                const responsePart = groupGenderPart(keys.data)                                    
-                const response = groupGenderProducto(responsePart) 
-                setitemsProducto(response)               
-                setitemsGenderPart(responsePart)
-           
+          const FILTERS = dogenerateFilters(IdCollection, [initialValue.current], 'gender');
+          dofindCollectionFilters(FILTERS)
+          .then(  keys => {                    
             
-        }               
-           
-        });       
-      }
+            if(keys.data.length>= 1){
+                doReferenceMapFilters(keys.data);           
+                  const responsePart = groupGenderPart(keys.data)                                    
+                  const response = groupGenderProducto(responsePart) 
+                  setitemsGenderPart(responsePart)
+                  setitemsProducto(response)               
+                  
+            
+              
+          }               
+            
+          });       
+        }
      
     }, [filtersGenderMap ]);     
     
@@ -208,14 +211,10 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
         .then(  keys => {                    
          
             if(keys.data.length>= 1){
-               doReferenceMapFilters(keys.data);              
-                const responsePart = groupGenderPart(keys.data)                            
-                const response = groupGenderProducto(responsePart)  
-                console.log('Prueba',keys.data)
-                setitemsProducto(response)
-                setitemsGenderPart(responsePart)
-                initialValue.current = value
-            }                         
+               doReferenceMapFilters(keys.data);
+               groupGenderPart(keys.data)
+              
+            }
            
         });   
       }

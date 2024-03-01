@@ -16,8 +16,7 @@ const Comenta = ({Producto, Part}) => {
         <ul>
             {Part?.map((itemPart, index) => (
                 <li key={index} className="mb-4 ">
-                    <span className="subtitle text-2xl">{itemPart.value}</span>
-                   
+                    <span className="subtitle text-xl">{itemPart.value}</span>                  
 
                     <div className="mt-2">
                         {Producto?.map((itemProduct, productIndex) => (
@@ -103,20 +102,20 @@ const Comenta = ({Producto, Part}) => {
   };
 
 export function StatisticsGender ({Producto, Part}) {
-    const items = [
-        {
-          key: '1',
-          label: 'Comments',
-          children: <Comenta Producto={Producto} Part={Part} />
-        },
+    // const items = [
+    //     {
+    //       key: '1',
+    //       label: 'Comments',
+    //       children: <Comenta Producto={Producto} Part={Part} />
+    //     },
         
-      ];
+    //   ];
    
     return (
         <>
-     <Collapse items={items} defaultActiveKey={['1']}  /> 
+     {/* <Collapse items={items} defaultActiveKey={['1']}  />  */}
 
-   {/* <Comenta Producto={Producto} Part={Part} /> */}
+   <Comenta Producto={Producto} Part={Part} />
   
       </>
   

@@ -265,7 +265,7 @@ export function StatisticsView() {
         </Form>
         
 
-            {itemsProducto.length > 0 && ( 
+            {itemsGenderPart.length > 0 && ( 
             <StatisticsGender Producto={itemsProducto} Part={itemsGenderPart} />
         )}    
          
