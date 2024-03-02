@@ -72,7 +72,7 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
           let ItemMap = [];
           let ItemArryFilter = [];
           //const newPartArr = groupGenderPart(data);
-          console.log('groupGenderProducto',ReferenceMap)          
+                 
 
           newPartArr?.forEach((dataPart) => {
   
@@ -134,12 +134,12 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
               });      
   
   
-              ItemStatusMap.push({
-              "part": dataPart.label,
-              ArryFilterPart, 
-              idPartNameLength: ArryFilterPart.length
+              // ItemStatusMap.push({
+              // "part": dataPart.label,
+              // ArryFilterPart, 
+              // idPartNameLength: ArryFilterPart.length
               
-              },);
+              // },);
   
   
       });
@@ -209,7 +209,7 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
    
       if(ItemGender){   
 
-        console.log(value)
+     
         const FILTERS = dogenerateFilters(IdCollection, [value], 'gender');
          await dofindCollectionFilters(FILTERS)
         .then(  keys => {                    
