@@ -16,7 +16,7 @@ const Comenta = ({Producto, Part}) => {
         <ul>
             {Part?.map((itemPart, index) => (
                 <li key={index} className="mb-4 ">
-                    <span className="subtitle text-xl">{itemPart.value}</span>                  
+                    <span className="subtitle text-lg">{itemPart.value}</span>                  
 
                     <div className="mt-2">
                         {Producto?.map((itemProduct, productIndex) => (
@@ -27,7 +27,7 @@ const Comenta = ({Producto, Part}) => {
                                         onClick={() => toggleAccordion(productIndex)}
                                     >
                                         <div>
-                                            {`${itemProduct.productname}/${itemProduct.typeProductLength}/${itemProduct.totalLength}%`}
+                                            {`${itemProduct.productname} Items ${itemProduct.typeProductLength}/ ${itemProduct.totalLength}%`}
                                         </div>
                                         <div>
                                             {activeIndex === productIndex ? (
@@ -102,14 +102,6 @@ const Comenta = ({Producto, Part}) => {
   };
 
 export function StatisticsGender ({Producto, Part}) {
-    // const items = [
-    //     {
-    //       key: '1',
-    //       label: 'Comments',
-    //       children: <Comenta Producto={Producto} Part={Part} />
-    //     },
-        
-    //   ];
    
     return (
         <>

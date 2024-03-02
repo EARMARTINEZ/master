@@ -45,57 +45,23 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
 
     const groupGenderPart =  function(dataPart) {
 
-      const newStatusMap = {};        
-      console.log('groupGenderPart',dataPart)
+      const newStatusMap = {};      
       
       dataPart?.forEach((dataRef) => {
-      //   const {
-      //       attributes: {
-      //           Composition: {
-      //               typeproduct: {
-      //                   data: {
-      //                       attributes: {
-      //                           id_part: {
-      //                               data: { attributes:{name} },
-      //                               id
-      //                           }
-      //                       }
-      //                   }
-      //               }
-      //           }
-      //       } = {}
-      //   } = dataRef || {};
     
-      //   const { Composition } = dataRef.attributes || {}; // Acceder a las propiedades de manera segura
-      //   const { typeproduct } = Composition || {};
-
-      //  if(typeproduct.data){
-      //   if (name && !newStatusMap[name]) {
-      //     newStatusMap[name] = { value: name, label: name, order: id || 0 };
-      //   }
-
-      //  }
-
-      const { Composition } = dataRef.attributes || {}; // Acceder a las propiedades de manera segura
-    const { typeproduct } = Composition || {};
-    
-    if (!newStatusMap[typeproduct.data.attributes.id_part.data.attributes.name]) {
-        newStatusMap[typeproduct.data.attributes.id_part.data.attributes.name] = {
-        value: typeproduct.data.attributes.id_part.data.attributes.name,
-        label: typeproduct.data.attributes.id_part.data.attributes.name,
-        order: typeproduct.data.attributes.id_part.data.id || 0
-      
-    };
-    }
-      
-       console.log('groupGenderPartB',dataRef)
-   
-       
+            const { Composition } = dataRef.attributes || {}; 
+            const { typeproduct } = Composition || {};
+          
+          if (!newStatusMap[typeproduct.data.attributes.id_part.data.attributes.name]) {
+              newStatusMap[typeproduct.data.attributes.id_part.data.attributes.name] = {
+              value: typeproduct.data.attributes.id_part.data.attributes.name,
+              label: typeproduct.data.attributes.id_part.data.attributes.name,
+              order: typeproduct.data.attributes.id_part.data.id || 0
+            
+          };
+          }  
     });
-          const newPartArr = Object.values(newStatusMap); 
-          
-          
-          
+          const newPartArr = Object.values(newStatusMap);         
 
       return newPartArr
   
@@ -214,9 +180,7 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
                   const responsePart = groupGenderPart(keys.data) 
                   setitemsGenderPart(responsePart)                                   
                   const response = groupGenderProducto(responsePart)                  
-                  setitemsProducto(response)               
-                  
-            
+                  setitemsProducto(response) 
               
           }               
             
