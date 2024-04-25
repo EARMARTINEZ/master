@@ -1,6 +1,6 @@
 'use strict';
 /**
- 
+
  */
 
 const reader = require("xlsx");
@@ -10,7 +10,7 @@ function convertToFrenchDate(date) {
   const dateSubString = date.substring(0, 10) // "2023-09-19"
 const splitDate = dateSubString.split("-") // ["2023", "09", "19"]
 const finalDate = `${splitDate[2]}/${splitDate[1]}/${splitDate[0]}` // "19-09-2023"
-  
+
   return finalDate
 }
 function convertToFrenchHour(date) {
@@ -25,75 +25,75 @@ async function CreateRegistroMaster(data) {
 
   try {
 
-   
-   let CreateRegistro = await strapi.entityService.create('api::master.master', {      
-            data: data,
-          });         
 
-            
+   let CreateRegistro = await strapi.entityService.create('api::master.master', {
+            data: data,
+          });
+
+
     //const NumeroReferencia = await strapi.service('api::master.master').GenerateSequence(CreateRegistro.id);
     //console.log(data);
-   
+
     return CreateRegistro;
 
   } catch (error) {
     console.log("error", error);
-  }       
+  }
 };
 
 async function UpdateRegistroMaster(IdMaster, data) {
 
   try {
-   
+
     const AttributesStamp = Object.keys(data.stamp.id);
     data.stamp= AttributesStamp[1]==='label' ? null : data.stamp
-    
 
-   let UpdateRegistro = await strapi.entityService.update('api::master.master', IdMaster, {      
+
+   let UpdateRegistro = await strapi.entityService.update('api::master.master', IdMaster, {
             data: data,
-          });  
-          
-        
+          });
+
+
    let NumeroReferencia = {
             "id": UpdateRegistro.id,
             "GenderName":UpdateRegistro.genderName,
             "ProductName":UpdateRegistro.productname,
-            "CountSequence": UpdateRegistro.referencia           
-        };  
+            "CountSequence": UpdateRegistro.referencia
+        };
 
          console.log(IdMaster, data);
-   
+
      return NumeroReferencia;
 
   } catch (error) {
     console.log("error", error);
-  }       
+  }
 };
 
 async function UpdateStatusReference(IdMaster, data) {
 
   try {
-   
-   
-   let UpdateRegistro = await strapi.entityService.update('api::master.master', IdMaster, {      
+
+
+   let UpdateRegistro = await strapi.entityService.update('api::master.master', IdMaster, {
             data: data,
-          });  
-          
-        
+          });
+
+
    let NumeroReferencia = {
             "id": UpdateRegistro.id,
             "GenderName":UpdateRegistro.genderName,
             "ProductName":UpdateRegistro.productname,
-            "CountSequence": UpdateRegistro.referencia           
-        };  
+            "CountSequence": UpdateRegistro.referencia
+        };
 
          //console.log(IdMaster, data);
-   
+
      return NumeroReferencia;
 
   } catch (error) {
     console.log("error", error);
-  }       
+  }
 };
 
 function formatColumn(worksheet, col, fmt) {
@@ -109,26 +109,26 @@ function formatColumn(worksheet, col, fmt) {
 
 async function ExporXLSX(data, FileName){
 
-  try {    
+  try {
       const workbook = reader.utils.book_new();
-      let date = new Date(); 
+      let date = new Date();
       let dia = date.getDate();
       let mes = date.getMonth() + 1;
-      
+
       const filename =`${FileName}${data[0].Identifier.substring(0, 3)}.xlsx`;
       const url = process.env.URL_EXPORT_XLSX+filename
-      
+
       const ws = reader.utils.json_to_sheet(data);
       reader.utils.book_append_sheet(workbook, ws, filename);
-      
+
       const currency = '0.00'
       for (let col of [1, 2, 3, 4, 5, 6]) {
         formatColumn(ws, col, currency)
-      }       
-      
+      }
+
       const max_width = data.reduce((w, r) => Math.max(w, r.collection.length), 10);
       ws["!cols"] = [ { wch: 10 },
-                      { wch: 20 },  
+                      { wch: 20 },
                       { wch: max_width },
                       { wch: 35 }, //size
                       { wch: max_width },
@@ -140,14 +140,14 @@ async function ExporXLSX(data, FileName){
                       { wch: 15 },
                       { wch: 10 },
                       { wch: 10 },
-                      
-                  ],                         
 
-      reader.writeFile(workbook,  url, { compression: true }); 
+                  ],
+
+      reader.writeFile(workbook,  url, { compression: true });
 
   } catch (error) {
     console.log("error", error);
-  }    
+  }
 
 }
 
@@ -155,257 +155,208 @@ async function ExporXLSX(data, FileName){
 module.exports = {
 
 
-  async webhooksreferencia(ctx){  
-   
-    console.log('webhooksreferencia:');  
+  async webhooksreferencia(ctx){
+
+    console.log('webhooksreferencia:');
   try {
-      
+
 
       if (ctx.request.body.uid==='api::master.master'){
-         console.log(ctx.request.body);     
+         console.log(ctx.request.body);
 
-            const Identry = ctx.request.body.entry.id           
+            const Identry = ctx.request.body.entry.id
             const Nreferencia = await strapi.service('api::master.master').GenerateSequence(Identry);
 
             const ReferenciaSequence = Nreferencia.CountSequence ? Nreferencia.CountSequence : null
 
             if (ReferenciaSequence){
-                
-              await strapi.service('api::master.master').FinOneImagesReferencia(ReferenciaSequence); 
+
+              await strapi.service('api::master.master').FinOneImagesReferencia(ReferenciaSequence);
               await strapi.service('api::master.master').FinOnePDFReferencia(ReferenciaSequence);
-              await strapi.service('api::master.master').FinOneSizeReferencia(ctx.request.body.event, ReferenciaSequence); 
-          }         
+              await strapi.service('api::master.master').FinOneSizeReferencia(ctx.request.body.event, ReferenciaSequence);
+          }
 
           setTimeout(async () => {
             await strapi.service('api::master.master').webhooksSendEmail(ctx.request.body.entry.id, ctx.request.body.event);
-          },10000);  
-         
+          },10000);
 
-         return ctx.request.body.uid;          
+
+         return ctx.request.body.uid;
       }
-    
-    
+
+
     } catch (error) {
       console.log("error", error);
-    }  
+    }
 
-  
+
   },
-    
-    async webhooksMedia(ctx){  
-    
-      console.log('webhooksMedia:');  
-      try {      
-      
+
+    async webhooksMedia(ctx){
+
+      console.log('webhooksMedia:');
+      try {
+
 
             const Nmedia = ctx.request.body.media.name.substring(0, 7)
             const Nreferencia = Nmedia.toString().padEnd(7, '0');
-            const Stampmedia = ctx.request.body.media.name.substring(0, 8) 
-            const StampReferencia = Stampmedia.toString().padEnd(8, '0');        
-          
-            const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({        
-              where: {      
+            const Stampmedia = ctx.request.body.media.name.substring(0, 8)
+            const StampReferencia = Stampmedia.toString().padEnd(8, '0');
+            const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({
+              where: {
                 name: {
                   $contains: Nreferencia,
-                },             
+                },
             },
-            orderBy: { id: 'DESC' }, 
-        }); 
+            orderBy: { id: 'DESC' },
+        });
 
-       
+              if (ImgentryCount >= 1 ){
 
-              if (ImgentryCount >= 1 ){ 
-
-                console.log(Nreferencia);     
-                console.log(ctx.request.body);     
-              
-                if (StampReferencia.includes('S') ){                
+                console.log(Nreferencia);
+                console.log(ctx.request.body);
+                if (StampReferencia.includes('S') ){
                   await strapi.service('api::stamp.stamp').FinOneImagesStamps(StampReferencia);
                   return StampReferencia
-                }  
+                }
                 await strapi.service('api::master.master').FinOneImagesReferencia(Nreferencia);
                 await strapi.service('api::master.master').FinOnePDFReferencia(Nreferencia);
-                
-            } 
-                    
-      
-      
+            }
       } catch (error) {
         console.log("error", error);
-      }    
-      
+      }
+
         //return CreateRegistro;
     },
-    
-      async webhooksMediaV6(ctx){  
-      
-        console.log('webhooksMedia:');  
-        try {      
-        
 
+      async webhooksMediaV6(ctx){
+        console.log('webhooksMedia:');
+        try {
               const Nmedia = ctx.request.body.media.name.substring(0, 6)
               const Nreferencia = Nmedia.toString().padEnd(6, '0');
-              const Stampmedia = ctx.request.body.media.name.substring(0, 6) 
-              const StampReferencia = Stampmedia.toString().padEnd(6, '0');        
-            
-              const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({        
-                where: {      
+              const Stampmedia = ctx.request.body.media.name.substring(0, 6)
+              const StampReferencia = Stampmedia.toString().padEnd(6, '0');
+              const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({
+                where: {
                   name: {
                     $contains: Nreferencia,
-                  },             
+                  },
               },
-              orderBy: { id: 'DESC' }, 
-          }); 
+              orderBy: { id: 'DESC' },
+          });
 
-        
-
-                if (ImgentryCount >= 1 ){ 
-
-                  console.log(Nreferencia);     
-                  console.log(ctx.request.body);     
-                
-                  if (StampReferencia.includes('S') ){                
+                if (ImgentryCount >= 1 ){
+                  console.log(Nreferencia);
+                  console.log(ctx.request.body);
+                  if (StampReferencia.includes('S') ){
                     await strapi.service('api::stamp.stamp').FinOneImagesStamps(StampReferencia);
                     return StampReferencia
-                  }  
+                  }
                   await strapi.service('api::master.master').FinOneImagesReferencia(Nreferencia);
                   await strapi.service('api::master.master').FinOnePDFReferencia(Nreferencia);
-                  
-              } 
-                      
-        
-        
+              }
         } catch (error) {
           console.log("error", error);
-        }    
-        
+        }
           //return CreateRegistro;
       },
- 
 
-  async createreferencia(ctx){  
-   
-      console.log('createreferencia:');  
 
+  async createreferencia(ctx){
+      console.log('createreferencia:');
        const CreateRegistro = await CreateRegistroMaster(ctx.request.body);
-      
         return CreateRegistro;
   },
-  
-  async updatereferencia(ctx){  
-   
-    const { Nreferencia } = ctx.params; 
-    console.log('updatereferencia:');  
 
+  async updatereferencia(ctx){
+
+    const { Nreferencia } = ctx.params;
+    console.log('updatereferencia:');
      const UpdateRegistro = await UpdateRegistroMaster( Nreferencia, ctx.request.body);
-    
       return UpdateRegistro;
 },
 
-async updateStatusReferencia(ctx){  
-   
-  const { IdMaster } = ctx.params; 
-  console.log('updateStatus:');  
+  async updateStatusReferencia(ctx){
+    const { IdMaster } = ctx.params;
+    console.log('updateStatus:');
 
-   const UpdateRegistro = await UpdateStatusReference( IdMaster, ctx.request.body);
-  
-    return UpdateRegistro;
-},
- 
+    const UpdateRegistro = await UpdateStatusReference( IdMaster, ctx.request.body);
+      return UpdateRegistro;
+  },
+
   async getcatalog(ctx){
-   
-    // Busca Referencias Creadas por id de Coleccion, Grupo y Genero-opcional     
+
+    // Busca Referencias Creadas por id de Coleccion, Grupo y Genero-opcional
 
     const idCollection = ctx.request.body.collectionid  ? ctx.request.body.collectionid : '0'
     const idTheme = ctx.request.body.themeid  ? ctx.request.body.themeid : '0'
     const idGender = ctx.request.body.genderid  ? ctx.request.body.genderid : '1'
 
     console.log('getcatalog:');
-             
-      console.log(idCollection ); 
-     
-    const Condicion = { 
-          collection:{         
-              id: idCollection 
+      console.log(idCollection );
+    const Condicion = {
+          collection:{
+              id: idCollection
           },
-          theme:{         
-            id: idTheme 
+          theme:{
+            id: idTheme
           },
-          Composition: {                
-            gender:{                 
-                id: idGender,                               
+          Composition: {
+            gender:{
+                id: idGender,
             },
-          },   
+          },
       }
 
-    const Condicion2 = { 
-        collection:{         
-            id: idCollection 
+    const Condicion2 = {
+        collection:{
+            id: idCollection
         },
-        theme:{         
-          id: idTheme 
-        },       
-    }  
+        theme:{
+          id: idTheme
+        },
+    }
 
       const Entry = await strapi.db.query('api::master.master').findMany({
-        select: ['id'], 
-          where: ctx.request.body.genderid  ? Condicion : Condicion2, 
-        
+        select: ['id'],
+          where: ctx.request.body.genderid  ? Condicion : Condicion2,
         populate: {
-          collection: { 
-            select: ['name'],   
-          
-          },      
+          collection: {
+            select: ['name'],
+          },
           theme:{
             select: ['name'],
-            
-            },          
+            },
           Composition: {
             populate: {
           gender:{
-            select: ['id','name'],           
-            },               
+            select: ['id','name'],
+            },
           }
-         },         
+         },
         },
-           
       });
-
-                      
-   
-  
     return Entry;
-  },  
+  },
 
   async getreferencia(ctx){
-      const { Nreferencia } = ctx.params;     
-         
-        console.log('getGeneraReferencia:');        
-     
-        
-        const MasterEntry = await strapi.service('api::master.master').FinOneReferencia(Nreferencia);             
-    
+      const { Nreferencia } = ctx.params;
+        console.log('getGeneraReferencia:');
+        const MasterEntry = await strapi.service('api::master.master').FinOneReferencia(Nreferencia);
       return MasterEntry;
   },
 
   async getImagensReferencia(ctx){
-    const { Nreferencia } = ctx.params;     
-       
-      console.log('getImagensReferencia:');        
-   
-      
-      const MasterEntry = await strapi.service('api::master.master').FinOneImagesReferencia(Nreferencia); 
-                          await strapi.service('api::master.master').FinOnePDFReferencia(Nreferencia);             
-  
+    const { Nreferencia } = ctx.params;
+      console.log('getImagensReferencia:');
+      const MasterEntry = await strapi.service('api::master.master').FinOneImagesReferencia(Nreferencia);
+                          await strapi.service('api::master.master').FinOnePDFReferencia(Nreferencia);
     return MasterEntry;
   },
 
 /*knex */
   async getGenderReference(ctx){
-    const { Nreferencia } = ctx.params; 
-        
-    
-  
+    const { Nreferencia } = ctx.params;
       const PrefixColection = Nreferencia.substring(0, 3) ? Nreferencia.substring(0, 3) : '124'
 
        const knex = strapi.db.connection;
@@ -415,29 +366,23 @@ async updateStatusReferencia(ctx){
        .select(
         knex.raw("genders.id, gender_name,  genders.start_sequence, genders.order_show  ")
         ).from("masters")
-        .innerJoin('genders', ' masters.gender_name ', ' genders.name ')             
-        .whereLike('referencia', '%' + PrefixColection +'%')       
+        .innerJoin('genders', ' masters.gender_name ', ' genders.name ')
+        .whereLike('referencia', '%' + PrefixColection +'%')
         .groupBy("gender_name", "genders.id", "start_sequence" )
         .orderBy("genders.order_show")
 
       //  .select(
       //      knex.raw(' gender_name ')
-      //      ).from("masters")           
+      //      ).from("masters")
       //      .whereLike('referencia', '%' + PrefixColection +'%')
       //      .groupBy("gender_name" )
-     
-      // console.log(loteCant); 
-
-   
-  
+      // console.log(loteCant);
     return loteCant;
 },
 
 /*knex */
   async getProducReference(ctx){
-    const { Nreferencia } = ctx.params; 
-        
-    
+    const { Nreferencia } = ctx.params;
 
       const PrefixColection = Nreferencia.substring(0, 3) ? Nreferencia.substring(0, 3) : '124'
 
@@ -447,23 +392,16 @@ async updateStatusReferencia(ctx){
       const loteCant = await knex
       .select(
           knex.raw(' productname ')
-          ).from("masters")           
+          ).from("masters")
           .whereLike('referencia', '%' + PrefixColection +'%')
           .groupBy("productname" )
-    
-      // console.log(loteCant); 
-
-  
-
+      // console.log(loteCant);
     return loteCant;
   },
 
 /*knex */
   async getGroupSize(ctx){
-    const { Nreferencia } = ctx.params; 
-        
-    
-
+    const { Nreferencia } = ctx.params;
       const IDColection = Nreferencia ? Nreferencia : '29'
 
       const knex = strapi.db.connection;
@@ -473,25 +411,21 @@ async updateStatusReferencia(ctx){
       .select(
         knex.raw( 'sizes.name ')
         ).from("masters")
-        .innerJoin('masters_collection_links', ' masters_collection_links.master_id ', ' masters.id ')  
+        .innerJoin('masters_collection_links', ' masters_collection_links.master_id ', ' masters.id ')
         .innerJoin('masters_sizes_links', ' masters_sizes_links.master_id ', 'masters.id')
-        .innerJoin('sizes', ' sizes.id ', 'masters_sizes_links.size_id') 
-        .where("masters_collection_links.collection_id", "=", IDColection)      
+        .innerJoin('sizes', ' sizes.id ', 'masters_sizes_links.size_id')
+        .where("masters_collection_links.collection_id", "=", IDColection)
         .groupBy(' sizes.name ' )
-    
-      // console.log(loteCant); 
-
-  
-
+      // console.log(loteCant);
     return loteCant;
   },
 
   /*knex */
   async getNextSequence(ctx){
-    const { Nreferencia } = ctx.params; 
-        
-    try {      
-        const Ncollection = Nreferencia.substring(0, 3); 
+    const { Nreferencia } = ctx.params;
+
+    try {
+        const Ncollection = Nreferencia.substring(0, 3);
         const Ngender = Nreferencia.substring(3, 4);
 
         const _ = require("lodash");
@@ -501,91 +435,91 @@ async updateStatusReferencia(ctx){
      const sqloteCant = await knex
      .select(
          knex.raw("genders.id, genders.name, genders.start_sequence as next_sequence ")
-         ).from("genders")    
-         .where('genders.id', "=",  Ngender )    
-     
+         ).from("genders")
+         .where('genders.id', "=",  Ngender )
+
           const loteCant = await knex
           .select(
               knex.raw("genders.id, gender_name, count(referencia) as cant_reference,  genders.start_sequence, '' as next_sequence  ")
               ).from("masters")
-              .innerJoin('genders', ' masters.gender_name ', ' genders.name ')             
-              .whereLike('referencia', '%' + Ncollection +'%')          
+              .innerJoin('genders', ' masters.gender_name ', ' genders.name ')
+              .whereLike('referencia', '%' + Ncollection +'%')
               .where('genders.id', "=",  Ngender )
               .groupBy("gender_name", "genders.id", "start_sequence" )
 
-        
 
-              const Resp = loteCant.forEach(loteCant => {      
-            
+
+              const Resp = loteCant.forEach(loteCant => {
+
                 const start_sequence = Number(loteCant['start_sequence'] )+ Number(loteCant['cant_reference'])
                 const Value_sequence = start_sequence.toString().padStart(4, '0');
-                
-                
+
+
                 loteCant['next_sequence'] =  Value_sequence ;
           });
-      
+
       console.log(Resp);
 
       return loteCant.length >= 1 ? loteCant[0] : sqloteCant[0] ;
-      
+
     } catch (error) {
       console.log("error", error);
 
-    }    
-  }, 
+    }
+  },
 
-  async doUpdateSize(ctx){  
-   
-    console.log('doUpdateSize:');  
+  async doUpdateSize(ctx){
+
+    console.log('doUpdateSize:');
   try {
-      console.log(ctx.request.body);  
+      console.log(ctx.request.body);
 
       const ObjetSizes = ctx.request.body;
       const DataSizes =ObjetSizes.size.size;
       const IDMaster= Number(ObjetSizes.reference)
 
           const [SizeEntry, SizeEntryCount] = await strapi.db.query('api::size.size').findWithCount({
-            where: {      
+            where: {
               name: {
                 $in:  ObjetSizes.size.size,
-                  },             
+                  },
               },
-              orderBy: { id: 'DESC' }, 
-          }); 
+              orderBy: { id: 'DESC' },
+          });
 
           if (SizeEntryCount){
             const MasterEntry = await strapi.service('api::master.master').FinOneIDMaster(IDMaster);
             MasterEntry.sizes = SizeEntry ? SizeEntry : []
 
             const Dataentry = await strapi.db.query('api::master.master').update({
-              where: { id: IDMaster },    
+              where: { id: IDMaster },
               data: MasterEntry
             });
 
             console.log('doUpdateSize-FindIDMasterExamineSizes');
-            await strapi.service('api::master.master').FindIDMasterExamineSizes(IDMaster, DataSizes);   
-            
-            return Dataentry;          
-            
-           }      
-    
+            await strapi.service('api::master.master').FindIDMasterExamineSizes(IDMaster, DataSizes);
+
+            return Dataentry;
+
+           }
+
     } catch (error) {
       console.log("error", error);
-    }  
+    }
 
-  
+
   },
 
 
-  async UpdateComment(ctx){  
-   
-    const { IdMaster } = ctx.params; 
+  async UpdateComment(ctx){
+
+    const { IdMaster } = ctx.params;
     let Comment=[];
-  
-    console.log('UpdateComment:');  
+
+    console.log('UpdateComment:');
 
     //console.log(...ctx.request.body.comments)
-  
+
     try {
 
 
@@ -593,30 +527,30 @@ async updateStatusReferencia(ctx){
         select: ['id', 'referencia', 'status'],
         where: { id: IdMaster },
         populate: {
-          collection: {         
+          collection: {
             populate: {
               collection_type:{
-                fields: ['id'],  
+                fields: ['id'],
                 },
-            },             
-          }, 
+            },
+          },
           theme:{
-            fields: ['name'],  
-            },          
+            fields: ['name'],
+            },
           Composition: {
               populate: {
             gender:{
-              fields: ['id', 'startSequence'],  
+              fields: ['id', 'startSequence'],
               },
               fabric:{
-                fields: ['id'],  
+                fields: ['id'],
                 },
                 color:{
-                  fields: ['id'],  
-                  },                 
+                  fields: ['id'],
+                  },
                     typeproduct:{
-                      fields: ['id'],  
-                      }                           
+                      fields: ['id'],
+                      }
             }
           },
           drawings:[{
@@ -627,17 +561,17 @@ async updateStatusReferencia(ctx){
           },
           comments: [
             {
-              fields: ['id', 'comment'],                   
+              fields: ['id', 'comment'],
             }
           ],
           pendings: [
             {
-              fields: ['id', 'comment'],                   
+              fields: ['id', 'comment'],
             }
           ],
         },
-    }); 
-  
+    });
+
         if (EntryCount){
 
           const message = ctx.request.body.comments[0].comment
@@ -646,43 +580,43 @@ async updateStatusReferencia(ctx){
           const city = ctx.request.body.comments[0].city
 
           Comment.push(...MasterEntry[0].comments, ...ctx.request.body.comments)
-          
+
           MasterEntry[0].comments = MasterEntry ? Comment : []
 
-          let UpdateRegistro = await strapi.entityService.update('api::master.master', IdMaster, {      
+          let UpdateRegistro = await strapi.entityService.update('api::master.master', IdMaster, {
             data: MasterEntry[0],
-          }); 
-          
+          });
+
           if(toMaker){
             await strapi.service('api::master.master').SendEmailCommentsMaker(UpdateRegistro.referencia, user, message);
-          }else{ 
+          }else{
             await strapi.service('api::master.master').SendEmailComments(UpdateRegistro.referencia, user, message);
           }
-          
+
 
           let NumeroReferencia = {
             "IdMastar": UpdateRegistro.id,
             "GenderName":UpdateRegistro.genderName,
             "ProductName":UpdateRegistro.productname,
-            "CountSequence": UpdateRegistro.referencia           
-        };               
-                    
-          return NumeroReferencia;         
-          
+            "CountSequence": UpdateRegistro.referencia
+        };
+
+          return NumeroReferencia;
+
         }
-  
+
       } catch (error) {
         console.log("error", error);
-      }       
-  
-  }, 
-  
-    async UpdatePendingsComment(ctx){  
-      
-      const { IdMaster } = ctx.params; 
+      }
+
+  },
+
+    async UpdatePendingsComment(ctx){
+
+      const { IdMaster } = ctx.params;
       let Comment=[];
-    
-      console.log('UpdatePendingsComment:');  
+
+      console.log('UpdatePendingsComment:');
       //console.log(...ctx.request.body.pendings)
     try {
 
@@ -690,30 +624,30 @@ async updateStatusReferencia(ctx){
         select: ['id', 'referencia', 'status'],
         where: { id: IdMaster },
         populate: {
-          collection: {         
+          collection: {
             populate: {
               collection_type:{
-                fields: ['id'],  
+                fields: ['id'],
                 },
-            },             
-          }, 
+            },
+          },
           theme:{
-            fields: ['name'],  
-            },          
+            fields: ['name'],
+            },
           Composition: {
               populate: {
             gender:{
-              fields: ['id', 'startSequence'],  
+              fields: ['id', 'startSequence'],
               },
               fabric:{
-                fields: ['id'],  
+                fields: ['id'],
                 },
                 color:{
-                  fields: ['id'],  
-                  },                 
+                  fields: ['id'],
+                  },
                     typeproduct:{
-                      fields: ['id'],  
-                      }                           
+                      fields: ['id'],
+                      }
             }
           },
           drawings:[{
@@ -724,275 +658,275 @@ async updateStatusReferencia(ctx){
           },
           comments: [
             {
-              fields: ['id', 'comment'],                   
+              fields: ['id', 'comment'],
             }
           ],
           pendings: [
             {
-              fields: ['id', 'comment'],                   
+              fields: ['id', 'comment'],
             }
           ],
         },
-    }); 
-    
+    });
+
           if (EntryCount){
-    
+
             Comment.push(...MasterEntry[0].pendings, ...ctx.request.body.pendings)
-            
+
             MasterEntry[0].pendings = MasterEntry ? Comment : []
-    
-            let UpdateRegistro = await strapi.entityService.update('api::master.master', IdMaster, {      
+
+            let UpdateRegistro = await strapi.entityService.update('api::master.master', IdMaster, {
               data: MasterEntry[0],
-            });  
-    
+            });
+
             let NumeroReferencia = {
               "IdMastar": UpdateRegistro.id,
               "GenderName":UpdateRegistro.genderName,
               "ProductName":UpdateRegistro.productname,
-              "CountSequence": UpdateRegistro.referencia           
-          };       
-          
-                    
-          return NumeroReferencia;         
-            
-          }  
-    
+              "CountSequence": UpdateRegistro.referencia
+          };
+
+
+          return NumeroReferencia;
+
+          }
+
         } catch (error) {
           console.log("error", error);
-        }       
-    
+        }
+
     },
 
 
-  async UpdateStampComment(ctx){  
-     
-    const { IdStamp } = ctx.params; 
+  async UpdateStampComment(ctx){
+
+    const { IdStamp } = ctx.params;
     let Comment=[];
-  
-    console.log('UpdateStampComment:');  
+
+    console.log('UpdateStampComment:');
     //console.log(...ctx.request.body.commentstamp)
    try {
 
     const [MasterEntry, EntryCount] = await strapi.db.query('api::stamp.stamp').findWithCount({
-      select: ['id', 'name'],  
+      select: ['id', 'name'],
       where: { id: IdStamp },
-      populate: { 
-        
+      populate: {
+
         masters:{
-          fields: ['id'],  
-          },  
-       
+          fields: ['id'],
+          },
+
         commentstamp: [
           {
-            fields: ['id', 'comment'],                   
+            fields: ['id', 'comment'],
           }
         ],
         pendingstamp: [
           {
-            fields: ['id', 'comment'],                   
+            fields: ['id', 'comment'],
           }
         ],
       },
-  }); 
-  
+  });
+
         if (EntryCount){
 
          // console.log(MasterEntry)
-  
+
           Comment.push(...MasterEntry[0].commentstamp, ...ctx.request.body.commentstamp)
-          
+
           MasterEntry[0].commentstamp = MasterEntry ? Comment : []
-  
-          let UpdateRegistro = await strapi.entityService.update('api::stamp.stamp', IdStamp, {   
-             
+
+          let UpdateRegistro = await strapi.entityService.update('api::stamp.stamp', IdStamp, {
+
             data: MasterEntry[0],
-          }); 
-          
+          });
+
           //console.log(MasterEntry[0].masters[0].id)
-  
+
           let NumeroReferencia = {
             "IdMastar": MasterEntry[0].masters[0].id,
             "StampName":UpdateRegistro.name,
-                  
-        };       
-        
-                   
-         return NumeroReferencia;         
-          
-        }  
-  
+
+        };
+
+
+         return NumeroReferencia;
+
+        }
+
       } catch (error) {
         console.log("error", error);
-      }       
-  
-  }, 
-  
-    async UpdateStampPendingsComment(ctx){  
-      
-      const { IdStamp } = ctx.params; 
+      }
+
+  },
+
+    async UpdateStampPendingsComment(ctx){
+
+      const { IdStamp } = ctx.params;
       let Comment=[];
-    
-      console.log('UpdateStampPendingsComment:');  
+
+      console.log('UpdateStampPendingsComment:');
       //console.log(...ctx.request.body.pendingstamp)
     try {
 
       const [MasterEntry, EntryCount] = await strapi.db.query('api::stamp.stamp').findWithCount({
-        select: ['id', 'name'],  
+        select: ['id', 'name'],
         where: { id: IdStamp },
-        populate: { 
-          
+        populate: {
+
           masters:{
-            fields: ['id'],  
-            },  
-        
+            fields: ['id'],
+            },
+
           commentstamp: [
             {
-              fields: ['id', 'comment'],                   
+              fields: ['id', 'comment'],
             }
           ],
           pendingstamp: [
             {
-              fields: ['id', 'comment'],                   
+              fields: ['id', 'comment'],
             }
           ],
         },
-    }); 
-    
+    });
+
           if (EntryCount){
 
           // console.log(MasterEntry)
-    
+
             Comment.push(...MasterEntry[0].pendingstamp, ...ctx.request.body.pendingstamp)
-            
+
             MasterEntry[0].pendingstamp = MasterEntry ? Comment : []
-    
-            let UpdateRegistro = await strapi.entityService.update('api::stamp.stamp', IdStamp, {   
-              
+
+            let UpdateRegistro = await strapi.entityService.update('api::stamp.stamp', IdStamp, {
+
               data: MasterEntry[0],
-            }); 
-            
+            });
+
             //console.log(MasterEntry[0].masters[0].id)
-    
+
             let NumeroReferencia = {
               "IdMastar": MasterEntry[0].masters[0].id,
               "StampName":UpdateRegistro.name,
-                    
-          };       
-          
-                    
-          return NumeroReferencia;         
-            
-          }  
-    
+
+          };
+
+
+          return NumeroReferencia;
+
+          }
+
         } catch (error) {
           console.log("error", error);
-        }       
-    
+        }
+
     },
 
-      async updateStatusStamp(ctx){  
-        
-        const { IdStamp } = ctx.params; 
+      async updateStatusStamp(ctx){
+
+        const { IdStamp } = ctx.params;
         let Comment=[];
-      
-        console.log('updateStatusStamp:');  
+
+        console.log('updateStatusStamp:');
         try {
-   
-   
+
+
           const [MasterEntry, EntryCount] = await strapi.db.query('api::stamp.stamp').findWithCount({
-            select: ['id', 'name'],  
+            select: ['id', 'name'],
             where: { id: IdStamp },
-            populate: { 
-              
+            populate: {
+
               masters:{
-                fields: ['id'],  
-                },  
-            
+                fields: ['id'],
+                },
+
               commentstamp: [
                 {
-                  fields: ['id', 'comment'],                   
+                  fields: ['id', 'comment'],
                 }
               ],
               pendingstamp: [
                 {
-                  fields: ['id', 'comment'],                   
+                  fields: ['id', 'comment'],
                 }
               ],
             },
-        }); 
-          
+        });
+
         if (EntryCount){
-          
-            let UpdateRegistro = await strapi.entityService.update('api::stamp.stamp', IdStamp, {      
+
+            let UpdateRegistro = await strapi.entityService.update('api::stamp.stamp', IdStamp, {
                     data: ctx.request.body,
-                  });  
-                  
-                
+                  });
+
+
                   let NumeroReferencia = {
                     "IdMastar": MasterEntry[0].masters[0].id,
                     "StampName":UpdateRegistro.name,
-                          
-                };               
-            
+
+                };
+
               return NumeroReferencia;
           }
 
 
          } catch (error) {
            console.log("error", error);
-         }       
+         }
       },
-  
-  
+
+
 
 
   async TriggerXLSX(ctx){
 
 
-   const { Nreferencia } = ctx.params;    
+   const { Nreferencia } = ctx.params;
    const ReferencePrefix = Nreferencia.substring(0, 3)
 
    let Prefix = Nreferencia.length === 3 ? `${ReferencePrefix}`  : Nreferencia;
 
-   try {  
+   try {
 
       const [MasterEntry, EntryCount] = await strapi.db.query('api::master.master').findWithCount({
         select: ['id', 'referencia', 'description', 'status', 'similarRefs'],
-        where: {      
+        where: {
           referencia: {
             $contains: Prefix,
-          },             
+          },
       },
         populate: {
-          collection: {         
+          collection: {
             populate: {
               collection_type:{
-                fields: ['id'],  
+                fields: ['id'],
                 },
-            },             
-          },           
+            },
+          },
           Composition: {
               populate: {
             gender:{
-              fields: ['id', 'startSequence'],  
+              fields: ['id', 'startSequence'],
               },
               fabric:{
-                fields: ['id'],  
+                fields: ['id'],
                 },
                 color:{
-                  fields: ['id'],  
-                  },                 
+                  fields: ['id'],
+                  },
                     typeproduct:{
-                      fields: ['id'],  
-                      }                           
+                      fields: ['id'],
+                      }
             }
           },
           drawings:[{
             fields: ['id'],
           }],
           theme:{
-            fields: ['name'],  
-            },     
+            fields: ['name'],
+            },
           sizes: {
             fields: ['id'],
           },
@@ -1001,38 +935,38 @@ async updateStatusReferencia(ctx){
           },
           comments: [
             {
-              fields: ['id', 'comment'],                   
+              fields: ['id', 'comment'],
             }
           ],
           pendings: [
             {
-              fields: ['id', 'comment'],                   
+              fields: ['id', 'comment'],
             }
           ],
         },
-    }); 
+    });
 
     let ArrayReference=[];
     let CodigoSizes=[];
     let PendingComment=[];
 
 if(EntryCount){
-    MasterEntry?.map((data, index) => {      
-        
-      
-      data.sizes.map((Sizes, index) => {      
-        const IdSizes = Sizes ? Sizes.name : 'null'        
-        CodigoSizes.push(IdSizes);     
+    MasterEntry?.map((data, index) => {
+
+
+      data.sizes.map((Sizes, index) => {
+        const IdSizes = Sizes ? Sizes.name : 'null'
+        CodigoSizes.push(IdSizes);
     });
 
-    data.pendings?.map((Comments, index) => {     
+    data.pendings?.map((Comments, index) => {
       const Commenta = Comments ? Comments.comment : 'null'
       PendingComment.push(Commenta);
     });
 
 
       let masterlist = {
-        
+
         "Identifier": data.referencia,
         "collection": data.collection.name,
         "color": data.color_pantone.name,
@@ -1051,19 +985,19 @@ if(EntryCount){
       CodigoSizes=[''];
       PendingComment=[''];
       ArrayReference.push(masterlist)
-        
-    });  
+
+    });
 
     //console.log(ArrayReference);
     await ExporXLSX(ArrayReference, 'MasterList');
-  
+
     //ctx.body = 'OK';
   return ArrayReference
 
 }
   } catch (error) {
     console.log("error", error);
-   
+
   }
 
 },
@@ -1071,130 +1005,130 @@ if(EntryCount){
   async PendingsTriggerXLSX(ctx){
 
 
-    const { Nreferencia } = ctx.params;    
+    const { Nreferencia } = ctx.params;
     const ReferencePrefix = Nreferencia.substring(0, 3)
 
     let Prefix = Nreferencia.length === 3 ? `${ReferencePrefix}`  : Nreferencia;
 
-    try {   
+    try {
 
     const MasterEntry = await strapi.entityService.findMany('api::master.master', {
-      publicationState: 'preview',     
-      filters: { 
+      publicationState: 'preview',
+      filters: {
         referencia: {
         $contains: Prefix,
-        }, 
-      },  
-      populate: {     
-    
-      collection: {         
+        },
+      },
+      populate: {
+
+      collection: {
         populate: {
           collection_type:{
-            fields: ['id', 'name'],  
+            fields: ['id', 'name'],
             },
-        },             
-      }, 
-      pendings: {       
+        },
+      },
+      pendings: {
         populate: {
           type:{
-          fields: ['id', 'name'],  
+          fields: ['id', 'name'],
           },
         },
       },
 
     },
-       
-     
-    });  
- 
+
+
+    });
+
     let ArrayReference=[];
     let CodigoSizes=[];
     let PendingComment=[];
- 
-    
+
+
      if(MasterEntry){
-          MasterEntry?.map((data, index) => {   
+          MasterEntry?.map((data, index) => {
 
-            data.pendings?.map((Comments, index) => {              
+            data.pendings?.map((Comments, index) => {
 
-              let dateformat=  `${convertToFrenchDate(Comments.date)}-${convertToFrenchHour(Comments.date)}`;          
-            
+              let dateformat=  `${convertToFrenchDate(Comments.date)}-${convertToFrenchHour(Comments.date)}`;
+
               let masterlist = {
-                
+
                 "Identifier": data.referencia,
-                "collection": data.collection.name, 
+                "collection": data.collection.name,
                 "date": Comments.date ? dateformat  : '',
                 "typePendings": Comments.type ? Comments.type.name : '',
                 "pending": Comments ? Comments.comment : '',
                 "statusPending": Comments.status,
-                "statusRef": data.status,     
-              
+                "statusRef": data.status,
+
               }
               ArrayReference.push(masterlist)
-            });       
-              
-          });  
+            });
+
+          });
 
           const StampEntry = await strapi.entityService.findMany('api::stamp.stamp', {
-            publicationState: 'preview',     
-            filters: { 
-              masters: {     
+            publicationState: 'preview',
+            filters: {
+              masters: {
               referencia: {
               $contains: Prefix,
-              }, 
-            }, 
-            },      
-            populate: {     
-          
-              masters: {         
+              },
+            },
+            },
+            populate: {
+
+              masters: {
                 populate: {
-                  collection: {         
+                  collection: {
                     populate: {
                       collection_type:{
-                        fields: ['id', 'name'],  
+                        fields: ['id', 'name'],
                         },
-                    },             
-                  }, 
-                },             
-              }, 
-              pendingstamp: {       
-                populate: {
-                  type:{
-                  fields: ['id', 'name'],  
+                    },
                   },
                 },
               },
-      
+              pendingstamp: {
+                populate: {
+                  type:{
+                  fields: ['id', 'name'],
+                  },
+                },
+              },
+
           },
-             
-           
-          });    
+
+
+          });
           if(StampEntry){
-            StampEntry?.map((data, index) => { 
+            StampEntry?.map((data, index) => {
               data.pendingstamp?.map((stampPendings, index) => {
-                
+
                 let dateformat=  `${convertToFrenchDate(stampPendings.date)}-${convertToFrenchHour(stampPendings.date)}`;
-      
-                let stamplist = {              
+
+                let stamplist = {
                   "Identifier": data.name,
-                  "collection": data.masters[0].collection.name, 
+                  "collection": data.masters[0].collection.name,
                   "date": stampPendings.date ? dateformat  : '',
                   "typePendings": stampPendings.type ? stampPendings.type.name : '',
                   "pending": stampPendings ? stampPendings.comment : '',
                   "statusPending": stampPendings.status,
-                  
-              
+
+
               }
               ArrayReference.push(stamplist)
-              });  
-      
-          
-            }); 
+              });
+
+
+            });
           }
 
           //console.log(ArrayReference);
           await ExporXLSX(ArrayReference, 'RecentPendings');
-        
+
           //ctx.body = 'OK';
           return ArrayReference
 
@@ -1202,7 +1136,7 @@ if(EntryCount){
 
   } catch (error) {
     console.log("error", error);
-    
+
   }
 
   },
@@ -1210,146 +1144,144 @@ if(EntryCount){
   async CommentsTriggerXLSX(ctx){
 
 
-    const { Nreferencia } = ctx.params;    
+    const { Nreferencia } = ctx.params;
     const ReferencePrefix = Nreferencia.substring(0, 3)
 
     let Prefix = Nreferencia.length === 3 ? `${ReferencePrefix}`  : Nreferencia;
 
-    try {   
+    try {
 
     const MasterEntry = await strapi.entityService.findMany('api::master.master', {
-      
-        publicationState: 'preview',     
-        filters: { 
+
+        publicationState: 'preview',
+        filters: {
           referencia: {
           $contains: Prefix,
-          }, 
-        },  
-      populate: {      
-    
-      collection: {         
+          },
+        },
+      populate: {
+
+      collection: {
         populate: {
           collection_type:{
-            fields: ['id', 'name'],  
+            fields: ['id', 'name'],
             },
-        },             
-      }, 
-      comments: {       
+        },
+      },
+      comments: {
         populate: {
           type:{
-          fields: ['id', 'name'],  
+          fields: ['id', 'name'],
           },
         },
       },
 
     },
-       
-     
-    });  
- 
+
+
+    });
+
     let ArrayReference=[];
     let CodigoSizes=[];
     let PendingComment=[];
 
       if(MasterEntry){
-          MasterEntry?.map((data, index) => {             
+          MasterEntry?.map((data, index) => {
 
-          data.comments?.map((Comments, index) => { 
-             let dateformat=  `${convertToFrenchDate(Comments.date)}-${convertToFrenchHour(Comments.date)}`;          
-           
-            let masterlist = {              
+          data.comments?.map((Comments, index) => {
+             let dateformat=  `${convertToFrenchDate(Comments.date)}-${convertToFrenchHour(Comments.date)}`;
+
+            let masterlist = {
                "Identifier": data.referencia,
-               "collection": data.collection.name, 
+               "collection": data.collection.name,
                "date": Comments.date ? dateformat  : '',
                "typeComments": Comments.type ? Comments.type.name : '',
                "comments": Comments ? Comments.comment : '',
                "statusComments": Comments.status,
-               "statusRef": data.status,    
-            
+               "statusRef": data.status,
+
             }
 
              ArrayReference.push(masterlist)
-          });     
-
-            
-              
           });
-          
-          
+
+
+
+          });
+
+
           const StampEntry = await strapi.entityService.findMany('api::stamp.stamp', {
-            publicationState: 'preview',     
-            filters: { 
-              masters: {     
+            publicationState: 'preview',
+            filters: {
+              masters: {
               referencia: {
               $contains: Prefix,
-              }, 
-            }, 
-            },      
-            populate: {     
-          
-              masters: {         
+              },
+            },
+            },
+            populate: {
+
+              masters: {
                 populate: {
-                  collection: {         
+                  collection: {
                     populate: {
                       collection_type:{
-                        fields: ['id', 'name'],  
+                        fields: ['id', 'name'],
                         },
-                    },             
-                  }, 
-                },             
-              }, 
-              commentstamp: {       
-                populate: {
-                  type:{
-                  fields: ['id', 'name'],  
+                    },
                   },
                 },
               },
-      
+              commentstamp: {
+                populate: {
+                  type:{
+                  fields: ['id', 'name'],
+                  },
+                },
+              },
+
           },
-             
-           
-          });    
+
+
+          });
           if(StampEntry){
-            StampEntry?.map((data, index) => { 
+            StampEntry?.map((data, index) => {
               data.commentstamp?.map((stampPendings, index) => {
-                
+
                 let dateformat=  `${convertToFrenchDate(stampPendings.date)}-${convertToFrenchHour(stampPendings.date)}`;
-      
-                let stamplist = {              
+
+                let stamplist = {
                   "Identifier": data.name,
-                  "collection": data.masters[0].collection.name, 
+                  "collection": data.masters[0].collection.name,
                   "date": stampPendings.date ? dateformat  : '',
                   "typeComments": stampPendings.type ? stampPendings.type.name : '',
                   "comments": stampPendings ? stampPendings.comment : '',
                   "statusComments": stampPendings.status,
-                  
-              
+
+
               }
               ArrayReference.push(stamplist)
-              });  
-      
-          
-            }); 
+              });
+
+
+            });
           }
 
           //console.log(ArrayReference);
           await ExporXLSX(ArrayReference, 'RecentComments');
-        
+
           //ctx.body = 'OK';
           return ArrayReference
 
       }
   } catch (error) {
     console.log("error", error);
-    
+
   }
 
   },
-
-
   async getcontrol(ctx){
-    const { Nreferencia } = ctx.params; 
+    const { Nreferencia } = ctx.params;
 
     console.log(Nreferencia);
 
@@ -1357,17 +1289,15 @@ if(EntryCount){
  let CodigoSizes=[];
  let CodigoStatus=[];
 
-    const Entry = await strapi.db.query('api::masterbase.masterbase').findOne({        
-      where: {   
-               
+    const Entry = await strapi.db.query('api::masterbase.masterbase').findOne({
+      where: {
             id_collection: Nreferencia,
-            masterserver: { $null: true },     
-                          
+            masterserver: { $null: true },
      },
-      orderBy: { id: 'ASC' }, 
+      orderBy: { id: 'ASC' },
     });
 
-    if (Entry){      
+    if (Entry){
 
         const entry = await strapi.db.query('api::masterbase.masterbase').update({
           where: { id: Entry.id },
@@ -1377,16 +1307,16 @@ if(EntryCount){
         });
   }
 
-  MasterEntry.push(Entry); 
+  MasterEntry.push(Entry);
 
     let arrSizes = Array.from(MasterEntry[0].sizelist.split(','),Number);
 
-    arrSizes?.map((dataRef, index) => {  
+    arrSizes?.map((dataRef, index) => {
       const result = {
-              "id": dataRef         
+              "id": dataRef
           }
-          CodigoSizes.push(result); 
-    }); 
+          CodigoSizes.push(result);
+    });
 
 
 const ArrayData = [
@@ -1470,18 +1400,18 @@ const ArrayData = [
   }
 ]
 
-ArrayData?.map((dataRef, index) => {  
+ArrayData?.map((dataRef, index) => {
   if(MasterEntry[0].id_status==dataRef.id_status){
 
     const result = {
       "id": dataRef.id_status,
-      "name_status":dataRef.name_status         
+      "name_status":dataRef.name_status
   }
 
-  CodigoStatus.push(result); 
+  CodigoStatus.push(result);
   }
- 
-}); 
+
+});
 
 
 
@@ -1492,27 +1422,27 @@ ArrayData?.map((dataRef, index) => {
     "description":  MasterEntry[0].description,
     "similarRefs": MasterEntry[0].similar_ref,
     "collection": {
-      "id": MasterEntry[0].id_collection 
+      "id": MasterEntry[0].id_collection
     },
     "Composition": {
       "gender": {
-        "id": MasterEntry[0].id_gender    
+        "id": MasterEntry[0].id_gender
       },
       "fabric": {
         "id": MasterEntry[0].id_fabric
       },
       "color": {
-        "id": MasterEntry[0].id_colorsifa     
-      },           
+        "id": MasterEntry[0].id_colorsifa
+      },
       "typeproduct": {
-        "id": MasterEntry[0].id_product      
+        "id": MasterEntry[0].id_product
       }
     },
     "color_pantone": {
       "id": MasterEntry[0].id_color ? MasterEntry[0].id_color : 4756
     },
 
-    "sizes": CodigoSizes, 
+    "sizes": CodigoSizes,
 
     "provider": {
       "id": Number(MasterEntry[0].id_provider)
@@ -1521,7 +1451,7 @@ ArrayData?.map((dataRef, index) => {
     //   "id": stamp ? stamp : ''
     // },
     "theme": {
-      "id": MasterEntry[0].id_theme ? MasterEntry[0].id_theme : 396  
+      "id": MasterEntry[0].id_theme ? MasterEntry[0].id_theme : 396
     }
 
 
@@ -1531,7 +1461,7 @@ ArrayData?.map((dataRef, index) => {
     method: 'post',
     maxBodyLength: Infinity,
     url: 'https://devmaster.epkweb.com/api/mastercontrol/createreferencia/',
-    headers: { 
+    headers: {
       'Content-Type': 'application/json'
     },
     data : data
@@ -1553,16 +1483,16 @@ console.log(MasterEntry);
 
 
 
-    
-    // const MasterEntry = await strapi.service('api::master.master').FinOneIDMaster(Nreferencia); 
+
+    // const MasterEntry = await strapi.service('api::master.master').FinOneIDMaster(Nreferencia);
 
     // MasterEntry.status = MasterEntry ? 'Approved' : null
 
-    // let UpdateRegistro = await strapi.entityService.update('api::master.master', Nreferencia, {      
+    // let UpdateRegistro = await strapi.entityService.update('api::master.master', Nreferencia, {
     //   data: MasterEntry,
     // });
-    
-    // const entries = await strapi.entityService.findMany('api::settingsglobal.settingsglobal', {     
+
+    // const entries = await strapi.entityService.findMany('api::settingsglobal.settingsglobal', {
     //   populate: '*',
     // });
 
@@ -1595,16 +1525,16 @@ console.log(MasterEntry);
     //                   <p >&nbsp;</p>
     //                   <p ><em>
     //                   <span style="font-size:13px;">
-    //                       Dear User, This is an non monitored e-mail account, please do not answer or forward messages to this account. 
-    //                       This message and its attachments may contain privileged or confidential information and are for the exclusive use of the person or entity of destination. 
-    //                       If you are not the indicated recipient, you are notified of reading, using, disclosing and / or copying without authorization may be prohibited under current legislation. 
+    //                       Dear User, This is an non monitored e-mail account, please do not answer or forward messages to this account.
+    //                       This message and its attachments may contain privileged or confidential information and are for the exclusive use of the person or entity of destination.
+    //                       If you are not the indicated recipient, you are notified of reading, using, disclosing and / or copying without authorization may be prohibited under current legislation.
     //                       If you have received this message by mistake, please inform us immediately and proceed to its destruction.&nbsp;</span>
     //                   </em></p>`
-      
+
         // if(entries.EnableMailingSISOC.sendEmail){
 
         //     const { to, from, subject} = entries.EnableMailingSISOC
-        //     //******Email********* */ 
+        //     //******Email********* */
         //       const MasterEntry = await strapi.plugin('email').service('email').send({
         //         to: 'earmartinez@gmail.com',
         //         cc: 'earmartinez@gmail.com',
@@ -1612,10 +1542,10 @@ console.log(MasterEntry);
         //         subject: '',
         //         text: '',
         //         html: Messages, //JSON.stringify(message),
-        //       });  
+        //       });
         // }
 
-    
+
     //     await strapi.service('api::master.master').webhooksSendEmail(Nreferencia, 'entry.update');
 
     // const IDColection = Nreferencia ? Nreferencia : '29'
@@ -1627,73 +1557,73 @@ console.log(MasterEntry);
     // .select(
     //   knex.raw( 'stamps.name, masters.referencia')
     //   ).from("masters")
-    //   .innerJoin('masters_collection_links', ' masters_collection_links.master_id ', ' masters.id ')  
+    //   .innerJoin('masters_collection_links', ' masters_collection_links.master_id ', ' masters.id ')
     //   .innerJoin('masters_stamp_links', ' masters_stamp_links.master_id ', 'masters.id')
-    //   .innerJoin('stamps', ' stamps.id ', 'masters_stamp_links.stamp_id') 
-    //   .where("masters_collection_links.collection_id", "=", IDColection)      
+    //   .innerJoin('stamps', ' stamps.id ', 'masters_stamp_links.stamp_id')
+    //   .where("masters_collection_links.collection_id", "=", IDColection)
     //   .groupBy(' stamps.name ', 'masters.referencia' )
 
-      
-    
-//     const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({        
-//       where: {      
+
+
+//     const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({
+//       where: {
 //         name: {
 //           $contains: Nreferencia,
-//         },             
+//         },
 //     },
-//     orderBy: { id: 'DESC' }, 
-// }); 
+//     orderBy: { id: 'DESC' },
+// });
 
- //  const MasterEntry = await strapi.service('api::master.master').FinOneReferencia(Nreferencia);             
-   
+ //  const MasterEntry = await strapi.service('api::master.master').FinOneReferencia(Nreferencia);
 
 
-  
+
+
 
 // let Entry  = Object.values(Imgentry);
 // let ArrayReference=[];
-// let ObjetReference={};  
-// Entry.map((data, index) => {      
-    
-//   ArrayReference.push(data.id)
-    
-// });  
-  
-  //console.log(ArrayReference.join(',')); 
+// let ObjetReference={};
+// Entry.map((data, index) => {
 
-  
+//   ArrayReference.push(data.id)
+
+// });
+
+  //console.log(ArrayReference.join(','));
+
+
   //const knex = strapi.db.connection;
   //const Statusresult = await knex.select('url').from('files')
 
   // const loteCant = await knex
   // .select(
   //     knex.raw(' id, name ')
-  //     ).from("sizes")         
-      
+  //     ).from("sizes")
+
   //     .groupBy("id","name" )
 
-     
 
-    
 
-  // const Resp =Rfern.forEach(function(loteCant, index)  {   
+
+
+  // const Resp =Rfern.forEach(function(loteCant, index)  {
 
   //   loteCant = Imgentry[index];
 
   //   //console.log(loteCant);
-  //  }); 
-   
-//    Rfern1.map((Composition, index) => {         
-   
+  //  });
+
+//    Rfern1.map((Composition, index) => {
+
 //     console.log(Composition);
-  
+
 // });
 
- 
+
 
 
   // const data = {
-                
+
   //   "slug": null,
   //   "referencia": "1101502",
   //   "description": "prueba de import",
@@ -1720,11 +1650,11 @@ console.log(MasterEntry);
 
 
   // const Dataentry = await strapi.db.query('api::master.master').update({
-  //   where: { referencia: Nreferencia },    
+  //   where: { referencia: Nreferencia },
   //   data: MasterEntry
   // });
 
-  
+
 
   //console.log(Dataentry );
 
@@ -1732,15 +1662,15 @@ console.log(MasterEntry);
 
     // const uentry = await strapi.entityService.update('api::master.master', 79, {
     //     data: {
-    //       //   collection: {                   
-    //       //       id: 2      
+    //       //   collection: {
+    //       //       id: 2
     //       //    },
-    //       //    Composition: {                 
+    //       //    Composition: {
     //       //     gender:{
-    //       //     id: 2,                            
+    //       //     id: 2,
     //       //   },
     //       //   sizes:{
-    //       //     id: 2,                            
+    //       //     id: 2,
     //       //   }
     //       //  },
     //        imagen1:[
@@ -1748,12 +1678,12 @@ console.log(MasterEntry);
     //         { id: 91 }
     //       ],
 
-           
+
     //     },
-    //   });         
-    
-    
-    
+    //   });
+
+
+
     // const entry = await strapi.entityService.findOne('api::master.master', id, {
     //     fields: ['id','referencia'],
     //     populate: ['collection', 'imagen1'],
@@ -1763,40 +1693,40 @@ console.log(MasterEntry);
       //   fields: ['id','referencia'],
       //   populate: {
       //   collection: {
-      //     id: ['id'],              
-      //   },           
+      //     id: ['id'],
+      //   },
       //   Composition: {
       //       populate: {
       //       gender:{
       //       id: ['id'],
 
-      //       }               
+      //       }
       //     }
       //    }
       // },
-      // });  
-        
-      // console.log(SeleccEntry.Composition.gender.id);
-      
-      
-     
-      
+      // });
 
-  
-       
-     
-        
-      //const NumeroReferencia = await getCreateSequence(id); 
-      
-                      
+      // console.log(SeleccEntry.Composition.gender.id);
+
+
+
+
+
+
+
+
+
+      //const NumeroReferencia = await getCreateSequence(id);
+
+
 
       ctx.body = 'Hello World!:'  ;
 
-   
-       
-    
+
+
+
 },
-  
+
 
 
   };

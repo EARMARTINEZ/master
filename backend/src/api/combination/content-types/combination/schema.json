@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "combinations",
+  "info": {
+    "singularName": "combination",
+    "pluralName": "combinations",
+    "displayName": "Combination",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "gender": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::gender.gender"
+    },
+    "theme": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::theme.theme"
+    },
+    "a_create_references": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::master.master"
+    },
+    "canvas": {
+      "type": "json"
+    },
+    "collection": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::collection.collection"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "mannequin",
+        "impulse",
+        "photo"
+      ]
+    }
+  }
+}
