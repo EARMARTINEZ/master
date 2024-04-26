@@ -462,6 +462,47 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
         },
 
         
+        async FinOneImagesSilhouetteReferencia(Nreferencia) {       
+
+          try { 
+                
+                  const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({        
+                          where: {      
+                            name: {
+                              $contains: Nreferencia,
+                            },
+                            ext: {
+                              $contains: '.png',
+                            },      
+                        },
+                        orderBy: { id: 'DESC' }, 
+                    }); 
+  
+                    console.log(Imgentry);  
+  
+              if (ImgentryCount){
+                    const MasterEntry = await strapi.service('api::master.master').FinOneReferencia(Nreferencia);             
+                    
+                          MasterEntry.silhouette = Imgentry ? Imgentry : []
+                    
+                    //const NReferencia = Nreferencia.substring(0, 7);       
+                    const Dataentry = await strapi.db.query('api::master.master').update({
+                      where: { referencia: Nreferencia },    
+                      data: MasterEntry
+                    });
+  
+                return Dataentry;
+                } 
+  
+                return null;
+  
+            } catch (error) {
+              console.log("error", error);
+          }
+  
+        }, 
+
+        
 
   async FinOneSizeReferencia(event,Nreferencia) {       
 

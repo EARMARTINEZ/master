@@ -220,6 +220,7 @@ module.exports = {
                   return StampReferencia
                 }
                 await strapi.service('api::master.master').FinOneImagesReferencia(Nreferencia);
+                await strapi.service('api::master.master').FinOneImagesSilhouetteReferencia(Nreferencia);
                 await strapi.service('api::master.master').FinOnePDFReferencia(Nreferencia);
             }
       } catch (error) {
