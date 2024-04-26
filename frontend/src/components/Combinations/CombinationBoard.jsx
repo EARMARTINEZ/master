@@ -1,150 +1,285 @@
-import React, { useEffect, useState } from 'react';
-import { useTasks } from "utils/ProviderContext";
-import { BasicTasks } from "utils/Provider/BasicProvider";
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { v4 as uuid } from 'uuid';
+/* eslint-disable @next/next/no-img-element */
+// import Image from 'next/image'
+import React from 'react'
+import { useEffect, useState } from 'react';
+import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react'
+import { fabric } from 'fabric';
+import { useTasks } from 'utils/ProviderContext'
+import { UpdateCombination } from './UpdateCombination';
+import { CreateCombination } from './CreateCombination';
 
-const initialImages = [
-  { id: '1', src: 'https://devmaster.epkweb.com/uploads/1151137_93c9a0b1b6.png' },
-  { id: '2', src: 'https://devmaster.epkweb.com/uploads/1151177_406de3e71a.png' },
-  { id: '3', src: 'https://devmaster.epkweb.com/uploads/1160060_a6eda7cc85.png' },
-  { id: '4', src: 'https://devmaster.epkweb.com/uploads/1160778_46567fa29f.png' },
-  { id: '5', src: 'https://devmaster.epkweb.com/uploads/1151132_371415a5d4.png' },
-  { id: '6', src: 'https://devmaster.epkweb.com/uploads/1160147_c4a752f13b.png' },
-  { id: '7', src: 'https://devmaster.epkweb.com/uploads/1160115_b57b07f9b8.png' },
-  { id: '8', src: 'https://devmaster.epkweb.com/uploads/1160054_bb15dbe48f.png' },
-
-];
-
-
-  
-  
-
-export function CombinationBoard() {
+const CombinationBoard = ({ action }) => {
 
   const {
-    doDivideEnPartesIguales,    
-   
-  } = BasicTasks();  
+    IdCollection,
+    combinationsMap,
+    dofetchReferenceForSilhouettes,
+    dofindThemes,
+    dofindGender,
+    dofindParts,
+    dofetchCombinationByCollection,
+  } = useTasks()
 
-  const [selectedImages, setSelectedImages] = useState([]);
   const [availableImages, setAvailableImages] = useState([]);
-  const [state, setState] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [idReferencesInCombination, setIdReferencesInCombination] = useState([]);
+  const [allReferences, setAllReferences] = useState([]);
+  const [themes, setThemes] = useState([]);
+  const [genders, setGenders] = useState([]);
+  const [parts, setParts] = useState([]);
+  const { editor, onReady } = useFabricJSEditor()
 
-//   console.log(availableImages)
-  
-//   console.log(selectedImages)
+  // AGREGA EL BOTÓN DE ELIMINAR A LA IMAGEN DE LA ROPA (TENERLO AFUERA CON UN USEEFECT PARA QUE NO DE PROBLEMAS EL ESTADO)
+  useEffect(() => {
+    const renderIcon = (ctx, left, top, styleOverride, fabricObject) => {
+      var size = 24;
+      ctx.save();
+      ctx.translate(left, top);
+      ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
+      // Dibujar círculo rojo
+      ctx.fillStyle = 'red';
+      ctx.beginPath();
+      ctx.arc(0, 0, size / 2, 0, 2 * Math.PI);
+      ctx.fill();
+      // Dibujar X blanca
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-size / 4, -size / 4);
+      ctx.lineTo(size / 4, size / 4);
+      ctx.moveTo(size / 4, -size / 4);
+      ctx.lineTo(-size / 4, size / 4);
+      ctx.stroke();
 
-  useEffect(() => {          
+      ctx.restore();
+    };
+    fabric.Object.prototype.controls.deleteControl = new fabric.Control({
+      x: 0.65,  // Ajusta la posición horizontal
+      y: -0.65, // Ajusta la posición vertical (-0.5 para colocarlo en la esquina superior)
+      offsetY: 16, // Ajusta el desplazamiento vertical
+      offsetX: -16, // Ajusta el desplazamiento horizontal (negativo para la esquina derecha)
+      cursorStyle: 'pointer',
+      mouseUpHandler: (fabricObject, options) => onRemoveObject(editor, allReferences, availableImages, selectedImages),
+      render: renderIcon,
+      cornerSize: 24,
+    });
+  }, [availableImages, selectedImages])
 
-    setAvailableImages(initialImages)
-   
-    const PartesIgualesArray = doDivideEnPartesIguales(selectedImages);
+  //CARGA LAS SILUETAS DE LA ROPA, LOS GENEROS Y LOS TEMAS
+  useEffect(() => {
 
-    setState(PartesIgualesArray)
+    if (!IdCollection) {
+      return;
+    }
 
+    const fetchSilhouettes = async () => {
+      const response = await dofetchReferenceForSilhouettes(IdCollection);
+      const initialImages = response.map((item) => ({
+        id: item.id,
+        src: item.silhouette.url,
+        genderType: item.gender,
+        themeType: item.theme,
+        partType: item.part
+      }));
+      setAllReferences(initialImages);
+      setAvailableImages(initialImages);
+    }
+    fetchSilhouettes();
+
+    const fetchGenders = async () => {
+      const { data } = await dofindGender();
+      var selectElement;
+      if(action === 'crear'){
+        selectElement = document.getElementById("gender-create");
+      }else{
+        selectElement = document.getElementById("gender-update");
+      }
+      setGenders(data);
+    }
+    fetchGenders();
+
+    const fetchThemes = async () => {
+      let data  = await dofindThemes(IdCollection);
+      var selectElement;
+      if(action === 'crear'){
+        selectElement = document.getElementById("theme-create");
+      }else{
+        selectElement = document.getElementById("theme-update");
+      }
+      setThemes(data.themes.data);
+    }
+    fetchThemes();
+
+    const fetchParts = async () => {
+      const { data } = await dofindParts();
+      setParts(data);
+    }
+    fetchParts();
+
+    dofetchCombinationByCollection(IdCollection);
   }, []);
 
-
-  const handleDragEnd = (result) => {
-
-    // console.log(result)
-    if (!result.destination) return;
-
-    const { source, destination } = result;
-
-    let sourceList, destinationList;
-
-    if (source.droppableId === 'selectedImages') {
-      sourceList = selectedImages;
-    } else if (source.droppableId === 'availableImages') {
-      sourceList = availableImages;
+  //CARGA LA IMAGEN DE FONDO DEL CANVAS
+  useEffect(() => {
+    if (editor) {
+      let img = new Image()
+      img.crossOrigin = 'anonymous';
+      img.src = '/ref_maniqui.jpg';
+      img.onload = function () {
+        editor.canvas.setWidth(img.width)
+        editor.canvas.setHeight(img.height)
+        editor.canvas.setBackgroundImage(
+          new fabric.Image(img),
+          editor.canvas.renderAll.bind(editor.canvas),
+        )
+      }
     }
+  }, [editor]);
 
-    if (destination.droppableId === 'selectedImages') {
-      destinationList = selectedImages;
-    } else if (destination.droppableId === 'availableImages') {
-      destinationList = availableImages;
+  //AGREGA LA IMAGEN DE LA ROPA DENTRO DEL CANVAS
+  const onAddImage = (url, id) => {
+    if (editor) {
+      let imgElement = new Image();
+      // Importante para que no haya problema de CORS
+      imgElement.crossOrigin = "anonymous"; // This should be set before setting "src"
+      imgElement.src = url;
+      imgElement.onload = () => {
+        // Obtener el ancho y alto del canvas
+        const canvasWidth = editor.canvas.width;
+        const canvasHeight = editor.canvas.height;
+
+        // Calcular las coordenadas para el centro del canvas
+        const centerX = canvasWidth / 2;
+        const centerY = canvasHeight / 2;
+
+        // Calcular las coordenadas para la esquina superior izquierda de la imagen (basado en el centro del canvas)
+        const imgLeft = centerX - (imgElement.width * 0.4) / 2;
+        const imgTop = centerY - (imgElement.height * 0.4) / 2;
+
+        // Crear la instancia de la imagen con las coordenadas calculadas
+        let imgInstance = new fabric.Image(imgElement, {
+          left: imgLeft,
+          top: imgTop,
+          scaleX: 0.4,
+          scaleY: 0.4,
+          lockScalingX: false,
+          lockScalingY: false,
+          lockUniScaling: false,
+          lockRotation: false,
+          hasControls: true,
+        });
+        editor.canvas.add(imgInstance);
+        // add to selected images
+        setSelectedImages([...selectedImages, { id, src: url }])
+        // remove from available images
+        setAvailableImages(availableImages.filter((i) => i.id !== id))
+        //Agregamos al objeto de idDeReferencias
+        setIdReferencesInCombination([...idReferencesInCombination, id]);
+        //Se le agrega el boton de eliminar al objeto
+      };
     }
- 
-    console.log(selectedImages)
+  }
 
-    const [movedItem] = sourceList.splice(source.index, 1);
-    destinationList.splice(destination.index, 0, movedItem);
-
-    setAvailableImages([...availableImages]);
-    setSelectedImages([...selectedImages]);
+  //ELIMINA LAS IMAGANES DE LA ROPA DENTRO DEL CANVAS
+  const onRemoveObject = (editor, allReferences, availableImages, selectedImages) => {
+    const activeObject = editor.canvas.getActiveObject();
+    if (activeObject) {
+      editor.canvas.remove(activeObject);
+    }
+    const { id, src } = allReferences.find((image) => image.src === activeObject?.getSrc()) || { id: null, src: null };
+    if(id){
+      setAvailableImages([...availableImages, { id, src }])
+      setSelectedImages(selectedImages.filter((i) => i.id !== id))
+      //Tuve que ponerle parseInt porque id viene como string
+      setIdReferencesInCombination(idReferencesInCombination.filter((i) => parseInt(i) !== parseInt(id)))
+    }
   };
 
-  
+  //CARGA EL CANVAS CON EL JSON DE LA COMBINACIÓN
+  const loadCanvas = (json) => {
+    if (editor) {
+      editor.canvas.loadFromJSON(json, () => {
+        editor.canvas.renderAll()
+      })
+    }
+  }
 
-  return (
-    <div className="flex">
-      <DragDropContext onDragEnd={handleDragEnd}>   
-        {/* Lado izquierdo */}
-         <div className="w-80 "> 
-        
-          <Droppable droppableId="selectedImages" >
-            {(provided) => (                      
-             <div  
-                className="relative mx-auto grid max-w-2xl grid-cols-1 gap-x-1 gap-y-1 px-4 lg:max-w-8xl lg:grid-cols-3  border-2  h-[calc(60vh-4.5rem)] overflow-y-auto overflow-x-hidden py-2 pl-0.5"
-                {...provided.droppableProps} 
-                ref={provided.innerRef}
-                >
-                   {/* Marca de agua */}
-                    <div className="absolute top-48 left-3 text-gray-400 font-bold text-4xl opacity-25 pointer-events-none z-10">
-                    COMBINATION
-                    </div>       
-                {selectedImages.map((image, index) => (
-                  <Draggable key={image.id} draggableId={image.id} index={index}>
-                    {(provided) => (
-                       <div  className=""                            
-                         ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}                    
-                       >                             
-                          <img src={image.src} alt={`Available ${index + 1}`} style={{ width: 150 }} />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-              
-            )}
-          </Droppable>
-          </div>
-          
-        {/* Lado derecho */} 
-          <div className="w-96 ml-n2">        
-            <Droppable key={uuid() } droppableId={`availableImages`} >
-                {(provided) => (
-                <div 
-                className="mx-auto grid max-w-2xl grid-cols-1  gap-x-1 gap-y-1 px-4 lg:max-w-8xl lg:grid-cols-2 lg:px-8 xl:gap-x-1 xl:px-12 border-0  h-[calc(100vh-4.5rem)] overflow-y-auto overflow-x-hidden py-0 pl-0.5"
-                    {...provided.droppableProps} 
-                    ref={provided.innerRef}
-                >
-                    {availableImages.map((image, index) => (
-                        <Draggable key={image.id} draggableId={image.id} index={index}>
-                            {(provided, snapshot) => (
-                            <div  className=""                          
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}                            
-                            >                                                    
-                                   <img src={image.src} alt={`Available ${index + 1}`} style={{ width: 150 }} />
-                                                          
-                            </div>
-                            )}
-                        </Draggable>
-                    ))}                  
-                    {provided.placeholder}     
-                </div>
-                )}
-            </Droppable>     
-          </div> 
-      
-      </DragDropContext>
-    </div>
-  );
-}
+  //DESCARGA LA IMAGEN DEL CANVAS
+  const downloadImage = () => {
+    if (editor) {
+      const dataURL = editor?.canvas.toDataURL({
+        format: 'png',
+      })
+      const link = document.createElement('a');
+      link.download = 'image.png';
+      link.href = dataURL;
+      link.click();
+    }
+  }
+
+  // FUNCIONES PARA OBTENER LOS VALORES DE LOS INPUTS
+  function obtenerValorOption(selectedOption) {
+    var selectElement = document.getElementById(`options-${selectedOption}`);
+    var valorSeleccionado = selectElement.options[selectElement.selectedIndex].value;
+    return valorSeleccionado;
+  }
+
+  function obtenerValorTheme(selectedOption) {
+    var selectElement = document.getElementById(`theme-${selectedOption}`);
+    var valorSeleccionado = selectElement.options[selectElement.selectedIndex].value;
+    return valorSeleccionado;
+  }
+
+  function obtenerValorGender(selectedOption) {
+    var selectElement = document.getElementById(`gender-${selectedOption}`);
+    var valorSeleccionado = selectElement.options[selectElement.selectedIndex].value;
+    return valorSeleccionado;
+  }
+
+  if(action === 'crear'){
+    return (
+      <CreateCombination
+      editor={editor}
+      onReady={onReady}
+      allReferences={allReferences}
+      availableImages={availableImages}
+      setAvailableImages={setAvailableImages}
+      selectedImages={selectedImages}
+      setSelectedImages={setSelectedImages}
+      onAddImage={onAddImage}
+      obtenerValorOption={obtenerValorOption}
+      obtenerValorTheme={obtenerValorTheme}
+      obtenerValorGender={obtenerValorGender}
+      idReferencesInCombination={idReferencesInCombination}
+      setIdReferencesInCombination={setIdReferencesInCombination}
+      themes={themes}
+      genders={genders}
+      parts={parts}
+      />
+    )
+  }else{
+    return (
+      <UpdateCombination
+        editor={editor}
+        onReady={onReady}
+        allReferences={allReferences}
+        availableImages={availableImages}
+        setAvailableImages={setAvailableImages}
+        selectedImages={selectedImages}
+        setSelectedImages={setSelectedImages}
+        onAddImage={onAddImage}
+        obtenerValorOption={obtenerValorOption}
+        obtenerValorTheme={obtenerValorTheme}
+        obtenerValorGender={obtenerValorGender}
+        idReferencesInCombination={idReferencesInCombination}
+        setIdReferencesInCombination={setIdReferencesInCombination}
+        themes={themes}
+        genders={genders}
+        parts={parts}
+      />
+    )
+  }
+
+};
+
+export default CombinationBoard
