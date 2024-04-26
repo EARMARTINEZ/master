@@ -15,13 +15,13 @@ export function getApiURL(path) {
 }
 
 export async function getEndpoint() {
-  const URLogin = getStrapiURL("/api/auth/local")   
+  const URLogin = getStrapiURL("/api/auth/local")
 
     var response = await axios.post(URLogin, {
       identifier: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
       password: process.env.NEXT_PUBLIC_ADMIN_PASS
     });
-    const data_jwt = response.data.jwt;        
+    const data_jwt = response.data.jwt;
 
 
 
@@ -29,13 +29,13 @@ export async function getEndpoint() {
 }
 
 export async function getAPIEndpoint() {
-  const URLogin = getApiURL("/auth/local")   
+  const URLogin = getApiURL("/auth/local")
 
     var response = await axios.post(URLogin, {
       identifier: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
       password: process.env.NEXT_PUBLIC_ADMIN_PASS
     });
-    const data_jwt = response.data.jwt;        
+    const data_jwt = response.data.jwt;
 
 
 
@@ -65,7 +65,7 @@ export async function fetchAPI(path, urlParamsObject = {}, options = {}) {
 
   // Trigger API call
   const response = await fetch(requestUrl, mergedOptions);
- 
+
   // Handle response
   if (!response.ok) {
     console.error(response.statusText);
@@ -85,7 +85,7 @@ export async function fetchAPI(path, urlParamsObject = {}, options = {}) {
  */
 export async function getPageData({ slug, locale, limit, preview }) {
 
-  
+
   // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
   const pagesRes = await fetch(gqlEndpoint, {
@@ -112,14 +112,14 @@ export async function getPageData({ slug, locale, limit, preview }) {
           $slug: String!
           $publicationState: PublicationState!
           $locale: I18NLocaleCode!
-          
-          
-        ) {        
+
+
+        ) {
           pages(
             filters: { slug: { eq: $slug } }
             publicationState: $publicationState
             locale: $locale
-                        
+
           ) {
             data {
               id
@@ -170,12 +170,12 @@ export async function getPageData({ slug, locale, limit, preview }) {
                     title
                     description
                     label
-                    smallTextWithLink                 
+                    smallTextWithLink
                     picture {
                       ...FileParts
                     }
-                  }         
-                 
+                  }
+
                   ... on ComponentSectionsRichText {
                     id
                     content
@@ -186,9 +186,9 @@ export async function getPageData({ slug, locale, limit, preview }) {
               }
             }
           }
-         
 
-        }       
+
+        }
       `,
       variables: {
         slug,
@@ -197,8 +197,8 @@ export async function getPageData({ slug, locale, limit, preview }) {
       },
     }),
   });
-  
-  const pagesData = await pagesRes.json();  
+
+  const pagesData = await pagesRes.json();
   // Make sure we found something, otherwise return null
   //console.log(pagesData)
   if (pagesData.data?.pages == null || pagesData.data.pages.length === 0) {
@@ -291,7 +291,7 @@ export async function getGlobalData(locale) {
               }
             }
           }
-        }      
+        }
       `,
       variables: {
         locale,
@@ -386,7 +386,7 @@ export async function getDashGlobalData(locale) {
               }
             }
           }
-        }      
+        }
       `,
       variables: {
         locale,
@@ -401,12 +401,12 @@ export async function getDashGlobalData(locale) {
 
 
 export async function getOrdenes({ emails }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
   const data_jwt = await getEndpoint();
-  
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+
+
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -415,10 +415,10 @@ export async function getOrdenes({ emails }) {
     body: JSON.stringify({
       query: `
       query GetOrdenes(
-        $emails: String!){  
-  
+        $emails: String!){
+
         orders(
-          sort:"id:desc" 
+          sort:"id:desc"
           filters:{email: { contains:$emails } }
           ){
          data{
@@ -428,22 +428,22 @@ export async function getOrdenes({ emails }) {
             price
             amount
             Quantity
-            operationtype 
-            status  
+            operationtype
+            status
            }
          }
-        }  
+        }
        }
       `, variables: {
         emails
-        
+
       },
-     
+
     }),
   });
 
   const pagesData = await pagesRes.json();
-   //console.log('datos '+emails) 
+   //console.log('datos '+emails)
   // Make sure we found something, otherwise return null
   if (pagesData.data?.orders == null || pagesData.data.orders.length === 0) {
     return null;
@@ -455,12 +455,12 @@ export async function getOrdenes({ emails }) {
 
 
 export async function getInfotransactions({ IdNumber, TransactionId }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getApiURL("/graphql");
   const data_jwt = await getAPIEndpoint();
-  
+
    //console.log(data_jwt);
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -470,10 +470,10 @@ export async function getInfotransactions({ IdNumber, TransactionId }) {
       query: `
       query Getinfotransactionsreceiveds(
         $IdNumber: String!
-        $TransactionId: String!){  
-  
+        $TransactionId: String!){
+
           infotransactionsreceiveds(
-          sort:"id:desc" 
+          sort:"id:desc"
           publicationState:PREVIEW
           where:{ MgiTransactionId_contains:$TransactionId, receiverIdNumber:$IdNumber }
           ){
@@ -486,20 +486,20 @@ export async function getInfotransactions({ IdNumber, TransactionId }) {
           receiveAmount
           StatusPaid
           controlStatus
-        
-        }  
+
+        }
        }
       `, variables: {
         IdNumber,
         TransactionId
-        
+
       },
-     
+
     }),
   });
 
   const pagesData = await pagesRes.json();
-   //console.log(pagesData.data.infotransactionsreceiveds) 
+   //console.log(pagesData.data.infotransactionsreceiveds)
   // Make sure we found something, otherwise return null
   if (pagesData.data?.infotransactionsreceiveds == null || pagesData.data.infotransactionsreceiveds.length === 0) {
     return null;
@@ -511,12 +511,12 @@ export async function getInfotransactions({ IdNumber, TransactionId }) {
 
 
 export async function getDayPaid({ ControlStatus, ValorStatus, FechaInicio, FechaFin }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getApiURL("/graphql");
   const data_jwt = await getAPIEndpoint();
-  
+
    //console.log(data_jwt);
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -524,7 +524,7 @@ export async function getDayPaid({ ControlStatus, ValorStatus, FechaInicio, Fech
     },
     body: JSON.stringify({
       query: `
-      query GetinfotransactionsreceivedsConnection( 
+      query GetinfotransactionsreceivedsConnection(
         $ControlStatus: String!
         $ValorStatus: String!
         $FechaInicio: String!
@@ -554,14 +554,14 @@ export async function getDayPaid({ ControlStatus, ValorStatus, FechaInicio, Fech
         ValorStatus,
         FechaInicio,
         FechaFin
-        
+
       },
-     
+
     }),
   });
 
   const pagesData = await pagesRes.json();
-   //console.log(pagesData.data.infotransactionsreceiveds) 
+   //console.log(pagesData.data.infotransactionsreceiveds)
   // Make sure we found something, otherwise return null
   if (pagesData.data?.infotransactionsreceivedsConnection == null || pagesData.data.infotransactionsreceivedsConnection.length === 0) {
     return null;
@@ -573,12 +573,12 @@ export async function getDayPaid({ ControlStatus, ValorStatus, FechaInicio, Fech
 
 
 export async function getPaidday({ ControlStatus,  FechaInicio }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getApiURL("/graphql");
   const data_jwt = await getAPIEndpoint();
-  
+
    //console.log(data_jwt);
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -586,8 +586,8 @@ export async function getPaidday({ ControlStatus,  FechaInicio }) {
     },
     body: JSON.stringify({
       query: `
-      query GetinfotransactionsreceivedsConnection( 
-        $ControlStatus: String!    
+      query GetinfotransactionsreceivedsConnection(
+        $ControlStatus: String!
         $FechaInicio: String! ){
 
         infotransactionsreceivedsConnection(
@@ -610,17 +610,14 @@ export async function getPaidday({ ControlStatus,  FechaInicio }) {
         }
       }
       `, variables: {
-        ControlStatus,       
+        ControlStatus,
         FechaInicio,
-       
-        
       },
-     
     }),
   });
 
   const pagesData = await pagesRes.json();
-   //console.log(pagesData.data.infotransactionsreceiveds) 
+   //console.log(pagesData.data.infotransactionsreceiveds)
   // Make sure we found something, otherwise return null
   if (pagesData.data?.infotransactionsreceivedsConnection == null || pagesData.data.infotransactionsreceivedsConnection.length === 0) {
     return null;
@@ -632,23 +629,19 @@ export async function getPaidday({ ControlStatus,  FechaInicio }) {
 
 ///Master Lis
 export async function getIDReference({ IDReference }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
- 
-     
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
     },
     body: JSON.stringify({
       query: `
       query GetIDReference(
-        $IDReference: ID!){  
-  
+        $IDReference: ID!){
           masters(
-          sort:"id:desc" 
+          sort:"id:desc"
           publicationState:PREVIEW
           filters:{ id: { eq:$IDReference } }
           ){
@@ -733,8 +726,8 @@ export async function getIDReference({ IDReference }) {
                 }
                 provider{data{id attributes{name}}}
                 stamp{data{id attributes{
-                  name 
-                  masters( publicationState: PREVIEW){data{attributes{ referencia}}} 
+                  name
+                  masters( publicationState: PREVIEW){data{attributes{ referencia}}}
                   status
                   picture{data{id attributes{url formats}}}
                   commentstamp(sort: ["id:desc"] ){id comment date user status type{data{id attributes{name}}}}
@@ -748,18 +741,16 @@ export async function getIDReference({ IDReference }) {
                 pendings(sort: ["status:asc", "id:desc"] ){id comment date user status type{data{id attributes{name}}}}
               }
             }
-        }  
+        }
        }
       `, variables: {
         IDReference
-        
       },
-     
     }),
   });
 
   const pagesData = await pagesRes.json();
-   //console.log('datos '+emails) 
+   //console.log('datos '+emails)
   // Make sure we found something, otherwise return null
   if (pagesData.data?.masters == null || pagesData.data.masters.length === 0) {
     return null;
@@ -770,24 +761,19 @@ export async function getIDReference({ IDReference }) {
 }
 
 export async function getReference({ NReference }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
- 
-  
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
     },
     body: JSON.stringify({
       query: `
       query GetReference(
-        $NReference: String!){  
-  
+        $NReference: String!){
           masters(
-          sort:"id:desc" 
+          sort:"id:desc"
           publicationState:PREVIEW
           filters:{referencia: { eq:$NReference } }
           ){
@@ -873,7 +859,7 @@ export async function getReference({ NReference }) {
                 provider{data{id attributes{name}}}
                 stamp{data{id attributes{
                   name
-                  masters( publicationState: PREVIEW){data{attributes{ referencia}}}  
+                  masters( publicationState: PREVIEW){data{attributes{ referencia}}}
                   status
                   picture{data{id attributes{url formats}}}
                   commentstamp(sort: ["id:desc"] ){id comment date user status type{data{id attributes{name}}}}
@@ -885,28 +871,27 @@ export async function getReference({ NReference }) {
                 drawingsPDF{data{id attributes{url name}}}
                 comments(sort: ["id:desc"] ){id comment date user status type{data{id attributes{name}}}}
                 pendings(sort: ["status:asc", "id:desc"] ){id comment date user status type{data{id attributes{name}}}}
+
               }
             }
             meta {
-              pagination {        
+              pagination {
                 page
                 pageSize
                 total
                 pageCount
               }
             }
-        }  
+        }
        }
       `, variables: {
         NReference
-        
       },
-     
     }),
   });
 
   const pagesData = await pagesRes.json();
-   //console.log('datos '+emails) 
+   //console.log('datos '+emails)
   // Make sure we found something, otherwise return null
   if (pagesData.data?.masters == null || pagesData.data.masters.length === 0) {
     return null;
@@ -917,25 +902,22 @@ export async function getReference({ NReference }) {
 }
 
 export async function getCollectionReference({ NCollection, start }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
-   
+
   const Start = start ? start : 1
   const Limite = 10
-  
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
     },
     body: JSON.stringify({
       query: `
       query GetCollection(
-        $NCollection: ID!       
-        $Start: Int!, $Limite: Int!){                    
-                    
+        $NCollection: ID!
+        $Start: Int!, $Limite: Int!){
           masters(
             publicationState: PREVIEW
             sort:"referencia:asc"
@@ -1031,8 +1013,8 @@ export async function getCollectionReference({ NCollection, start }) {
                   }
                 }
                 stamp{data{id attributes{
-                  name 
-                  masters( publicationState: PREVIEW){data{attributes{ referencia}}} 
+                  name
+                  masters( publicationState: PREVIEW){data{attributes{ referencia}}}
                   status
                   picture{data{id attributes{url formats}}}
                   commentstamp(sort: ["id:desc"] ){id comment date user status type{data{id attributes{name}}}}
@@ -1047,7 +1029,7 @@ export async function getCollectionReference({ NCollection, start }) {
               }
             }
             meta {
-              pagination {        
+              pagination {
                 page
                 pageSize
                 total
@@ -1061,38 +1043,622 @@ export async function getCollectionReference({ NCollection, start }) {
          Start,
          Limite,
       },
-     
     }),
   });
 
   const pagesData = await pagesRes.json();
-   
   // Make sure we found something, otherwise return null
   if (pagesData.data?.masters == null || pagesData.data.masters.length === 0) {
     return null;
   }
-  //console.log(pagesData.data.masters.data) 
+  //console.log(pagesData.data.masters.data)
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
 
-export async function getCollectionNavigation({ NCollection }) {
-  // Find the pages that match this slug  
+
+// Obtener las siluetas por coleccion
+export async function getSilhouetteByCollection({ NCollection, start }) {
   const gqlEndpoint = getStrapiURL("/graphql");
 
-  
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
-    method: "POST",
+  const Start = start ? start : 1
+  const Limite = 200
+
+  const pagesRes = await fetch(gqlEndpoint, {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
-     
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       query: `
       query GetCollection(
-        $NCollection: ID!){                    
-                    
+        $NCollection: ID!
+        $Start: Int!, $Limite: Int!
+        $Status1: String, $Status2: String,
+        ){
+          masters(
+            publicationState: PREVIEW
+            sort:"referencia:asc"
+            filters:{
+              collection:{id:{eq:$NCollection}}
+              status:{in:[$Status1, $Status2]}
+            }
+            pagination:{page: $Start ,pageSize: $Limite }
+          ){
+            data {
+              id
+              attributes {
+                referencia
+                genderName
+                status
+                collection {
+                  data {
+                    id
+                    attributes {
+                      name
+                      prefix_id
+                    }
+                  }
+                }
+                theme {
+                  data {
+                    id
+                    attributes {
+                      name
+                    }
+                  }
+                }
+                Composition {
+                  gender{
+                    data{
+                      id
+                      attributes{
+                        name
+                        order_show
+                      }
+                    }
+                  }
+                  typeproduct {
+                    data {
+                      id
+                      attributes {
+                        name
+                        id_part{data{id attributes{name}}}
+                        order_show
+                      }
+                    }
+                  }
+                }
+                silhouette { data {id attributes {url} } }
+              }
+            }
+            meta {
+              pagination {
+                page
+                pageSize
+                total
+                pageCount
+              }
+            }
+          }
+       }
+      `,
+      variables: {
+        NCollection,
+        Start,
+        Limite,
+        Status1: 'Approved',
+        Status2: 'Pending',
+      },
+    }),
+  })
+
+  const pagesData = await pagesRes.json();
+  // Make sure we found something, otherwise return null
+  if (pagesData.data?.masters == null || pagesData.data.masters.length === 0) {
+    return null;
+  }
+  return pagesData.data;
+}
+
+// Obtener las combinaciones por coleccion
+export async function getCombinationByCollection({ NCollection, start }) {
+  const gqlEndpoint = getStrapiURL("/graphql");
+
+  const Start = start ? start : 1
+  const Limite = 200
+
+  const pagesRes = await fetch(gqlEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+      query getCombination (
+        $NCollection: ID!
+        $Start: Int!, $Limite: Int!
+        ){
+          combinations(
+            filters:{
+              collection:{id:{eq:$NCollection}}
+            }
+            pagination:{page: $Start ,pageSize: $Limite }
+          ){
+            data {
+              id
+              attributes {
+                type
+                canvas
+                collection {
+                  data {
+                    id
+                    attributes {
+                      name
+                      prefix_id
+                      collection_type{data{attributes{prefix_id}}}
+                    }
+                  }
+                }
+                gender {
+                  data {
+                    id
+                    attributes {
+                      name
+                    }
+                  }
+                }
+                theme {
+                  data {
+                    id
+                    attributes {
+                      name
+                    }
+                  }
+                }
+                image {
+                  data {
+                    id
+                    attributes {
+                      url
+                      name
+                    }
+                  }
+                }
+                a_create_references(publicationState: PREVIEW) {
+                  data {
+                    id
+                    attributes {
+                      silhouette {
+                        data {
+                          id
+                          attributes {
+                            url
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        NCollection,
+        Start,
+        Limite,
+      },
+    }),
+  })
+
+  const pagesData = await pagesRes.json();
+  // Make sure we found something, otherwise return null
+  if (pagesData.data?.combinations == null || pagesData.data.combinations.length === 0) {
+    return null;
+  }
+  return pagesData.data;
+}
+
+// Obtener las combinaciones por ID
+export async function getCombinationById(id) {
+  const gqlEndpoint = getStrapiURL('/graphql')
+  console.log(id)
+  const res = await fetch(gqlEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        query getCombination ($id: ID!) {
+                combination(id: $id) {
+                data{
+                  id
+                  attributes {
+                    type
+                    canvas
+                    collection {
+                      data {
+                        id
+                        attributes {
+                          name
+                          prefix_id
+                          collection_type{data{attributes{prefix_id}}}
+                        }
+                      }
+                    }
+                    gender {
+                      data {
+                        id
+                        attributes {
+                          name
+                        }
+                      }
+                    }
+                    theme {
+                      data {
+                        id
+                        attributes {
+                          name
+                        }
+                      }
+                    }
+                    a_create_references(publicationState: PREVIEW) {
+                      data {
+                        id
+                        attributes {
+                          silhouette {
+                            data {
+                              id
+                              attributes {
+                                url
+                                name
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+      `,
+      variables: {
+        id,
+      },
+    }),
+  })
+
+  const data = await res.json()
+  console.log(data)
+  // Make sure we found something, otherwise return null
+  if (data.data?.combination == null) {
+    return null
+  }
+  return data.data
+}
+
+// Crear una combinación
+// Combination data should be an object with the following structure:
+// {
+//   "gender": ID,
+//   "theme": ID,
+//   "a_create_references": [ID],
+//   "canvas": JSON,
+//   "collection": ID,
+//   "image": ID,
+//   "type": "mannequin | impulse | photo",
+// }
+
+// OJO: el ID de a_create_references es distint a su referencia.
+export async function createCombination( combinationData, file ) {
+
+  let imageUploaded = uploadImageToCombination(file)
+
+  if (!imageUploaded) {
+    return null
+  }
+
+  combinationData.image = await imageUploaded
+
+  const gqlEndpoint = getStrapiURL('/graphql')
+  const response = await fetch(gqlEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+      mutation CreateCombination($input: CombinationInput!) {
+        createCombination(data: $input) {
+          data {
+            id
+            attributes {
+              type
+              canvas
+              collection {
+                data {
+                  id
+                  attributes {
+                    name
+                    prefix_id
+                    collection_type{data{attributes{prefix_id}}}
+                  }
+                }
+              }
+              gender {
+                data {
+                  id
+                  attributes {
+                    name
+                  }
+                }
+              }
+              theme {
+                data {
+                  id
+                  attributes {
+                    name
+                  }
+                }
+              }
+              image {
+                data {
+                  id
+                  attributes {
+                    url
+                    name
+                  }
+                }
+              }
+              a_create_references(publicationState: PREVIEW) {
+                data {
+                  id
+                  attributes {
+                    silhouette {
+                      data {
+                        id
+                        attributes {
+                          url
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      `,
+      variables: {
+        input: {
+          ...combinationData,
+        },
+      },
+    }),
+  })
+
+  const responseData = await response.json()
+  // Make sure we found something, otherwise return null
+  if (responseData.data?.createCombination == null) {
+    return null
+  }
+  return responseData.data
+}
+
+// Actualizar una combinación
+export async function updateCombination(id, data, file ) {
+  const gqlEndpoint = getStrapiURL('/graphql')
+
+  if (file) {
+    let imageUploaded = uploadImageToCombination(file)
+    if (!imageUploaded) {
+      return null
+    }
+    data.image = await imageUploaded
+  }
+
+  const response = await fetch(gqlEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        mutation UpdateCombination($id: ID!, $data: CombinationInput!) {
+          updateCombination(id: $id, data: $data) {
+            data {
+              id
+              attributes {
+                type
+                canvas
+                collection {
+                  data {
+                    id
+                    attributes {
+                      name
+                      prefix_id
+                      collection_type{data{attributes{prefix_id}}}
+                    }
+                  }
+                }
+                gender {
+                  data {
+                    id
+                    attributes {
+                      name
+                    }
+                  }
+                }
+                theme {
+                  data {
+                    id
+                    attributes {
+                      name
+                    }
+                  }
+                }
+                image {
+                  data {
+                    id
+                    attributes {
+                      url
+                      name
+                    }
+                  }
+                }
+                a_create_references(publicationState: PREVIEW) {
+                  data {
+                    id
+                    attributes {
+                      silhouette {
+                        data {
+                          id
+                          attributes {
+                            url
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        id,
+        data,
+      },
+    }),
+  })
+
+  const responseData = await response.json()
+  // Make sure we found something, otherwise return null
+  if (responseData.data?.updateCombination == null) {
+    return null
+  }
+  return responseData.data
+}
+
+// Eliminar una combinación
+export async function deleteCombination( id ) {
+  const gqlEndpoint = getStrapiURL('/graphql')
+
+  const response = await fetch(gqlEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        mutation DeleteCombination($id: ID!) {
+          deleteCombination(id: $id) {
+            data {
+              id
+            }
+          }
+        }
+      `,
+      variables: {
+        id,
+      },
+    }),
+  })
+
+  const responseData = await response.json()
+  // Make sure we found something, otherwise return null
+  if (responseData.data?.deleteCombination == null) {
+    return null
+  }
+  return responseData.data
+}
+
+// Subir una imagen a una combinacion usando el API de Strapi
+
+export async function uploadImageToCombination( file ) {
+  const apiEndpoint = getStrapiURL('/api/upload/')
+
+  const imageBlob = dataURItoBlob(file)
+
+  const formData = new FormData()
+  formData.append('files', imageBlob)
+  // formData.append('ref', 'api::combination.combination')
+  // formData.append('refId', combinationId)
+  // formData.append('field', 'image')
+
+  const response = await fetch(apiEndpoint, {
+    method: 'POST',
+    body: formData,
+  })
+  const responseData = await response.json()
+  if (responseData == null) {
+    return null
+  }
+
+  let imageId = parseInt(responseData[0].id)
+
+  if (isNaN(imageId)) {
+    return null
+  }
+
+  return imageId
+
+  function dataURItoBlob(dataURI) {
+    let binary = atob(dataURI.split(',')[1])
+    let array = []
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i))
+    }
+    return new Blob([new Uint8Array(array)], { type: 'image/png' })
+  }
+
+}
+
+// export async function uploadCombinationImage( id, file ) {
+//   const gqlEndpoint = getStrapiURL('/api/combinations/')
+
+//   const formData = new FormData()
+//   formData.append('files', file)
+//   formData.append('refId', id)
+//   formData.append('ref', 'combination')
+//   formData.append('field', 'canvas')
+
+//   const response = await fetch(gqlEndpoint, {
+//     method: 'POST',
+//     body: formData,
+//   })
+
+//   const responseData = await response.json()
+//   // Make sure we found something, otherwise return null
+//   if (responseData == null) {
+//     return null
+//   }
+//   return responseData
+// }
+
+
+export async function getCollectionNavigation({ NCollection }) {
+  // Find the pages that match this slug
+  const gqlEndpoint = getStrapiURL("/graphql");
+
+  const pagesRes = await fetch(gqlEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+      query GetCollection(
+        $NCollection: ID!){
           masters(
             publicationState: PREVIEW
             sort:"referencia:asc"
@@ -1193,8 +1759,8 @@ export async function getCollectionNavigation({ NCollection }) {
                 drawings(sort: ["id:asc", "url:desc"]) {
                   data {id attributes{ext url hash mime name caption alternativeText formats}}
                 }
-                drawingsPDF{ 
-                  data {id attributes {url name} } 
+                drawingsPDF{
+                  data {id attributes {url name} }
                 }
                 comments(sort: ["id:desc"] ){id comment date user status type{data{id attributes{name}}}}
                 pendings(sort: ["status:asc", "id:desc"] ){id comment date user status type{data{id attributes{name}}}}
@@ -1204,152 +1770,139 @@ export async function getCollectionNavigation({ NCollection }) {
        }
       `, variables: {
          NCollection
-        
       },
-     
     }),
   });
 
   const pagesData = await pagesRes.json();
-   
+
   // Make sure we found something, otherwise return null
   if (pagesData.data?.masters == null || pagesData.data.masters.length === 0) {
     return null;
   }
-  //console.log(pagesData.data.masters.data) 
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
 
 
 export async function getCollection({ NCollection }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
 
-  
-
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
+
     },
     body: JSON.stringify({
       query: `
       query GetCollection(
-        $NCollection: String!){                    
-                    
+        $NCollection: String!){
+
           collections(
             sort: "id:desc"
-            filters:{name:{contains:$NCollection}}    
-          ){   
-            data{      
+            filters:{name:{contains:$NCollection}}
+          ){
+            data{
               id
               attributes{
                 name
                 prefix_id
                 collection_type{data{attributes{prefix_id}}}
-                
+
               }
             }
-            
+
           }
        }
       `, variables: {
          NCollection
-        
+
       },
-     
+
     }),
   });
 
   const pagesData = await pagesRes.json();
-  //console.log(pagesData) 
+  //console.log(pagesData)
   // Make sure we found something, otherwise return null
   if (pagesData.data?.collections == null || pagesData.data.collections.length === 0) {
     return null;
   }
- 
+
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
 
 
 export async function getIDCollection({ NCollection }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
-
-  
-
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
+
     },
     body: JSON.stringify({
       query: `
       query GetIDCollection(
-        $NCollection: ID!){                    
-                    
+        $NCollection: ID!){
+
           collections(
             sort: "id:desc"
-            filters:{id:{eq:$NCollection}}    
-          ){   
-            data{      
+            filters:{id:{eq:$NCollection}}
+          ){
+            data{
               id
               attributes{
                 name
                 prefix_id
                 collection_type{data{attributes{prefix_id}}}
-                
+
               }
             }
-            
+
           }
        }
       `, variables: {
          NCollection
-        
+
       },
-     
+
     }),
   });
 
   const pagesData = await pagesRes.json();
-  //console.log(pagesData) 
+  //console.log(pagesData)
   // Make sure we found something, otherwise return null
   if (pagesData.data?.collections == null || pagesData.data.collections.length === 0) {
     return null;
   }
- 
+
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
 
 
 export async function getSystemColor({ }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
-  
-
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
+
     },
     body: JSON.stringify({
       query: `
-      query GetSystemColor{                   
-                    
+      query GetSystemColor{
+
         colors(
           sort: "id:asc"
           pagination:{limit:-1}
-          ){   
+          ){
             data{
               id
               attributes{
@@ -1357,49 +1910,42 @@ export async function getSystemColor({ }) {
                 codigo
               }
             }
-            
+
           }
        }
       `
-     
+
     }),
   });
 
   const pagesData = await pagesRes.json();
-  // console.log(pagesData) 
+  // console.log(pagesData)
   // Make sure we found something, otherwise return null
   if (pagesData.data?.colors == null || pagesData.data.colors.length === 0) {
     return null;
   }
- 
+
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
 
 export async function getThemesCollection({ NCollection }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
 
-  
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
     },
     body: JSON.stringify({
       query: `
       query GetCollection(
-        $NCollection: ID!){                    
-                    
+        $NCollection: ID!){
           themes(
-           
             sort:"id:asc"
-
             filters:{
               masters:{collection:{id:{eq:$NCollection}}}
-             
             }
           ){
             data{
@@ -1413,49 +1959,42 @@ export async function getThemesCollection({ NCollection }) {
        }
       `, variables: {
          NCollection
-        
       },
-     
     }),
   });
 
   const pagesData = await pagesRes.json();
-   
+
   // Make sure we found something, otherwise return null
   if (pagesData.data?.themes == null || pagesData.data.themes.length === 0) {
     return null;
   }
-  //console.log(pagesData.data.masters.data) 
+  //console.log(pagesData.data.masters.data)
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
 
 export async function getCollectionStamps({ NCollection }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
-
-  
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
     },
     body: JSON.stringify({
       query: `
       query GetStampsCollection(
-        $NCollection: ID!){                    
-                    
-          stamps(         
+        $NCollection: ID!){
+          stamps(
             sort:"id:asc"
             filters:{masters:{collection:{id:{eq:$NCollection}}} }
           ){
             data{
               id
               attributes{
-                name  
-                masters( publicationState: PREVIEW) {data{attributes{referencia}}} 
+                name
+                masters( publicationState: PREVIEW) {data{attributes{referencia}}}
                 picture{
                   data {id attributes{ext url hash mime name caption alternativeText formats}}
                 }
@@ -1465,42 +2004,38 @@ export async function getCollectionStamps({ NCollection }) {
        }
       `, variables: {
          NCollection
-        
       },
-     
+
     }),
   });
 
   const pagesData = await pagesRes.json();
-   
+
   // Make sure we found something, otherwise return null
   if (pagesData.data?.stamps == null || pagesData.data.stamps.length === 0) {
     return null;
   }
-  //console.log(pagesData.data.stamps.data) 
+  //console.log(pagesData.data.stamps.data)
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
 
 export async function getColorPantoneCollection({ NCollection }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
-
-  
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
+
     },
     body: JSON.stringify({
       query: `
       query GetCollection(
-        $NCollection: ID!){                    
-                    
+        $NCollection: ID!){
+
           mixcolors(
-           
+
             sort:"id:asc"
             filters:{collection:{id:{eq:$NCollection}}}
           ){
@@ -1515,42 +2050,39 @@ export async function getColorPantoneCollection({ NCollection }) {
        }
       `, variables: {
          NCollection
-        
+
       },
-     
+
     }),
   });
 
   const pagesData = await pagesRes.json();
-   
+
   // Make sure we found something, otherwise return null
   if (pagesData.data?.mixcolors == null || pagesData.data.mixcolors.length === 0) {
     return null;
   }
-  //console.log(pagesData.data.masters.data) 
+  //console.log(pagesData.data.masters.data)
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
 
 export async function getStampsCollection({ NCollection }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
-
-  
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
+
     },
     body: JSON.stringify({
       query: `
       query GetCollection(
-        $NCollection: String!){                    
-                    
+        $NCollection: String!){
+
           stamps(
-           
+
             sort:"id:asc"
             filters:{masters:{referencia:{contains:$NCollection}}}
           ){
@@ -1558,97 +2090,91 @@ export async function getStampsCollection({ NCollection }) {
               id
               attributes{
                 name
-                
+
               }
             }
           }
        }
       `, variables: {
          NCollection
-        
+
       },
-     
+
     }),
   });
 
   const pagesData = await pagesRes.json();
-   
+
   // Make sure we found something, otherwise return null
   if (pagesData.data?.stamps == null || pagesData.data.stamps.length === 0) {
     return null;
   }
-  //console.log(pagesData.data.masters.data) 
+  //console.log(pagesData.data.masters.data)
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
 
 export async function getSizesAll({ NGenders, NTypeproducts }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
-
-  
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
+
     },
     body: JSON.stringify({
       query: `
-      query GetSizesAll{                    
-                    
+      query GetSizesAll{
+
           sizes(
-           
+
             sort:"id:asc"
             pagination:{limit:-1}
-            
+
           ){
             data{
               id
               attributes{
                 name
-                
+
               }
             }
           }
        }
       `
-     
+
     }),
   });
 
   const pagesData = await pagesRes.json();
-   
+
   // Make sure we found something, otherwise return null
   if (pagesData.data?.sizes == null || pagesData.data.sizes.length === 0) {
     return null;
   }
-  //console.log(pagesData.data.masters.data) 
+  //console.log(pagesData.data.masters.data)
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
 
 export async function getSizesCollection({ NGenders, NTypeproducts }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
-
-  
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
+
     },
     body: JSON.stringify({
       query: `
       query GetCollection(
-        $NGenders: ID! 
-        $NTypeproducts: ID!){                    
-                    
+        $NGenders: ID!
+        $NTypeproducts: ID!){
+
           sizes(
-           
+
             sort:"id:asc"
             pagination:{limit:-1}
             filters:{
@@ -1661,7 +2187,7 @@ export async function getSizesCollection({ NGenders, NTypeproducts }) {
               id
               attributes{
                 name
-                
+
               }
             }
           }
@@ -1669,44 +2195,42 @@ export async function getSizesCollection({ NGenders, NTypeproducts }) {
       `, variables: {
         NGenders,
         NTypeproducts
-        
+
       },
-     
+
     }),
   });
 
   const pagesData = await pagesRes.json();
-   
+
   // Make sure we found something, otherwise return null
   if (pagesData.data?.sizes == null || pagesData.data.sizes.length === 0) {
     return null;
   }
-  //console.log(pagesData.data.masters.data) 
+  //console.log(pagesData.data.masters.data)
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
 
 
 export async function getSizesActives({ NGenders, NTypeproducts }) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
 
-  
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
+
     },
     body: JSON.stringify({
       query: `
       query GetCollection(
-        $NGenders: ID! 
-        $NTypeproducts: ID!){                    
-                    
+        $NGenders: ID!
+        $NTypeproducts: ID!){
+
           sizeactives(
-           
+
             sort:"id:asc"
             pagination:{limit:-1}
             filters:{
@@ -1716,12 +2240,12 @@ export async function getSizesActives({ NGenders, NTypeproducts }) {
           }
           ){
             data{
-              id 
+              id
               attributes{
-                      
+
                 sizes{data{id attributes{name}}}
                 activateSearch
-             
+
               }
             }
           }
@@ -1729,19 +2253,17 @@ export async function getSizesActives({ NGenders, NTypeproducts }) {
       `, variables: {
         NGenders,
         NTypeproducts
-        
       },
-     
     }),
   });
 
   const pagesData = await pagesRes.json();
-   
+
   // Make sure we found something, otherwise return null
   if (pagesData.data?.sizeactives == null || pagesData.data.sizeactives.length === 0) {
     return null;
   }
-  //console.log(pagesData.data.masters.data) 
+  //console.log(pagesData.data.masters.data)
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
@@ -1750,31 +2272,25 @@ export async function getSizesActives({ NGenders, NTypeproducts }) {
 
 
 export async function getCollectionFilters({FILTERS} ) {
-  // Find the pages that match this slug  
+  // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
 
   FILTERS ? FILTERS : '';
 
   //console.log(FILTERS)
-   
-  const pagesRes = await fetch(gqlEndpoint, {    
+  const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-     
     },
     body: JSON.stringify({
       query: `
-      query {                    
-                    
+      query {
           masters(
             publicationState: PREVIEW
             sort:"id:desc"
-            filters:{ 
-              
-              
+            filters:{
               ${FILTERS}
-          
             }
             pagination:{limit:100 }
           ){
@@ -1868,8 +2384,8 @@ export async function getCollectionFilters({FILTERS} ) {
                   }
                 }
                 stamp{data{id attributes{
-                  name 
-                  masters( publicationState: PREVIEW){data{attributes{ referencia}}} 
+                  name
+                  masters( publicationState: PREVIEW){data{attributes{ referencia}}}
                   status
                   picture{data{id attributes{url formats}}}
                   commentstamp(sort: ["id:desc"] ){id comment date user status type{data{id attributes{name}}}}
@@ -1884,7 +2400,7 @@ export async function getCollectionFilters({FILTERS} ) {
               }
             }
             meta {
-              pagination {        
+              pagination {
                 page
                 pageSize
                 total
@@ -1894,17 +2410,16 @@ export async function getCollectionFilters({FILTERS} ) {
           }
        }
       `,
-     
     }),
   });
 
   const pagesData = await pagesRes.json();
-   
+
   // Make sure we found something, otherwise return null
   if (pagesData.data?.masters == null || pagesData.data.masters.length === 0) {
     return null;
   }
-  //console.log(pagesData.data.masters.data) 
+  //console.log(pagesData.data.masters.data)
   // Return the first item since there should only be one result per slug
   return pagesData.data;
 }
