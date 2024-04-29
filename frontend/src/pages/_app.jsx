@@ -3,7 +3,7 @@ import { slugifyWithCounter } from '@sindresorhus/slugify'
 import Layout  from '@/components/Layout'
 import {AppContextProvider} from "utils/Provider/AppContextProvider";
 import { SessionProvider } from 'next-auth/react';
-
+import { Toaster } from 'react-hot-toast';
 
 import 'focus-visible'
 import '@/styles/tailwind.css'
@@ -74,11 +74,13 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
         {description && <meta name="description" content={description} />}
       </Head>
       <SessionProvider session={session}>
-          <AppContextProvider>           
-            <Layout title={title} tableOfContents={tableOfContents}>
-              <Component {...pageProps} />
-            </Layout>       
-          </AppContextProvider>
+      <Toaster
+        position="top-right"
+      />        <AppContextProvider>
+          <Layout title={title} tableOfContents={tableOfContents}>
+            <Component {...pageProps} />
+          </Layout>
+        </AppContextProvider>
       </SessionProvider>
     </>
   )
