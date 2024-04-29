@@ -36,14 +36,14 @@ const navigation = [
       { title: 'Combinations', href: '/docs/combination-view' },
 
       { title: 'Statistics', href: '/docs/statistics-view' },
-      
+
     ],
   },
   // {
   //   title: 'Contenido:',
   //   links: [
-  //     { title: 'Blog', 
-  //       href: '/content/blog' 
+  //     { title: 'Blog',
+  //       href: '/content/blog'
   //     },
   //     {
   //       title: 'Predicting user behavior',
@@ -54,9 +54,9 @@ const navigation = [
   //       title: 'Introduction to string theory',
   //       href: '/docs/introduction-to-string-theory',
   //     },
-  //     { 
-  //       title: 'The butterfly effect', 
-  //       href: '/docs/the-butterfly-effect' 
+  //     {
+  //       title: 'The butterfly effect',
+  //       href: '/docs/the-butterfly-effect'
   //     },
   //  ],
   // },
@@ -135,7 +135,7 @@ function Header({ navigation }) {
           : 'dark:bg-transparent'
       )}
     >
-      <div className="mr-6 flex lg:hidden">        
+      <div className="mr-6 flex lg:hidden">
         {isHomePage && <MobileNavigation navigation={navigation} />}
       </div>
       <div className="relative flex flex-grow basis-0 items-center">
@@ -155,9 +155,8 @@ function Header({ navigation }) {
         </Link> */}
 
         {/* <Link href="https://github.com" className="group" aria-label="GitHub">
-          <GitHubIcon className="h-6 w-6 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />    
+          <GitHubIcon className="h-6 w-6 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
         </Link> */}
-        
       </div>
     </header>
   )
@@ -181,7 +180,6 @@ function useTableOfContents(tableOfContents) {
       })
   }, [])
 
-  
   useEffect(() => {
     if (tableOfContents.length === 0) return
     let headings = getHeadings(tableOfContents)
@@ -209,20 +207,20 @@ function useTableOfContents(tableOfContents) {
 
 const Layout = ({ children, title, tableOfContents }) => {
 
-  const { 
-    NameCollection, 
+  const {
+    NameCollection,
     setSessionUser,
     setSessiontoMaker,
-    setSessionUserCity       
-   } = useTasks();    
+    setSessionUserCity
+   } = useTasks();
 
-  const { 
+  const {
     checkUser,
     PrintMode,
-    setPrintMode,          
-   } = BasicTasks(); 
+    setPrintMode,
+   } = BasicTasks();
 
-   const { data: session } = useSession();   
+   const { data: session } = useSession();
    const [TypeUser, setTypeUser] = useState("Reader");
 
 
@@ -249,60 +247,60 @@ const Layout = ({ children, title, tableOfContents }) => {
     }
     return section.children.findIndex(isActive) > -1
   }
-  
 
-   useEffect(() => {      
-    checkUser(  session ? session.user.email : '').then( ResMap => {    
-        if(ResMap.length===1){     
+
+   useEffect(() => {
+    checkUser(  session ? session.user.email : '').then( ResMap => {
+        if(ResMap.length===1){
           ResMap[0].Type ? setTypeUser( ResMap[0].Type) :setTypeUser("Reader")
           ResMap[0].username ? setSessionUser( ResMap[0].username) : setSessionUser( ResMap[0].username)
           ResMap[0].toMaker ? setSessiontoMaker( ResMap[0].toMaker) : setSessiontoMaker( ResMap[0].toMaker)
           ResMap[0].city ? setSessionUserCity( ResMap[0].city) : setSessionUserCity( ResMap[0].city)
-          
-        }  
-      });        
+
+        }
+      });
       }, [session]);
 
   let isTypeUser = TypeUser === 'Editor'
 
- 
+
   return (
     <>
       <Header navigation={navigation} />
 
       {session && <Hero />}
-        
 
-      {session ? (        
-      
+
+      {session ? (
+
         <div className="relative mx-auto flex max-w-8x2 justify-center sm:px-2 lg:px-8 xl:px-50">
           <div className="hidden lg:relative lg:block lg:flex-none">
             <div className="absolute inset-y-0 right-0 w-[50vw] bg-slate-50 dark:hidden" />
             <div className="absolute bottom-0 right-0 top-16 hidden h-12 w-px bg-gradient-to-t from-slate-800 dark:block" />
             <div className="absolute bottom-0 right-0 top-28 hidden w-px bg-slate-800 dark:block" />
-            
+
             <div className="sticky top-[4.5rem] -ml-0.5 h-[calc(100vh-4.5rem)] overflow-y-auto overflow-x-hidden py2 pl-0.5">
-              
+
             {PrintMode && session && <SessionUser />}
 
               {isHomePage &&  <SearchCollection />}
-      
+
               {isHomePage && isTypeUser && <FormCreateReferenceDrawer />   }
-            
-             
-              
+
+
+
               {PrintMode && <Navigation
                 navigation={navigation}
                 className="w-64 pr-8 xl:w-40 xl:pr-16 m-5"
               />}
-              
+
             </div>
           </div>
-          <div className="min-w-0 max-w-2xl flex-auto px-4 py-16 lg:max-w-none lg:pl-8 lg:pr-0 xl:px-16">
+          <div className="min-w-0 max-w-2xl flex-auto px-4  lg:max-w-none lg:pl-8 lg:pr-0 xl:px-16 ">
             <article>
               {(title || section) && (
                 <header className="mb-9 space-y-1">
-                
+
                   {title && (
                     <h1 className="font-display text-2xl tracking-tight text-slate-900 dark:text-white">
                       {title}
@@ -313,12 +311,9 @@ const Layout = ({ children, title, tableOfContents }) => {
                       {/* {section.title} */}
                     </p>
                   )}
-                    
                 </header>
               )}
-          
             <Prose>{children}</Prose>
-          
 
             </article>
             {/* <dl className="mt-12 flex border-t border-slate-200 pt-6 dark:border-slate-800"> */}
@@ -355,7 +350,7 @@ const Layout = ({ children, title, tableOfContents }) => {
               )}
             </dl> */}
           </div>
-          <div className="hidden xl:sticky xl:top-[4.5rem] xl:-mr-6 xl:block xl:h-[calc(100vh-4.5rem)] xl:flex-none xl:overflow-y-auto xl:py-16 xl:pr-6">
+          <div className="hidden xl:sticky xl:top-[4.5rem] xl:-mr-6 xl:block xl:h-[calc(100vh-4.5rem)] xl:flex-none xl:overflow-y-auto xl:py-16 xl:pr-6 ">
             {/* <nav aria-labelledby="on-this-page-title" className="w-56">
               {tableOfContents.length > 0 && (
                 <>
@@ -411,13 +406,12 @@ const Layout = ({ children, title, tableOfContents }) => {
         </div>
       ) :  (
 
-        <div className="relative mx-auto flex max-w-8x2 justify-center sm:px-2 lg:px-8 xl:px-50">
+        <div className="relative mx-auto max-w-8x2 justify-center sm:px-2 lg:px-8 xl:px-50 ">
           {isHomePage  &&  <Login />}
           {isPageForgotpasswordLogin  &&  <ForgotpasswordLogin />}
           {isPageResetpasswordn  &&  <Resetpassword />}
-       
         </div>
-      )}  
+      )}
     </>
   )
 }
