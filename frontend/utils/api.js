@@ -1091,6 +1091,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
                 referencia
                 genderName
                 status
+                productname
                 collection {
                   data {
                     id
@@ -1109,6 +1110,22 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
                   }
                 }
                 Composition {
+                  color {
+                    data {
+                      id
+                      attributes {
+                        name
+                      }
+                    }
+                  }
+                  fabric{
+                    data {
+                      id
+                      attributes {
+                        name
+                      }
+                    }
+                  }
                   gender{
                     data{
                       id
@@ -1188,6 +1205,7 @@ export async function getCombinationByCollection({ NCollection, start }) {
             data {
               id
               attributes {
+                refId
                 type
                 canvas
                 collection {
@@ -1229,6 +1247,16 @@ export async function getCombinationByCollection({ NCollection, start }) {
                   data {
                     id
                     attributes {
+                      referencia
+                      Composition {
+                        typeproduct {
+                          data {
+                            attributes {
+                              name
+                            }
+                          }
+                        }
+                      }
                       silhouette {
                         data {
                           id
@@ -1278,6 +1306,7 @@ export async function getCombinationById(id) {
                 data{
                   id
                   attributes {
+                    refId
                     type
                     canvas
                     collection {
@@ -1310,6 +1339,16 @@ export async function getCombinationById(id) {
                       data {
                         id
                         attributes {
+                          referencia
+                          Composition {
+                            typeproduct {
+                              data {
+                                attributes {
+                                  name
+                                }
+                              }
+                            }
+                          }
                           silhouette {
                             data {
                               id
@@ -1345,6 +1384,7 @@ export async function getCombinationById(id) {
 // Crear una combinación
 // Combination data should be an object with the following structure:
 // {
+//   "refId": number,
 //   "gender": ID,
 //   "theme": ID,
 //   "a_create_references": [ID],
@@ -1378,6 +1418,7 @@ export async function createCombination( combinationData, file ) {
           data {
             id
             attributes {
+              refId
               type
               canvas
               collection {
@@ -1419,6 +1460,16 @@ export async function createCombination( combinationData, file ) {
                 data {
                   id
                   attributes {
+                    referencia
+                    Composition {
+                      typeproduct {
+                        data {
+                          attributes {
+                            name
+                          }
+                        }
+                      }
+                    }
                     silhouette {
                       data {
                         id
@@ -1476,6 +1527,7 @@ export async function updateCombination(id, data, file ) {
             data {
               id
               attributes {
+                refId
                 type
                 canvas
                 collection {
@@ -1517,6 +1569,16 @@ export async function updateCombination(id, data, file ) {
                   data {
                     id
                     attributes {
+                      referencia
+                      Composition {
+                        typeproduct {
+                          data {
+                            attributes {
+                              name
+                            }
+                          }
+                        }
+                      }
                       silhouette {
                         data {
                           id
@@ -1618,7 +1680,7 @@ export async function uploadImageToCombination( file ) {
     for (let i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i))
     }
-    return new Blob([new Uint8Array(array)], { type: 'image/png' })
+    return new Blob([new Uint8Array(array)], { type: 'image/png'})
   }
 
 }
@@ -1860,10 +1922,8 @@ export async function getIDCollection({ NCollection }) {
                 name
                 prefix_id
                 collection_type{data{attributes{prefix_id}}}
-
               }
             }
-
           }
        }
       `, variables: {
