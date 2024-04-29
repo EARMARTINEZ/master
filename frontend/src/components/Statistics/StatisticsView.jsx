@@ -41,6 +41,8 @@ export function StatisticsView() {
   const [genderToShow, setGenderToShow] = useState([]);
   const [themeToShow, setThemeToShow] = useState([]);
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
       if (!IdCollection) {
         return;
@@ -48,7 +50,6 @@ export function StatisticsView() {
 
       const fetchSilhouettes = async () => {
         const response = await dofetchReferenceForSilhouettes(IdCollection);
-        console.log("🚀 ~ fetchSilhouettes ~ response:", response)
         const references = response.map((item) => ({
           id: item.id,
           ref: item.ref,
@@ -80,6 +81,7 @@ export function StatisticsView() {
         setThemeToShow(Object.entries(themesArray).map(([theme, items]) => ({ tittle: theme, items })));
         setGenderToShow(Object.entries(gendersArray).map(([gender, items]) => ({ tittle: gender, items })));
         setAllReferences(references);
+        setLoading(true);
       }
       fetchSilhouettes();
 
@@ -122,49 +124,55 @@ export function StatisticsView() {
         <p>Select Statics type: </p>
         <RenderDropDown list={filters} state={typeFilter} setState={setTypeFilter} withD={'201px'}/>
       </section>
-      {/* Info filter */}
-      <section id='info-selected-by-filter' className='flex flex-row space-x-14 justify-start items-center'>
-        <div className='flex flex-col justify-start items-start'>
-          <h4 className="m-0">Items in this collection: {collectionsCount}</h4>
-        </div>
-        <section id='select-filter-type' className='flex flex-row space-x-2'>
-          {typeFilter === 'Gender'
-            ? (
-              <>
-                <p>Select {typeFilter.toLowerCase()}: </p>
-                <RenderDropDown list={genders} state={genderSecondaryFilter} setState={setGenderSecondaryFilter} withD={'200px'}type={'gender'}/>
-              </>
-            )
-            : null
-          }
-          {typeFilter === 'Theme'
-            ? (
-              <>
-                <p>Select {typeFilter.toLowerCase()}: </p>
-                <RenderDropDown list={themes} state={themeSecondaryFilter} setState={setThemeSecondaryFilter} withD={'200px'} type={'theme'}/>
-              </>
-            )
-            : null
-          }
-        </section>
-      </section>
-      {/* List of results */}
-      <section className="w-full px-4 pt-5">
-          {
-            typeFilter === 'Gender'
-              ? (
-                <ListOfDisclosures list={genderToShow} infoToShow={genderSecondaryFilter}/>
-              )
-              : null
-          }
-          {
-            typeFilter === 'Theme'
-              ? (
-                <ListOfDisclosures list={themeToShow} infoToShow={themeSecondaryFilter}/>
-              )
-              : null
-          }
-      </section>
+
+      {loading
+        ? (
+          <>
+            {/* Info filter */}
+            <section id='info-selected-by-filter' className='flex flex-row space-x-14 justify-start items-center'>
+              <div className='flex flex-col justify-start items-start'>
+                <h4 className="m-0">Items in this collection: {collectionsCount}</h4>
+              </div>
+              <section id='select-filter-type' className='flex flex-row space-x-2'>
+                {typeFilter === 'Gender'
+                  ? (
+                    <>
+                      <p>Select {typeFilter.toLowerCase()}: </p>
+                      <RenderDropDown list={genders} state={genderSecondaryFilter} setState={setGenderSecondaryFilter} withD={'200px'}type={'gender'}/>
+                    </>
+                  )
+                  : null
+                }
+                {typeFilter === 'Theme'
+                  ? (
+                    <>
+                      <p>Select {typeFilter.toLowerCase()}: </p>
+                      <RenderDropDown list={themes} state={themeSecondaryFilter} setState={setThemeSecondaryFilter} withD={'200px'} type={'theme'}/>
+                    </>
+                  )
+                  : null
+                }
+              </section>
+            </section>
+            {/* List of results */}
+            <section className="w-full px-4 pt-5">
+                {
+                  typeFilter === 'Gender'
+                    ? (
+                      <ListOfDisclosures list={genderToShow} infoToShow={genderSecondaryFilter}/>
+                    )
+                    : null
+                }
+                {
+                  typeFilter === 'Theme'
+                    ? (
+                      <ListOfDisclosures list={themeToShow} infoToShow={themeSecondaryFilter}/>
+                    )
+                    : null
+                }
+            </section>
+          </>
+        ): null }
     </div>
   )
 }
@@ -224,13 +232,6 @@ const DisclosureComponent= ({ objects }) => {
 
     setResultArray(resultArray);
   }, [])
-
-  //Logica para el cambio de la tabs
-  const [activeKey, setActiveKey] = useState("1");
-  const [infoInChart, setInfoInChart] = useState([]);
-  const handleChangeTab = (key) => {
-    setActiveKey(key);
-  };
 
   return (
     <>
@@ -330,7 +331,6 @@ const TableComponent = ({ items }) => {
   return (
     <Table columns={columns} dataSource={newData} />
   )
-
 }
 
 function groupByProductName(data) {

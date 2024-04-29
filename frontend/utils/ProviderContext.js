@@ -238,7 +238,6 @@ const UserProvider = ({ children }) => {
         }
 
         function MapReferencesForSilhouettes(MapValues) {
-          console.log("🚀 ~ MapReferencesForSilhouettes ~ MapValues:", MapValues)
           let silMap = []
 
           setSilhouetteMap([]);
@@ -254,7 +253,6 @@ const UserProvider = ({ children }) => {
                 silhouette,
                 productname,
               } = dataRef ? dataRef.attributes : '0'
-                console.log("🚀 ~ MapValues.data?.map ~ silhouette:", silhouette)
 
               let ParsedDataSource = {
                 id: dataRef ? dataRef.id : '0',
@@ -278,7 +276,6 @@ const UserProvider = ({ children }) => {
               }
               silMap.push(ParsedDataSource)
             })
-          console.log("🚀 ~ MapValues.data?.map ~ ParsedDataSource:", ParsedDataSource)
           setSilhouetteMap(silMap)
           return silMap
         }
@@ -415,7 +412,6 @@ const UserProvider = ({ children }) => {
           NCollection: values ? values : "29",
         }).then( keys => {
           keys.collections.data?.map((dataRef, index) => {
-            console.log("collection name", dataRef.attributes.name)
             setNameCollection(dataRef.attributes.name);
           });
           return keys.collections.data
@@ -486,7 +482,6 @@ const UserProvider = ({ children }) => {
           let refs = MapReferencesForSilhouettes(keys.masters);
           return refs;
       });
-          console.log("🚀 ~ dofetchReferenceForSilhouettes ~ pageData:", pageData)
           setShowModalLoading(false);
           return pageData;
       } catch (error) {
