@@ -2,17 +2,128 @@ import React, { useEffect, useState, useRef } from 'react'
 import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react'
 import { useTasks } from 'utils/ProviderContext';
 import toast from 'react-hot-toast';
+import logoEpkOld from '@/images/logoEpkOld.png'
 
-export const UpdateCombination = ({ editor, onReady, allReferences, availableImages, setAvailableImages, selectedImages, setSelectedImages, onAddImage, obtenerValorOption, obtenerValorTheme, obtenerValorGender, idReferencesInCombination, setIdReferencesInCombination, themes, genders, parts }) => {
+export const UpdateCombination = ({ editor, onReady, allReferences, availableImages, setAvailableImages, selectedImages, setSelectedImages, onAddImage, obtenerValorOption, obtenerValorTheme, obtenerValorGender, idReferencesInCombination, setIdReferencesInCombination, themes, genders, parts, formatCombinationImage, canvaToImage, revertCombinationImage, nameCol  }) => {
   const {
     IdCollection,
     combinationsMap,
     doDeleteCombination,
-    doUpdateCombination
-  } = useTasks();
+    doUpdateCombination,
+    NameCollection,
+  } = useTasks()
 
   const [idSelectedCombination, setIdSelectedCombination] = useState('');
+  const [refIdSelectedCombination, setRefIdSelectedCombination] = useState('');
   const firstUpdate = useRef(true);
+
+  function updateCombination({
+    refId,
+    editor,
+    canvaImage,
+    idReferencesInCombination,
+    selectedImages,
+    references,
+    gender,
+    theme,
+    option,
+    jsonCombinationCanva,
+  }) {
+    console.log(selectedImages)
+    toast.promise(
+      doUpdateCombination({refId: refId, combinationID: idSelectedCombination, genderID:gender, themeID: theme, references: references, canvas: jsonCombinationCanva, collectionID: IdCollection, type: option, file: canvaImage }),
+    {
+      loading: 'Saving updated combination...',
+      success: <p>Combination updated successfully!</p>,
+      error: <p>An error has occurred, try again!</p>,
+    }
+  ).then(() => {
+    //Borramos las imagenes seleccionadas
+    editor.canvas.getObjects().forEach(obj => {
+      if (obj.type === 'image') {
+        editor.canvas.remove(obj);
+      }
+    });
+    setIdReferencesInCombination([]);
+    setSelectedImages([]);
+    setAvailableImages([]);
+    localStorage.setItem("updatedIdCombination", idSelectedCombination);
+    // document.getElementById("combination").value = "select";
+  });
+  }
+
+  async function updateCombinationFunction() {
+    if(combinationsMap.length === 0){
+      toast.error('You dont have any combination to update, please create one first!');
+      return;
+    }
+    if (selectedImages.length !== 0) {
+      const theme = document.getElementById('theme-update').value
+      const gender = document.getElementById('gender-update').value
+      const option = document.getElementById('options-update').value
+      const jsonCombinationCanva = editor?.canvas.toJSON()
+      const references = idReferencesInCombination
+
+      let logo;
+      // Load the image
+      fabric.Image.fromURL(
+        logoEpkOld.src,
+        async function (img) {
+          const originalHeight = editor?.canvas.getHeight()
+          const backgroundImage = editor?.canvas.backgroundImage
+          const newObjects = []
+
+          const refId = refIdSelectedCombination
+
+          console.log('RefId', refId)
+
+          await formatCombinationImage(
+            editor,
+            newObjects,
+            selectedImages,
+            backgroundImage,
+            originalHeight,
+            NameCollection,
+            refId
+          )
+
+          img.scaleToWidth(48)
+          img.set({
+            left: editor?.canvas.getWidth() - img.getScaledWidth() - 2,
+            top: 2,
+          })
+          editor?.canvas.add(img)
+          img.bringToFront()
+          logo = img
+
+          const canvaImage = canvaToImage(editor)
+          revertCombinationImage(
+            editor,
+            newObjects,
+            logo,
+            backgroundImage,
+            originalHeight
+          )
+
+          updateCombination({
+            refId,
+            editor,
+            canvaImage,
+            idReferencesInCombination,
+            selectedImages,
+            references,
+            gender,
+            theme,
+            option,
+            jsonCombinationCanva
+          })
+        },
+        { crossOrigin: 'anonymous' }
+      )
+    } else {
+      toast.error('You must select at least one image to create a combination')
+    }
+  }
 
   //USER SELECT A COMBINATION
   const handleSelectCombination = (e) => {
@@ -22,10 +133,12 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
     if(e.target.value !== 'select'){
       setIdReferencesInCombination([]);
       setSelectedImages([]);
-      setAvailableImages([]); //DEBERIA TENER IMAGANES ??
+      setAvailableImages([]);
 
       //Aca se debe cargar la combinacion seleccionada
-      setIdSelectedCombination(e.target.value);
+      const [id, refId] = e.target.value.split(',')
+      setIdSelectedCombination(id);
+      setRefIdSelectedCombination(refId);
 
       //OBTENEMOS LA COMBINACION SELECCIONADA
       const combinationSelected = combinationsMap.find(combination => parseInt(combination.id) === parseInt(e.target.value));
@@ -83,6 +196,7 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
     }
   }
 
+  // reemplazado por updateCombinationFunction
   const onUpdateCombination = () => {
     if(combinationsMap.length === 0){
       toast.error('You dont have any combination to update, please create one first!');
@@ -91,8 +205,8 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
         const theme = document.getElementById('theme-update').value;
         const gender = document.getElementById('gender-update').value;
         const option = document.getElementById('options-update').value;
-        const references = idReferencesInCombination;
         const canvas = editor.canvas.toJSON();
+        const references = idReferencesInCombination;
         const canvaImage = editor?.canvas.toDataURL({
           format: 'png',
           quality: 0.8,
@@ -243,7 +357,7 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
       return(
         <>
           {availableImages.map((image, index) => (
-            <div key={image.id} onClick={() => onAddImage(image.src, image.id)}>
+            <div key={image.id} onClick={() => onAddImage(image.src, image.id, image.typeproduct, image.ref)}>
               <article className="flex h-32 w-32 flex-col items-center justify-center border hover:border-black">
                 <img
                   src={image.src}
@@ -301,7 +415,7 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
           <option value="select">Please, select a combination</option>
           {/* <option value="30">(0000001,0000002,0000003)</option> */}
           {combinationsMap.map((combination, index) => (
-            <option key={combination.id} value={combination.id}>
+            <option key={combination.id} value={`${combination.id},${combination.refId}`}>
               (
               {combination.references
                 .map((reference) => reference.id)
@@ -357,7 +471,8 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
       <div className="my-10 flex flex-row items-center justify-end gap-6">
         {/* save combination */}
         <button
-          onClick={() => onUpdateCombination()}
+          // onClick={() => onUpdateCombination()}
+          onClick={() => updateCombinationFunction()}
           className="rounded bg-blue-950 px-4 py-2 text-white"
         >
           Update combination

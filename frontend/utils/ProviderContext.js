@@ -238,6 +238,7 @@ const UserProvider = ({ children }) => {
         }
 
         function MapReferencesForSilhouettes(MapValues) {
+          console.log("🚀 ~ MapReferencesForSilhouettes ~ MapValues:", MapValues)
           let silMap = []
 
           setSilhouetteMap([]);
@@ -251,11 +252,14 @@ const UserProvider = ({ children }) => {
                 theme,
                 Composition,
                 silhouette,
+                productname,
               } = dataRef ? dataRef.attributes : '0'
+                console.log("🚀 ~ MapValues.data?.map ~ silhouette:", silhouette)
 
               let ParsedDataSource = {
                 id: dataRef ? dataRef.id : '0',
                 ref: referencia,
+                productname: productname,
                 status: status,
                 collection: {
                   id: collection.data.id,
@@ -264,6 +268,8 @@ const UserProvider = ({ children }) => {
                 gender: genderName,
                 typeproduct: Composition.typeproduct.data.attributes.name,
                 part: Composition.typeproduct.data.attributes.id_part.data.attributes.name,
+                color: Composition.color.data.attributes.name,
+                fabric: Composition.fabric.data.attributes.name,
                 theme: theme.data ? theme.data.attributes.name : '',
                 silhouette: {
                   id: silhouette.data.id,
@@ -272,6 +278,7 @@ const UserProvider = ({ children }) => {
               }
               silMap.push(ParsedDataSource)
             })
+          console.log("🚀 ~ MapValues.data?.map ~ ParsedDataSource:", ParsedDataSource)
           setSilhouetteMap(silMap)
           return silMap
         }
@@ -281,6 +288,7 @@ const UserProvider = ({ children }) => {
           MapValues.data?.map((dataRef, index) => {
             console.log(dataRef)
             const {
+              refId,
               type,
               canvas,
               collection,
@@ -292,6 +300,7 @@ const UserProvider = ({ children }) => {
 
             let ParsedDataSource = {
               id: dataRef ? dataRef.id : '0',
+              refId: refId,
               type: type,
               canvas: canvas,
               collection: {
@@ -302,8 +311,11 @@ const UserProvider = ({ children }) => {
               theme: theme.data ? theme.data.attributes.name : '',
               image: getStrapiURL(image?.data.attributes.url),
               references: a_create_references.data.map((ref, index) => {
+                console.log(ref)
                 return {
                   id: ref.id,
+                  typeproduct:ref.attributes.Composition.typeproduct.data.attributes.name,
+                  ref: ref.attributes.referencia,
                   silhouette: {
                     url: getStrapiURL(
                       ref.attributes.silhouette.data.attributes.url
@@ -321,6 +333,7 @@ const UserProvider = ({ children }) => {
 
         function MapCombination(MapValue) {
             const {
+              refId,
               type,
               canvas,
               collection,
@@ -332,6 +345,7 @@ const UserProvider = ({ children }) => {
 
             let ParsedDataSource = {
               id: MapValue ? MapValue.data.id : '0',
+              refId: refId,
               type: type,
               canvas: canvas,
               collection: {
@@ -344,6 +358,8 @@ const UserProvider = ({ children }) => {
               references: a_create_references.data.map((ref, index) => {
                 return {
                   id: ref.id,
+                  typeproduct: ref.attributes.Composition.typeproduct.data.attributes.name,
+                  ref: ref.attributes.referencia,
                   silhouette: {
                     url: getStrapiURL(ref.attributes.silhouette.data.attributes.url),
                     name: ref.attributes.silhouette.data.attributes.name,
@@ -393,7 +409,42 @@ const UserProvider = ({ children }) => {
           });
         }
 
+  async function fetchCollectionName(values) {
+    try {
+      const pageData = await  getIDCollection({
+          NCollection: values ? values : "29",
+        }).then( keys => {
+          keys.collections.data?.map((dataRef, index) => {
+            console.log("collection name", dataRef.attributes.name)
+            setNameCollection(dataRef.attributes.name);
+          });
+          return keys.collections.data
+      });
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+
   /******************************************** */
+
+  // se busca el refId mas alto
+  async function doFetchLastCombinationId() {
+    try {
+      const pageData = await fetchAPI(
+        '/combinations?fields[0]=refId&pagination[page]=1&pagination[pageSize]=1&sort=id:DESC',
+        {}
+      ).then((keys) => {
+        if (keys.data.length > 0) {
+          return parseInt(keys.data[0].attributes.refId);
+        }
+        return 0;
+      })
+      return pageData;
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+
   async function doIDReference(values) {
     try {
       const pageData = await  getIDReference({
@@ -428,12 +479,14 @@ const UserProvider = ({ children }) => {
     // hacer tantas peticiones como pageCount hayan
     async function dofetchReferenceForSilhouettes(values) {
       try {
+        await fetchCollectionName(values);
         const pageData = await  getSilhouetteByCollection({
           NCollection: values | '0'
         }).then( keys => {
           let refs = MapReferencesForSilhouettes(keys.masters);
           return refs;
       });
+          console.log("🚀 ~ dofetchReferenceForSilhouettes ~ pageData:", pageData)
           setShowModalLoading(false);
           return pageData;
       } catch (error) {
@@ -475,9 +528,10 @@ const UserProvider = ({ children }) => {
       }
     }
 
-    async function doCreateCombination(genderID, themeID, references, canvas, collectionID, type, file) {
+    async function doCreateCombination({refId, genderID, themeID, references, canvas, collectionID, type, file}) {
       try {
         const raw = {
+          refId: refId,
           gender: genderID,
           theme: themeID,
           a_create_references: references,
@@ -497,7 +551,7 @@ const UserProvider = ({ children }) => {
       }
     }
 
-    async function doUpdateCombination({ combinationID, genderID, themeID, references, canvas, collectionID, type, file}) {
+    async function doUpdateCombination({refId, combinationID, genderID, themeID, references, canvas, collectionID, type, file}) {
       try {
         const raw = {
           gender: genderID,
@@ -540,6 +594,7 @@ const UserProvider = ({ children }) => {
       async function dogetCollectionReference(values, Start ) {
         try {
             console.log(values)
+            setIdCollection(values);
             const pageData = await  getCollectionReference({
               NCollection: values ? values : '0' , //28 29
               start: Start ? Start : 1,
@@ -1672,16 +1727,12 @@ const UserProvider = ({ children }) => {
 
     setDrawings([]);
     setDrawingsPDF([]);
-
     setfileListIMG([]);
     setFileListPDF([]);
     setSendUploadIMG(true);
     setSendUploadPDF(true);
-
     setShowModalLoading(true);
     dofetchReference( nfer ? nfer : '0');
-
-
 
     setOpen(true);
    };
@@ -1701,45 +1752,32 @@ const UserProvider = ({ children }) => {
     };
 
   const doshowFormDrawer = (nfer) => {
-
     setDrawings([]);
     setDrawingsPDF([]);
-
-
     setopenFormDrawer(true);
    };
     const onCloseFormDrawer = () => {
 
       const value = IdCollection ? IdCollection :"0"
       const fixCollection = IdPrefixCollection ? IdPrefixCollection :"0"
-
       //dogetCollectionReference(value)
       dofetchIDCollection(fixCollection);
       setopenFormDrawer(false);
-
-
     };
 
   const doshowFormDrawerEdit = (nfer) => {
-
     // setDrawings([]);
     // setDrawingsPDF([]);
-
-
     setopenFormDrawerEdit(true);
    };
     const onCloseFormDrawerEdit = () => {
-
       const value = Referencia ? Referencia :"0"
-
       //dofetchReference(value)
       setopenFormDrawerEdit(false);
     };
 
   const doShowStampsDrawer = (value, nfer) => {
-
     value==true ? setStatusOnCloseStamps(true) : setStatusOnCloseStamps(false)
-
     setShowModalLoading(true);
     dofetchReference( nfer ? nfer : '0');
     setStampsOpen(true);
@@ -1773,15 +1811,12 @@ const UserProvider = ({ children }) => {
 
         const OrdenImg = NameImg.includes('os-back') ? 'D' : UrlImg.includes('os') ? 'C' : UrlImg.includes('page_2') ? 'B' : 'A'
 
-
         const DrawingsUrl = {
             'orden': OrdenImg,
             'url': UrlImg,
             'name':NameImg,
             'id': UrlId,
-
         }
-
         UrlDrawings.push(DrawingsUrl);
     });
 
@@ -1986,6 +2021,7 @@ setIsModalOpen(false);
     doDeleteCombination: doDeleteCombination,
     dofindThemes: dofindThemes,
     dofindParts: dofindParts,
+    doFetchLastCombinationId: doFetchLastCombinationId,
     //
 
     dofetchCollection: dofetchCollection,

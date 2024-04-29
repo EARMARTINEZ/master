@@ -1,279 +1,265 @@
 import  'flowbite'
 import React, { useState, createContext, useContext } from "react";
-import {  getStrapiURL, 
-          fetchAPI, 
-          getThemesCollection, 
-          getColorPantoneCollection, 
-          getStampsCollection, 
-          getSizesAll, 
-          getSizesCollection, 
-          getSizesActives, } from "utils/api"; 
+import {  getStrapiURL,
+          fetchAPI,
+          getThemesCollection,
+          getColorPantoneCollection,
+          getStampsCollection,
+          getSizesAll,
+          getSizesCollection,
+          getSizesActives, } from "utils/api";
 import { Select  } from 'antd';
 
 
 export const BasicContext = createContext({ isAuthenticated: false });
 export const  BasicTasks = () => useContext(BasicContext);
 
-const BasicProvider = ({ children }) => {  
+const BasicProvider = ({ children }) => {
 
 
   async function dogetNextSequence(values) {
-    
+
     try {
       setStartSequence([]);
 
-     const Nreferencia = values ? values : '1241' //Collection+Gender      
+     const Nreferencia = values ? values : '1241' //Collection+Gender
       const pageData = await fetchAPI("/mastercontrol/getNextSequence/"+Nreferencia, {
-        
-      }).then( keys => {                
-          
-         //console.log(keys);     
+
+      }).then( keys => {
+
+         //console.log(keys);
          setStartSequence(keys ? keys.next_sequence : '')
-    
+
       return keys;
-  });       
-            
+  });
+
       return pageData;
-        
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
+
+        }
   }
 
-  
+
   async function dofindGender() {
-    try {     
+    try {
       let ItemGenderMap = [];
-
       setfiltersGenderMap([]);
+      const pageData = await fetchAPI("/genders", {
+      }).then( MapGender => {
 
-      const pageData = await fetchAPI("/genders", {       
-      }).then( MapGender => {    
-       
-          MapGender.data?.map((dataRef, index) => {          
+          MapGender.data?.map((dataRef, index) => {
             let ItemGender = {
               value: dataRef.id ? dataRef.id: '',
               label:dataRef.attributes ? dataRef.attributes.name: ''
-            };            
-            ItemGenderMap.push(ItemGender,); 
-        
-         });       
-          setfiltersGenderMap(ItemGenderMap);    
-    
+            };
+            ItemGenderMap.push(ItemGender,);
+
+         });
+          setfiltersGenderMap(ItemGenderMap);
+
           return MapGender;
-      }); 
-          
-            
+      });
           return pageData;
-        
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
+
+        }
   }
-  
+
   async function dofindProducts() {
-    try {     
+    try {
       let ItemMap = [];
       setfiltersProductMap([]);
 
-      const pageData = await fetchAPI("/products?pagination[limit]=-1", {       
-      }).then( ResMap => {    
-       
-        ResMap.data?.map((dataRef, index) => {          
+      const pageData = await fetchAPI("/products?pagination[limit]=-1", {
+      }).then( ResMap => {
+
+        ResMap.data?.map((dataRef, index) => {
             let Item = {
               value: dataRef.id ? dataRef.id: '',
               label:dataRef.attributes ? dataRef.attributes.name: ''
-            };            
-            ItemMap.push(Item,); 
-        
-         });       
-         setfiltersProductMap(ItemMap);    
-    
+            };
+            ItemMap.push(Item,);
+
+         });
+         setfiltersProductMap(ItemMap);
           return ResMap;
-      }); 
-          
-            
+      });
           return pageData;
-        
       } catch (error) {
           console.log("error", error)
-          
-        }          
+      }
   }
-    
+
   async function dofindProviders() {
-    try {     
+    try {
       let ItemMap = [];
       setfiltersProvidersMap([]);
 
-      const pageData = await fetchAPI("/providers?pagination[limit]=-1", {       
-      }).then( ResMap => {    
-       
-        ResMap.data?.map((dataRef, index) => {          
+      const pageData = await fetchAPI("/providers?pagination[limit]=-1", {
+      }).then( ResMap => {
+
+        ResMap.data?.map((dataRef, index) => {
             let Item = {
               value: dataRef.id ? dataRef.id: '',
               label:dataRef.attributes ? dataRef.attributes.name: ''
-            };            
-            ItemMap.push(Item,); 
-        
-         });       
-         setfiltersProvidersMap(ItemMap);    
-    
+            };
+            ItemMap.push(Item,);
+
+         });
+         setfiltersProvidersMap(ItemMap);
+
           return ResMap;
-      }); 
-          
-            
+      });
           return pageData;
-        
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
+
+        }
   }
-  
+
   async function dofindFabrics() {
-    try {     
+    try {
       let ItemMap = [];
       setfiltersFabricsMap([]);
 
-      const pageData = await fetchAPI("/fabrics?pagination[limit]=-1", {       
-      }).then( ResMap => {    
-       
-        ResMap.data?.map((dataRef, index) => {          
+      const pageData = await fetchAPI("/fabrics?pagination[limit]=-1", {
+      }).then( ResMap => {
+
+        ResMap.data?.map((dataRef, index) => {
             let Item = {
               value: dataRef.id ? dataRef.id: '',
               label:dataRef.attributes ? dataRef.attributes.name: ''
-            };            
-            ItemMap.push(Item,); 
-        
-         });       
-         setfiltersFabricsMap(ItemMap);    
-    
+            };
+            ItemMap.push(Item,);
+
+         });
+         setfiltersFabricsMap(ItemMap);
           return ResMap;
-      }); 
-          
-            
+      });
           return pageData;
-        
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
-  } 
+
+        }
+  }
 
   async function dofindThemes(values) {
-    try {     
+    try {
         let ItemMap = [];
         setfiltersThemesMap([]);
 
         const pageData = await  getThemesCollection({
-          NCollection: values ? values :'0' , //28 29        
-        }).then( ResMap => {        
-          
-            ResMap.themes.data?.map((dataRef, index) => {          
+          NCollection: values ? values :'0' , //28 29
+        }).then( ResMap => {
+
+            ResMap.themes.data?.map((dataRef, index) => {
               let Item = {
                 value: dataRef.id ? dataRef.id: '',
                 label:dataRef.attributes ? dataRef.attributes.name: ''
-              };            
-              ItemMap.push(Item,); 
-          
-          });       
-          setfiltersThemesMap(ItemMap);    
-    
+              };
+              ItemMap.push(Item,);
+
+          });
+          setfiltersThemesMap(ItemMap);
+
           return ResMap;
-      }); 
-      
+      });
+
       return pageData;
-        
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
+
+        }
   }
-  
+
   async function dofindStamps(values) {
-    try {     
+    try {
         let ItemMap = [];
         setfiltersStampsMap([]);
 
         const pageData = await  getStampsCollection({
-          NCollection: values ? values :"0" ,  
-        }).then( ResMap => {        
-          
-            ResMap.stamps.data?.map((dataRef, index) => {          
+          NCollection: values ? values :"0" ,
+        }).then( ResMap => {
+
+            ResMap.stamps.data?.map((dataRef, index) => {
               let Item = {
                 value: dataRef.id ? dataRef.id: '',
                 label:dataRef.attributes ? dataRef.attributes.name: ''
-              };            
-              ItemMap.push(Item,); 
-          
-          });       
-          setfiltersStampsMap(ItemMap);    
-    
+              };
+              ItemMap.push(Item,);
+
+          });
+          setfiltersStampsMap(ItemMap);
+
           return ResMap;
-      }); 
-      
+      });
+
       return pageData;
-        
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
+
+        }
   }
-  
+
   async function dofindColorPantone(values) {
-    try {     
+    try {
         let ItemMap = [];
         setfiltersColorPantoneMap([]);
 
         const pageData = await  getColorPantoneCollection({
-          NCollection: values ? values :'0' , //28 29        
-        }).then( ResMap => {        
-          
-            ResMap.mixcolors.data?.map((dataRef, index) => {          
+          NCollection: values ? values :'0' , //28 29
+        }).then( ResMap => {
+
+            ResMap.mixcolors.data?.map((dataRef, index) => {
               let Item = {
                 value: dataRef.id ? dataRef.id: '',
                 label:dataRef.attributes ? dataRef.attributes.name: ''
-              };            
-              ItemMap.push(Item,); 
-          
-          });       
-          setfiltersColorPantoneMap(ItemMap);    
-    
+              };
+              ItemMap.push(Item,);
+
+          });
+          setfiltersColorPantoneMap(ItemMap);
+
           return ResMap;
-      }); 
-      
+      });
+
       return pageData;
-        
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
+
+        }
   }
   //TypeComment
   async function dofindTypecomments() {
-    try {     
+    try {
       let ItemMap = [];
       let ItempendigMap = [];
       setfilterstypecomments([]);
       setfilterstypePending([]);
 
-      const pageData = await fetchAPI("/typecomments?pagination[limit]=-1", {       
-      }).then( ResMap => {    
-       
-        ResMap.data?.map((dataRef, index) => { 
-          
+      const pageData = await fetchAPI("/typecomments?pagination[limit]=-1", {
+      }).then( ResMap => {
+
+        ResMap.data?.map((dataRef, index) => {
+
           switch (dataRef.attributes.type) {
             case 'comment':
                 let Item = {
                   value: dataRef.id ? dataRef.id: '',
                   label:dataRef.attributes ? dataRef.attributes.name: '',
                   type:dataRef.attributes ? dataRef.attributes.type: ''
-                };            
-                ItemMap.push(Item,); 
-                setfilterstypecomments([...ItemMap]);   
+                };
+                ItemMap.push(Item,);
+                setfilterstypecomments([...ItemMap]);
               break;
 
               case 'pending':
@@ -281,90 +267,90 @@ const BasicProvider = ({ children }) => {
                     value: dataRef.id ? dataRef.id: '',
                     label:dataRef.attributes ? dataRef.attributes.name: '',
                     type:dataRef.attributes ? dataRef.attributes.type: ''
-                  };            
-                  ItempendigMap.push(Itempending,); 
-                  setfilterstypePending([...ItempendigMap]); 
-                break;   
-           
+                  };
+                  ItempendigMap.push(Itempending,);
+                  setfilterstypePending([...ItempendigMap]);
+                break;
+
             default:
               console.log(`Sorry, we are out of ${dataRef.attributes.type}.`);
           }
-          
-         
-        
-         }); 
-         
-        
-    
+
+
+
+         });
+
+
+
           return ResMap;
-      }); 
-          
-            
+      });
+
+
           return pageData;
-        
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
-  } 
+
+        }
+  }
 
   // async function dofindColorPantone() {
-  //   try {     
+  //   try {
   //     let ItemMap = [];
   //     setfiltersColorPantoneMap([]);
 
-  //     const pageData = await fetchAPI("/mixcolors?pagination[limit]=-1", {       
-  //     }).then( ResMap => {    
-       
-  //       ResMap.data?.map((dataRef, index) => {          
+  //     const pageData = await fetchAPI("/mixcolors?pagination[limit]=-1", {
+  //     }).then( ResMap => {
+
+  //       ResMap.data?.map((dataRef, index) => {
   //           let Item = {
   //             value: dataRef.id ? dataRef.id: '',
   //             label:dataRef.attributes ? dataRef.attributes.name: ''
-  //           };            
-  //           ItemMap.push(Item,); 
-        
-  //        });       
-  //        setfiltersColorPantoneMap(ItemMap);    
-    
+  //           };
+  //           ItemMap.push(Item,);
+
+  //        });
+  //        setfiltersColorPantoneMap(ItemMap);
+
   //         return ResMap;
-  //     }); 
-          
-            
+  //     });
+
+
   //         return pageData;
-        
+
   //     } catch (error) {
   //         console.log("error", error)
-          
-  //       }          
+
+  //       }
   // }
-  
+
   async function dofindSizes(Genders, Typeproducts) {
-    try {     
+    try {
         let ItemMap = [];
-        let SizeArray = []; 
-        setSizesSelecMap();   
+        let SizeArray = [];
+        setSizesSelecMap();
 
         const handleChange = (value) => {
-          console.log(`Provider Selected: ${value}`);    
-        }; 
-        // console.log(`Genders: ${Genders} Typeproducts: ${Typeproducts}`); 
-        
-           await  getSizesAll({              
-        }).then( ResMap => { 
+          console.log(`Provider Selected: ${value}`);
+        };
+        // console.log(`Genders: ${Genders} Typeproducts: ${Typeproducts}`);
+
+           await  getSizesAll({
+        }).then( ResMap => {
             ResMap.sizes.data?.map((dataRef, index) => {
                 let Item = {
                   value:dataRef.attributes ? dataRef.attributes.name: '',
                   label:dataRef.attributes ? dataRef.attributes.name: ''
-                };            
-                ItemMap.push(Item,);              
-              });    
-          }); 
+                };
+                ItemMap.push(Item,);
+              });
+          });
           //console.log(Genders, Typeproducts);
 
           const DataActives = await  getSizesActives({
             NGenders: Genders ? Genders :'0' ,
-            NTypeproducts: Typeproducts ? Typeproducts :'0',            
-          }).then( ResMap => { 
+            NTypeproducts: Typeproducts ? Typeproducts :'0',
+          }).then( ResMap => {
 
             //console.log(ResMap)
 
@@ -372,112 +358,112 @@ const BasicProvider = ({ children }) => {
             let ActivateSearch = ResMap.sizeactives.data[0] ? ResMap.sizeactives.data[0].attributes.activateSearch : false
 
               if(ActivateSearch){
-                 
-                    
+
+
                     SizeActives?.map((dataRef, index) => {
                       let Item = {
                         value:dataRef.id ? dataRef.id: '',
                         label:dataRef.attributes ? dataRef.attributes.name: ''
-                      };            
+                      };
                       //ItemMap.push(Item,);
                       SizeArray.push(dataRef.attributes.name,);
-                    });     
-                    // console.log(SizeArray); 
-                  setSizesSelecMap(     
-                      <Select                 
-                      name="selecsize"         
-                      options={ItemMap} 
+                    });
+                    // console.log(SizeArray);
+                  setSizesSelecMap(
+                      <Select
+                      name="selecsize"
+                      options={ItemMap}
                       defaultValue={SizeArray}
                       //defaultActiveFirstOption={false}
                       value={ItemMap}
                       onChange={handleChange}
-                      mode="multiple"              
-                      //showSearch="single"                         
+                      mode="multiple"
+                      //showSearch="single"
                       placeholder="Search to Select"
                       optionFilterProp="children"
                       filterOption={(input, option) => (option?.label ?? '').includes(input)}
                       filterSort={(optionA, optionB) =>
-                          (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())                    
-                      }                  
-                      />         
-                    ) 
-                
+                          (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                      }
+                      />
+                    )
+
                   return ResMap;
             }
-        }); 
+        });
 
               const pageData = await  getSizesCollection({
                 NGenders: Genders ? Genders :'0' ,
-                NTypeproducts: Typeproducts ? Typeproducts :'0',            
-              }).then( ResMap => { 
+                NTypeproducts: Typeproducts ? Typeproducts :'0',
+              }).then( ResMap => {
                 let Sizes = ResMap.sizes.data ? ResMap.sizes.data: []
                   //console.log(ResMap)
                   Sizes?.map((dataRef, index) => {
                     let Item = {
                       value:dataRef.id ? dataRef.id: '',
                       label:dataRef.attributes ? dataRef.attributes.name: ''
-                    };            
+                    };
                     //ItemMap.push(Item,);
                     SizeArray.push(dataRef.attributes.name,);
-                  });     
-                  // console.log(SizeArray); 
-                setSizesSelecMap(     
-                    <Select                 
-                    name="selecsize"         
-                    options={ItemMap} 
+                  });
+                  // console.log(SizeArray);
+                setSizesSelecMap(
+                    <Select
+                    name="selecsize"
+                    options={ItemMap}
                     defaultValue={SizeArray}
                     //defaultActiveFirstOption={false}
                     value={ItemMap}
                     onChange={handleChange}
-                    mode="multiple"              
-                    //showSearch="single"                         
+                    mode="multiple"
+                    //showSearch="single"
                     placeholder="Search to Select"
                     optionFilterProp="children"
                     filterOption={(input, option) => (option?.label ?? '').includes(input)}
                     filterSort={(optionA, optionB) =>
-                        (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())                    
-                    }                  
-                    />         
-                  ) 
-              
-                return ResMap;
-            });   
+                        (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                    }
+                    />
+                  )
 
-              
-      
+                return ResMap;
+            });
+
+
+
       return pageData;
-        
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
+
+        }
   }
-  
+
   //Auth
 
   async function checkUser(email) {
-    try {     
-   
-      const pageData = await fetchAPI("/users/?filters[email][$eq]="+email, {       
-      }).then( ResMap => { return ResMap }); 
-          
+    try {
+
+      const pageData = await fetchAPI("/users/?filters[email][$eq]="+email, {
+      }).then( ResMap => { return ResMap });
+
       return pageData;
-        
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
-  } 
+
+        }
+  }
 
   async function forgotpassword(values) {
-    try {     
-   
-        let raw = JSON.stringify({            
-          "email": values ? values.email : ''     
+    try {
+
+        let raw = JSON.stringify({
+          "email": values ? values.email : ''
         });
         const options = {
         method: "POST",
-        body: raw,     
+        body: raw,
         };
         const mergedOptions = {
             headers: {
@@ -490,24 +476,24 @@ const BasicProvider = ({ children }) => {
         }).then( keys => {  return keys });
 
       return ["OK", resp.message];
-      
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
-  } 
+
+        }
+  }
 
   async function doResetpassword(values) {
-    try {     
-   
-        let raw = JSON.stringify({            
+    try {
+
+        let raw = JSON.stringify({
           "code": values ? values.code : '',
-          "password": values ? values.password : '',  
-          "passwordConfirmation": values ? values.passwordConfirmation : ''       
+          "password": values ? values.password : '',
+          "passwordConfirmation": values ? values.passwordConfirmation : ''
         });
         const options = {
         method: "POST",
-        body: raw,     
+        body: raw,
         };
         const mergedOptions = {
             headers: {
@@ -520,44 +506,44 @@ const BasicProvider = ({ children }) => {
         }).then( keys => {  return keys });
 
       return ["OK", resp.message];
-      
+
       } catch (error) {
           console.log("error", error)
-          return ["alert", error.response.data.message]; 
-        }          
+          return ["alert", error.response.data.message];
+        }
   }
-  
+
 
   async function doReportCapture() {
-    try {     
+    try {
       let ItemMap = [];
       setCaptureReport([]);
 
-      const pageData = await fetchAPI("/reportcapture", {       
-      }).then( MapGender => {          
+      const pageData = await fetchAPI("/reportcapture", {
+      }).then( MapGender => {
 
           return MapGender;
-      });           
-            
+      });
+
           return pageData;
-        
+
       } catch (error) {
           console.log("error", error)
-          
-        }          
+
+        }
   }
 
   function doDivideEnPartesIguales(array) {
-    const longitudParte = Math.ceil(array.length / 3); 
+    const longitudParte = Math.ceil(array.length / 3);
     const partes = [];
     for (let i = 0; i < array.length; i += longitudParte) {
       partes.push(array.slice(i, i + longitudParte));
     }
     return partes;
   }
- 
 
-const [CaptureReport, setCaptureReport] = useState([]); 
+
+const [CaptureReport, setCaptureReport] = useState([]);
 const [PrintMode, setPrintMode] = useState(true);
 
 const [StartSequence, setStartSequence] = useState([]);
@@ -580,7 +566,7 @@ const [ItemProduct, setItemProduct] = useState();
 const [ItemGender, setItemGender] = useState();
 const [ItemTheme, setItemTheme] = useState();
 
-const [ReferenceMapStatus, setReferenceMapStatus] = useState(true); 
+const [ReferenceMapStatus, setReferenceMapStatus] = useState(true);
 const [ FilterCatalogSelect, setFilterCatalogSelect] = useState([]);
 
 const [itemsProducto, setitemsProducto] = useState([]);
@@ -592,8 +578,8 @@ const onformReset = () => {
 };
 
 const useract = {
-  
-  
+
+
   dogetNextSequence:dogetNextSequence,
   dofindGender:dofindGender,
   dofindProducts:dofindProducts,
@@ -605,8 +591,8 @@ const useract = {
   dofindSizes:dofindSizes,
   dofindTypecomments:dofindTypecomments,
   doDivideEnPartesIguales:doDivideEnPartesIguales,
-  
- 
+
+
 
   setCaptureReport:setCaptureReport,
   CaptureReport:CaptureReport,

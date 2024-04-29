@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 
 import  'flowbite'
-import {useEffect, useState } from "react"; 
+import {useEffect, useState } from "react";
 import {getStrapiURL} from "utils/api";
 import { Button, Form, Drawer  } from 'antd';
 import { PrinterOutlined } from '@ant-design/icons'
@@ -22,33 +22,29 @@ import {FormItemTheme,
        } from '@/components/Catalog/FormItemFilter'
 
 
+export function CatalogView() {
 
-
-export function CatalogView() {   
-    
   const {
     IdCollection,
     ReferenceMap,
     StaticReferenceMap,
-    NameCollection,          
-    dogetCollectionReference, 
-    dofetchIDCollection,   
+    NameCollection,
+    dogetCollectionReference,
+    dofetchIDCollection,
     onClose,
     open,
-    StampsOpen, 
-    onCloseStamps, 
+    StampsOpen,
+    onCloseStamps,
     doReferenceMapFilters,
-    ItemGender          
-   } = useTasks();  
-      
-   const {     
-    PrintMode,   
-    CaptureReport, 
-    FilterCatalogSelect,
-    formRef,   
-   } = BasicTasks();
+    ItemGender
+   } = useTasks();
 
-   
+   const {
+    PrintMode,
+    CaptureReport,
+    FilterCatalogSelect,
+    formRef,
+   } = BasicTasks();
 
    const [ ItemSelectGender, setItemSelectGender] = useState();
    const [ ItemSelectTheme, setItemSelectTheme] = useState();
@@ -56,197 +52,164 @@ export function CatalogView() {
    const [formCatalogView] = Form.useForm();
 
    const [openCatalog, setOpenCatalog] = useState(false);
-   
 
    const [ CatalogSelect, setCatalogSelect] = useState("Collection Catalog");
 
    let isCatalogSelec = CatalogSelect === 'Collection Catalog'
    let isProductCatalog = CatalogSelect === 'Gender / Product Catalog'
 
-   let ItemFilterSelect = isCatalogSelec ? ['theme','genderName'] : 
+   let ItemFilterSelect = isCatalogSelec ? ['theme','genderName'] :
                           isProductCatalog ? ['typeproduct','genderName'] : []
-    
 
 
-   const onCloseCatalag = () => {    
-    setOpenCatalog(false);    
+   const onCloseCatalag = () => {
+    setOpenCatalog(false);
   };
 
-  
-useEffect(() => {            
-   IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('29');   
+
+useEffect(() => {
+   IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('29');
    IdCollection ? dofetchIDCollection(IdCollection) : dofetchIDCollection('29');
-}, []);     
+}, []);
 
 
 // console.log(ItemSelectProduct);
-
-   
   return (
-    
   <>
 
 <div className="overflow-hidden bg-white dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]">
   <div className="py-1 sm:px-2 lg:relative lg:px-0 lg:py-1">
       <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-1 px-4 lg:max-w-8xl lg:grid-cols-1 lg:px-8 xl:gap-x-16 xl:px-12">
+      <div className="grid grid-cols-2 gap-1">
 
-      
-
-      <div className="grid grid-cols-2 gap-1"> 
-      
-          <div className="col-span-6 sm:col-span-1  "> 
+          <div className="col-span-6 sm:col-span-1  ">
           {<Form  >
-            <FormSelectCatalog 
+            <FormSelectCatalog
             CatalogSelec={setCatalogSelect}
             SelectTheme={setItemSelectTheme}
-            SelectProduct={setItemSelectProduct}          
+            SelectProduct={setItemSelectProduct}
           />
           </Form>}
-          </div>   
+          </div>
 
-          <div className="col-span-6 sm:col-span-1  "> 
+          <div className="col-span-6 sm:col-span-1  ">
           {<ButtonRecharge />}
-          </div>   
-
-      </div> 
-     
-        <Form 
+          </div>
+      </div>
+        <Form
         form={formCatalogView}
         name="form_CatalogViewFilterSelect"
-       
-        >  
-          <div className="grid grid-cols-2 gap-1"> 
-               
-         
-              <div className="col-span-6 sm:col-span-1  "> 
+        >
+          <div className="grid grid-cols-2 gap-1">
+              <div className="col-span-6 sm:col-span-1  ">
               {
-                <FormItemGender 
-                  ItemFilter={ItemFilterSelect} 
+                <FormItemGender
+                  ItemFilter={ItemFilterSelect}
                   SelectGender={setItemSelectGender}
-                  form={formCatalogView}  
+                  form={formCatalogView}
                   />
-                  }    
+                  }
               </div>
-              
               {isCatalogSelec &&
-                  <div className="col-span-6 sm:col-span-1  "> 
-                
-                    <FormItemTheme 
-                      SelectTheme={setItemSelectTheme} 
+                  <div className="col-span-6 sm:col-span-1  ">
+                    <FormItemTheme
+                      SelectTheme={setItemSelectTheme}
                       form={formCatalogView}
                    />
-                
                   </div>
-              }        
-              
+              }
               {isProductCatalog &&
-                <div className="col-span-6 sm:col-span-1  "> 
-              
-                  <FormItemProduct 
-                    SelectProduct={setItemSelectProduct}  
+                <div className="col-span-6 sm:col-span-1  ">
+                  <FormItemProduct
+                    SelectProduct={setItemSelectProduct}
                   />
-               
                 </div>
               }
-        
-          </div> 
+          </div>
         </Form>
-        
            <div className="grid grid-cols-1 gap-1">
-
-            <div className="col-span-6 sm:col-span-1 py-5 "> 
-               {PrintMode && <Button type="dashed" 
-                  onClick={() => { setOpenCatalog( true)  }} 
+            <div className="col-span-6 sm:col-span-1 py-5 ">
+               {PrintMode && <Button type="dashed"
+                  onClick={() => { setOpenCatalog( true)  }}
                 ><PrinterOutlined />Print Mode</Button>}
-              </div> 
-
-              <div className="col-span-6 sm:col-span-1  ">                        
-                <CatalogDroppable />
               </div>
-          </div>         
-         
-         
+              <div className="col-span-6 sm:col-span-1  ">
+                <CatalogDroppable />z
+              </div>
+          </div>
          </div>
       </div>
     </div>
 
-
-          <Drawer 
-              title="Close" 
-              placement="right" 
-              onClose={() => { 
-                               doReferenceMapFilters(FilterCatalogSelect), 
+          <Drawer
+              title="Close"
+              placement="right"
+              onClose={() => {
+                               doReferenceMapFilters(FilterCatalogSelect),
                                onClose(true)
-                              }} 
-              open={open} 
-              size={'large'} 
+                              }}
+              open={open}
+              size={'large'}
               width={2000}
-              className="bg-gray-900"    
-              > 
-              <CardReference  />          
-          </Drawer> 
+              className="bg-gray-900"
+              >
+              <CardReference  />
+          </Drawer>
 
-          <Drawer 
-              title="Close" 
-              placement="right" 
-              onClose={() => onCloseCatalag( ) } 
-              open={openCatalog} 
-              size={'large'} 
-           
-              className="bg-gray-900"    
-              > 
+          <Drawer
+              title="Close"
+              placement="right"
+              onClose={() => onCloseCatalag( ) }
+              open={openCatalog}
+              size={'large'}
+
+              className="bg-gray-900"
+              >
                 <PDFViewer height={600} width={600} >
-
-                  <ReporViewer CaptureR={CaptureReport} 
-                  NameCollection={NameCollection} 
-                  ItemSelectTheme={ItemSelectTheme} 
-                  ItemSelectGender={ItemSelectGender} 
+                  <ReporViewer CaptureR={CaptureReport}
+                  NameCollection={NameCollection}
+                  ItemSelectTheme={ItemSelectTheme}
+                  ItemSelectGender={ItemSelectGender}
                   ItemSelectProduct={ItemSelectProduct}
                   />
+                </PDFViewer>
 
-                </PDFViewer>   
-                 
-          </Drawer> 
+          </Drawer>
 
-          <Drawer 
-                title="Close" 
-                placement="right" 
-                onClose={() => onCloseStamps( ) } 
-                open={StampsOpen} 
-                size={'large'} 
+          <Drawer
+                title="Close"
+                placement="right"
+                onClose={() => onCloseStamps( ) }
+                open={StampsOpen}
+                size={'large'}
                 width={2000}
-                className="bg-gray-900"    
-                > 
-                <CardStamp  />            
-            </Drawer>              
-          
-   
-  </>
+                className="bg-gray-900"
+                >
+                <CardStamp  />
+            </Drawer>
 
+  </>
 )
 }
 
 
 
-export function CatalogViewV1() {   
-    
+export function CatalogViewV1() {
+
   const { Referencia, ReferenceMap, doupdateStatusStamp } = useTasks();
 
-  const {    
+  const {
     formRef,
-    checkUser,    
-  } = BasicTasks(); 
-  
-  
-  
+    checkUser,
+  } = BasicTasks();
 
   const itemsFromBackend = [
     { id: uuid(), content: "First task" },
     { id: uuid(), content: "Second task" },
     { id: uuid(), content: "Third task" },
-    
+
   ];
-  
+
   const columnsFromBackend = {
     [uuid()]: {
       name: "Requested",
@@ -265,11 +228,11 @@ export function CatalogViewV1() {
       items: []
     }
   };
-  
+
   const onDragEnd = (result, columns, setColumns) => {
     if (!result.destination) return;
     const { source, destination } = result;
-  
+
     if (source.droppableId !== destination.droppableId) {
       const sourceColumn = columns[source.droppableId];
       const destColumn = columns[destination.droppableId];
@@ -302,7 +265,7 @@ export function CatalogViewV1() {
       });
     }
   };
- 
+
 
   const [columns, setColumns] = useState(columnsFromBackend);
 
@@ -317,7 +280,7 @@ export function CatalogViewV1() {
         console.log(column)
     })
   return (
-    
+
   <>
 
 <div style={{ display: "flex", justifyContent: "center", height: "100%" }}>
@@ -395,9 +358,6 @@ export function CatalogViewV1() {
         })}
       </DragDropContext>  : null }
     </div>
-
-   
-   
   </>
 
 )

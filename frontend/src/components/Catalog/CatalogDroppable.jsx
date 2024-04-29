@@ -1,10 +1,10 @@
 import { useSession } from 'next-auth/react';
 
 import  'flowbite'
-import  React, {useEffect, useState, useCallback  } from "react"; 
+import  React, {useEffect, useState, useCallback  } from "react";
 import { useTasks } from "utils/ProviderContext";
 import { BasicTasks } from "utils/Provider/BasicProvider";
-import { getStrapiURL, fetchAPI } from "utils/api"; 
+import { getStrapiURL, fetchAPI } from "utils/api";
 import {ConfigProvider, Button, Checkbox, Form, Input, Select, Space, Radio, Card, Row, Col } from 'antd';
 import {  ExclamationCircleFilled, DeleteTwoTone } from '@ant-design/icons'
 import ImgReference from '@/components/Cards/DetailReference/ImgReference'
@@ -14,9 +14,9 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuid } from 'uuid';
 
  // fake data generator
- const getItems = (count, offset = 0) => 
+ const getItems = (count, offset = 0) =>
 
- Array.from({ length: count }, (v, k) => k).map(k => ({     
+ Array.from({ length: count }, (v, k) => k).map(k => ({
    id: `item-${uuid()}`,
    content: `item ${k + offset}`,
    type: `item ${k + offset}`,
@@ -66,30 +66,28 @@ padding: grid,
 width: 350
 });
 
+export function CatalogDroppable() {
 
-
-export function CatalogDroppable() {   
-    
-  const { Referencia, 
+  const { Referencia,
           IdCollection,
-          dogetSystemColor, 
-          ReferenceMap, 
+          dogetSystemColor,
+          ReferenceMap,
           setReferenceMap,
           StaticReferenceMap,
-          doshowDrawer, 
+          doshowDrawer,
           NameCollection } = useTasks();
 
   const {
-    doDivideEnPartesIguales,    
+    doDivideEnPartesIguales,
     PrintMode,
     setCaptureReport,
     ItemGender,
-    ItemTheme    
-  } = BasicTasks();  
+    ItemTheme
+  } = BasicTasks();
 
   const [state, setState] = useState([]);
-  const [StopState, setStopState] = useState(true);  
- 
+  const [StopState, setStopState] = useState(true);
+
   let ItemMap = [];
   let newDataDrawings = [];
   let ItemRandomMap = [];
@@ -97,57 +95,48 @@ export function CatalogDroppable() {
   let ItemBaseMap = [];
 
   let ItemRMap = [];
-  
-  useEffect(() => {   
+
+  useEffect(() => {
     if(StopState){
 
-     
-      
-      
-      const ArryFilter = ItemGender ?      
+      const ArryFilter = ItemGender ?
              ReferenceMap.filter(type => type.attributes.genderName == ItemGender )
             :ReferenceMap.filter(type => type.attributes.genderName == 'Baby Girl' )
-      
-      
-        
+
+      console.log("ItemGender");
       console.log(ItemGender);
-      
 
       ArryFilter?.map((dataRef, index) => {
-            const { referencia, drawings, Composition, status } = dataRef ? dataRef.attributes : '0';               
-            const {id_part } = Composition ? Composition.typeproduct.data.attributes  : '0';               
-                
-            drawings.data?.map((dataDrawings, index) => { 
+            const { referencia, drawings, Composition, status } = dataRef ? dataRef.attributes : '0';
+            const {id_part } = Composition ? Composition.typeproduct.data.attributes  : '0';
 
-                const isCatalogSelec = status != 'Cancelled' 
+            drawings.data?.map((dataDrawings, index) => {
+
+                const isCatalogSelec = status != 'Cancelled'
                 const isImgReferencia = dataDrawings.attributes.name===referencia+'.jpg'
-                
+
                 if(isCatalogSelec){
                   if(isImgReferencia){
 
                       newDataDrawings.push({
-                        ...dataDrawings, 
+                        ...dataDrawings,
                         "reference": referencia,
                         order_Part: id_part ? id_part.data.id : null,
                         orderShowProduct:  Composition.typeproduct.data.attributes.order_show,
                         orderShowGender: Composition.gender.data.attributes.order_show,
                         },);
-
                         newDataDrawings.sort((a, b) => a.order_Part - b.order_Part);
-                    
-                  } 
-              }  
-            });  
+                  }
+              }
+            });
 
-            }); 
-                
-               //console.log(newDataDrawings );   
-            
+            });
+
+               //console.log(newDataDrawings );
+
             //ItemRandomMap
-            newDataDrawings?.map((dataDrawings, index) => {             
-                // const valor = Math.trunc (Object.keys(ItemBaseMap).length / 3 )        
-               
-
+            newDataDrawings?.map((dataDrawings, index) => {
+                // const valor = Math.trunc (Object.keys(ItemBaseMap).length / 3 )
                         let FiltersTableReferences = {
                             id: dataDrawings.id,
                             content: dataDrawings.attributes.name,
@@ -156,49 +145,39 @@ export function CatalogDroppable() {
                             order_Part:dataDrawings.order_Part,
                             orderShowProduct:dataDrawings.orderShowProduct,
                             orderShowGender:dataDrawings.orderShowGender,
-                        };     
-                        ItemRandomMap.push(FiltersTableReferences);  
-                                 
-                        ItemRandomMap.sort((a, b) => a.orderShowProduct - b.orderShowProduct);            
-            }); 
+                        };
+                        ItemRandomMap.push(FiltersTableReferences);
+
+                        ItemRandomMap.sort((a, b) => a.orderShowProduct - b.orderShowProduct);
+            });
 
                 //ItemMap
-                ItemBaseMap?.map((comments, index) => {   
-                    
+                ItemBaseMap?.map((comments, index) => {
                     // const valor = Math.trunc (Object.keys(ItemBaseMap).length / 3 )
-
                     const valor = (ItemBaseMap.length / 2 )
-                
                     if(index <= valor) {
-                        const random = Math.floor(Math.random() * ItemBaseMap.length);     
-                    
+                        const random = Math.floor(Math.random() * ItemBaseMap.length);
                         if (!ItemRandomMap.find( id => id.id === ItemBaseMap[random].id) ){
-
                             if (!ItemMap.find( id => id.id === ItemBaseMap[random].id) ){
-
                                 let FiltersTableReferences = {
                                     id: ItemBaseMap[random].id,
                                     content: ItemBaseMap[random].attributes.name,
                                     url: ItemBaseMap[random].attributes.url,
                                     reference: ItemBaseMap[random].reference,
-                                    
-                                };  
-
+                                };
                                 ItemMap.push(FiltersTableReferences);
                             }
                         }
-                    }             
-                }); 
+                    }
+                });
 
-                //ItemRestMap           
-                ItemBaseMap?.map((comments, index) => {  
-                        const random = Math.floor(Math.random() * ItemBaseMap.length);                   
-                
-                       
+                //ItemRestMap
+                ItemBaseMap?.map((comments, index) => {
+                        const random = Math.floor(Math.random() * ItemBaseMap.length);
                           if (!ItemRandomMap.find( id => id.id === ItemBaseMap[index].id) ){
 
                               if (!ItemMap.find( id => id.id === ItemBaseMap[index].id) ){
-                              
+
                                   if (!ItemRestMap.find( id => id.id === ItemBaseMap[index].id) ){
 
                                   let FiltersTableReferences = {
@@ -206,30 +185,21 @@ export function CatalogDroppable() {
                                       content: ItemBaseMap[index].attributes.name,
                                       url: ItemBaseMap[index].attributes.url,
                                       reference: ItemBaseMap[index].reference,
-                                      };  
+                                      };
 
                                       ItemRestMap.push(FiltersTableReferences);
                                   }
-
-
                               }
-                        
-                      }    
-                });       
-        
-           // console.log([ItemMap, ItemRandomMap,  ItemRestMap ])
-            
+                      }
+                });
 
-    }   
-   
+           // console.log([ItemMap, ItemRandomMap,  ItemRestMap ])
+    }
+
             //const flattenedArray = [].concat(...ItemRandomMap, ...ItemMap,  ...ItemRestMap);
             // setState([flattenedArray])
             // setCaptureReport([flattenedArray])
-
-            const PartesIgualesArray = doDivideEnPartesIguales(ItemRandomMap);           
-
-    
-
+            const PartesIgualesArray = doDivideEnPartesIguales(ItemRandomMap);
             //console.log([ItemRandomMap, ItemMap,  ItemRestMap])
             //console.log(PartesIgualesArray )
 
@@ -238,13 +208,11 @@ export function CatalogDroppable() {
 
     }, [ReferenceMap]);
 
-    useEffect(() => {         
+    useEffect(() => {
         setState(state)
         setCaptureReport(state)
-  
-      }, [state]);
- 
 
+      }, [state]);
 
   function onDragEnd(result) {
     const { source, destination } = result;
@@ -274,25 +242,24 @@ export function CatalogDroppable() {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
       setIsMounted(true);
-     
+
   }, []);
 
-   
-  return (
-    
-  <>
 
+  return (
+
+  <>
         <Row justify="start" >
-              <Col className="gutter-row" >
-        <div className="grid grid-cols-1 gap-1 ">                
-                <div className="col-span-6 sm:col-span-1 ">                  
+          <Col className="gutter-row" >
+        <div className="grid grid-cols-1 gap-1 ">
+                <div className="col-span-6 sm:col-span-1 ">
                     <header className="relative">
                         <h1 className="font-display  text-xl tracking-tight text-slate-900 dark:text-white"> {NameCollection}</h1>
                         <p className="font-display text-sm font-medium text-blue-500"></p>
-                    </header>                  
-                </div>           
-          </div>  
-          </Col>                          
+                    </header>
+                </div>
+          </div>
+          </Col>
         </Row>
     <div style={{ display: "flex", justifyContent: "start", height: "100%" }}>
 
@@ -316,7 +283,7 @@ export function CatalogDroppable() {
     <Row justify="start" gutter={[16, 24]} >
       <Col className="gutter-row" span={18}>
         <div style={{ display: "flex" }}>
-          <DragDropContext onDragEnd={onDragEnd}>       
+          <DragDropContext onDragEnd={onDragEnd}>
 
           {state.map((el, ind) => (
               <Droppable key={uuid() } droppableId={`${ind}`} >
@@ -326,19 +293,17 @@ export function CatalogDroppable() {
                     ref={provided.innerRef}
                     // style={getListStyle(snapshot.isDraggingOver)}
                     {...provided.droppableProps}
-                  
                   >
-                  
                     {el.map((item, index) => (
-                    <div key={item.id} className="flex items-center">  
+                    <div key={item.id} className="flex items-center">
                       <Draggable
                         key={item.id}
                         draggableId={item.id}
                         index={index}
-                        
+
                       >
-                        {(provided, snapshot) => (                   
-                  //  <div className="col-span-6 sm:col-span-1  "> 
+                        {(provided, snapshot) => (
+                  //  <div className="col-span-6 sm:col-span-1  ">
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
@@ -348,15 +313,13 @@ export function CatalogDroppable() {
                               provided.draggableProps.style
                             )}
                           >
-                              {PrintMode && <Button className='bg-white'  type="text" shape="circle" 
+                              {PrintMode && <Button className='bg-white'  type="text" shape="circle"
                                     onClick={() => {
                                           const newState = [...state];
                                           newState[ind].splice(index, 1);
-                                          setState( newState.filter(group => group.length) );                          
-                                      }}                          
+                                          setState( newState.filter(group => group.length) );
+                                      }}
                             ><DeleteTwoTone twoToneColor='#eb2f96' /></Button>}
-                            
-                         
                             <div
                               style={{
                                 display: "flex",
@@ -364,41 +327,34 @@ export function CatalogDroppable() {
                               }}
                             >
                                 {/* {item.url} */}
-                                {item.url  && <ImgReference  key={item.url} url={item.url} UrlId={item.id} compact={true} />}                           
+                                {item.url  && <ImgReference  key={item.url} url={item.url} UrlId={item.id} compact={true} />}
                             </div>
-                         
-                          
-                          
-                        
 
-                            {PrintMode && <Button type="link" 
-                                        onClick={() => { doshowDrawer( item.reference), dogetSystemColor();   }} 
-                                >{item.reference} 
+                            {PrintMode && <Button type="link"
+                                        onClick={() => { doshowDrawer( item.reference), dogetSystemColor();   }}
+                                >{item.reference}
                                 </Button>}
-                            
+
                           </div>
                       // </div>
-                       
+
                         )}
                       </Draggable>
                     </div>
                     ))}
-                 
+
                     {provided.placeholder}
                   </div>
                 )}
               </Droppable>
             ))}
-
-
-            
           </DragDropContext>
         </div>
-      </Col>                          
-       </Row> 
+      </Col>
+       </Row>
     </div> : null }
-    </div>   
-   
+    </div>
+
   </>
 
 )

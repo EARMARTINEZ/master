@@ -1,5 +1,5 @@
 
-import {useEffect, useState, useRef, useCallback} from "react"; 
+import {useEffect, useState, useRef, useCallback} from "react";
 import Highlighter from 'react-highlight-words';
 import { useTasks } from "utils/ProviderContext";
 import { SearchOutlined } from '@ant-design/icons';
@@ -14,180 +14,139 @@ import ImgReference from '@/components/Cards/DetailReference/ImgReference'
 
 
 const FiltersTable = () => {
-    
-    const { 
+
+    const {
         setLoading,
         loading,
         dogetCollectionReference,
-        dofetchReference,    
+        dofetchReference,
         FiltersReferenceMap,
         filtersGenderMap,
         filtersProductMap,
         filtersSizeMap,
-        filtersThemesMap, 
-        filtersStampsMap,               
-        IdCollection,     
+        filtersThemesMap,
+        filtersStampsMap,
+        IdCollection,
         SoloReferenceMap,
         ReferenceMap,
         MetaReferenceMap,
         dofindCollectionFilters,
-        setFiltersReferenceMap, 
+        setFiltersReferenceMap,
         setMetaReferenceMap,
         doshowDrawer,
         dogetSystemColor,
         dogenerateFilters,
-        
-            } = useTasks();
+        } = useTasks();
 
-            console.log(MetaReferenceMap)
-          
-            let ItemStatusMap = [];               
-            const [filtersStatusMap, setfiltersStatusMap] = useState([]);  
-            const [searchText, setSearchText] = useState('');
-            const [searchedColumn, setSearchedColumn] = useState('');
-            const searchInput = useRef(null);
-            const valueRef = useRef('');   
+        console.log(MetaReferenceMap)
 
-            let datos = FiltersReferenceMap;   
-      
-            const tableProps = {       
-                loading,        
-            };    
+        let ItemStatusMap = [];
+        const [filtersStatusMap, setfiltersStatusMap] = useState([]);
+        const [searchText, setSearchText] = useState('');
+        const [searchedColumn, setSearchedColumn] = useState('');
+        const searchInput = useRef(null);
+        const valueRef = useRef('');
 
-       let newStatusMap = [];       
+        let datos = FiltersReferenceMap;
 
+        const tableProps = {
+            loading,
+        };
 
-       useEffect(() => {            
-        ReferenceMap?.map((dataRef, index) => {  
-                const { referencia, genderName, Composition,  status, theme, stamp } = dataRef ? dataRef.attributes : '0'; 
-            
-                //Filtros columns Table                 
-            
+       let newStatusMap = [];
+
+       useEffect(() => {
+        ReferenceMap?.map((dataRef, index) => {
+                const { referencia, genderName, Composition,  status, theme, stamp } = dataRef ? dataRef.attributes : '0';
+                //Filtros columns Table
             if (!ItemStatusMap.find((type) => type.value ===  status) ){
                 let FiltersTable = {
                     value: status,
                     text:  status
-                };             
-                ItemStatusMap.push(FiltersTable,); 
-            }               
-            
-        }); 
-        
-        
-        setfiltersStatusMap([...ItemStatusMap])                                
-        
+                };
+                ItemStatusMap.push(FiltersTable,);
+            }
+        });
+        setfiltersStatusMap([...ItemStatusMap])
+        }, [ReferenceMap])
 
-        }, [ReferenceMap]) 
-    
-        useEffect( () => {            
-            
-            
+        useEffect( () => {
             console.log( valueRef.current)
             const fetchData = async () => {
 
                 function MapReference(MapValues) {
-         
-                  
-                    let FilterRefMap = [];               
-                    let CodigoSizes=[]; 
-                    let ItemMap = [];                  
-                   
-
-                        MapValues.data?.map((dataRef, index) => {  
-                      
-                     
-                            const {                   
+                    let FilterRefMap = [];
+                    let CodigoSizes=[];
+                    let ItemMap = [];
+                        MapValues.data?.map((dataRef, index) => {
+                            const {
                               referencia,
-                              description = description ? description : '', 
-                              genderName, 
+                              description = description ? description : '',
+                              genderName,
                               status,
-                              collection,                            
-                              theme, 
-                              Composition, 
-                              sizes,                            
-                              stamp } = dataRef ? dataRef.attributes : '0';             
-                                                         
-                             
-                              sizes.data?.map((Sizes, index) => {      
-                                const IdSizes = Sizes.attributes ? Sizes.attributes.name : 'null'        
-                                CodigoSizes.push(IdSizes);     
-                              });  
+                              collection,
+                              theme,
+                              Composition,
+                              sizes,
+                              stamp } = dataRef ? dataRef.attributes : '0';
+                              sizes.data?.map((Sizes, index) => {
+                                const IdSizes = Sizes.attributes ? Sizes.attributes.name : 'null'
+                                CodigoSizes.push(IdSizes);
+                              });
                                //Filtro referencia en FiltersTable
                                let FiltersTableReferences = {
                                 value: referencia,
                                 text: referencia
-                              };            
-                              ItemMap.push(FiltersTableReferences,);                                  
-            
-                              let TableDataSource = {                   
-                                
+                              };
+                              ItemMap.push(FiltersTableReferences,);
+                              let TableDataSource = {
                                   'key': dataRef ? dataRef.id : '0',
                                   'references': referencia,
-                                  'reference':<Button type="link" 
-                                                      onClick={() => { 
-                                                      doshowDrawer( dataRef.attributes.referencia), 
-                                                      dogetSystemColor() 
-                                                      }}  
+                                  'reference':<Button type="link"
+                                                      onClick={() => {
+                                                      doshowDrawer( dataRef.attributes.referencia),
+                                                      dogetSystemColor()
+                                                      }}
                                               >{referencia}</Button>,
-            
                                   'collection': collection.data.attributes.name,
                                   'gender': genderName,
                                   'typeproduct': Composition.typeproduct.data.attributes.name,
                                   'theme': theme.data ? theme.data.attributes.name : '',
                                   'sizeref':CodigoSizes.join(' '),
                                   'drawings':<div className="flex mb-5 -space-x-4">
-                                              {dataRef.attributes.drawings.data?.map((_ImgRef) => (       
-            
+                                              {dataRef.attributes.drawings.data?.map((_ImgRef) => (
                                                 _ImgRef.attributes.name===referencia+'.jpg' &&  <ImgReference  key={ _ImgRef.attributes.url} url={ _ImgRef.attributes.formats.thumbnail.url} UrlId={_ImgRef.attributes.id} compact={true} />
-                                                                        
                                               ))}
                                             </div>,
                                   'status': status,
-            
-                                  'stamps':stamp.data ? stamp.data.attributes.name :'',                    
-                                  'stamp':<Button type="link" 
-                                                  onClick={() => {                             
-                                                  doShowStampsDrawer(true, dataRef.attributes.referencia ) 
-                                                  }} 
-                                          >{stamp.data ? stamp.data.attributes.name :''} 
+                                  'stamps':stamp.data ? stamp.data.attributes.name :'',
+                                  'stamp':<Button type="link"
+                                                  onClick={() => {
+                                                  doShowStampsDrawer(true, dataRef.attributes.referencia )
+                                                  }}
+                                          >{stamp.data ? stamp.data.attributes.name :''}
                                           </Button>,
-                                  
-                                
-                               
-                              };     
+                              };
                               CodigoSizes=[''];
-                              FilterRefMap.push(TableDataSource,);                      
-                             
-                      });                   
-          
-                 
+                              FilterRefMap.push(TableDataSource,);
+                      });
                     setMetaReferenceMap(MapValues.meta);
                     setFiltersReferenceMap([...FilterRefMap]);
-                    
-                   
-          
-                }; 
-
+                };
                 try {
                 await dofindCollectionFilters(valueRef.current)
-                .then(  keys => {                    
-                  
-                    if(keys.data.length>= 1){           
+                .then(  keys => {
+                    if(keys.data.length>= 1){
                      MapReference(keys);
-                     console.log( keys) 
-                     
-                    }                         
-                   
-                });    
+                     console.log( keys)
+                    }
+                });
                 } catch (error) {
                     console.error('Error fetching collection filters:', error);
                 }
             };
-    
             fetchData();
-           
-            
-            }, [valueRef.current]); 
+            }, [valueRef.current]);
 
         const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -195,12 +154,10 @@ const FiltersTable = () => {
         setSearchedColumn(dataIndex);
 
         if (dataIndex.includes('reference') ){
-            dofetchReference(selectedKeys[0]);            
+            dofetchReference(selectedKeys[0]);
             return;
-          }  
-        
+          }
         };
-       
         const handleReset = (clearFilters) => {
         clearFilters();
         setSearchText('');
@@ -208,7 +165,7 @@ const FiltersTable = () => {
 
         const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-           
+
             <div
             style={{
                 padding: 8,
@@ -223,7 +180,7 @@ const FiltersTable = () => {
                 onPressEnter={() => {
 
                     clearFilters && handleReset(clearFilters);
-                    handleSearch(selectedKeys, confirm, dataIndex)                    
+                    handleSearch(selectedKeys, confirm, dataIndex)
                     confirm({
                     closeDropdown: false,
                     });
@@ -242,13 +199,12 @@ const FiltersTable = () => {
                 className="bg-indigo-500 text-white  active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 onClick={() => {
                     clearFilters && handleReset(clearFilters);
-                    handleSearch(selectedKeys, confirm, dataIndex)                    
+                    handleSearch(selectedKeys, confirm, dataIndex)
                     confirm({
                     closeDropdown: false,
                     });
                     setSearchText(selectedKeys[0]);
                     setSearchedColumn(dataIndex);
-                   
                 } }
                 icon={<SearchOutlined />}
                 size="small"
@@ -267,10 +223,10 @@ const FiltersTable = () => {
                     setSearchText(selectedKeys[0]);
                     setSearchedColumn(dataIndex);
                     if (dataIndex.includes('reference') ){
-                        dogetCollectionReference(IdCollection);            
+                        dogetCollectionReference(IdCollection);
                         return //console.log(dataIndex);
-                      }  
-                    
+                      }
+
                 }}
                 size="small"
                 style={{
@@ -287,7 +243,7 @@ const FiltersTable = () => {
                     closeDropdown: false,
                     });
                     setSearchText(selectedKeys[0]);
-                    setSearchedColumn(dataIndex);                  
+                    setSearchedColumn(dataIndex);
                 }}
                 >
                 Filter
@@ -311,7 +267,7 @@ const FiltersTable = () => {
             }}
             />
         ),
-        onFilter: (value, record) =>        
+        onFilter: (value, record) =>
             record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownOpenChange: (visible) => {
             if (visible) {
@@ -332,38 +288,28 @@ const FiltersTable = () => {
             ) : (
             text
             ),
-        });      
-       
-            
-         
+        });
 
-        const handleFilterChange =  (columnKey, newFilteredValues) => {                     
-  
+        const handleFilterChange =  (columnKey, newFilteredValues) => {
+
                 const newFilteredValueString = JSON.stringify(newFilteredValues);
                 const prevFilteredValueString = JSON.stringify(newFilteredValues);
 
                     if (!newStatusMap[columnKey]) {
-                        newStatusMap[newFilteredValues] = [...newFilteredValues]               
+                        newStatusMap[newFilteredValues] = [...newFilteredValues]
                     }
-                    
                     if (newFilteredValueString === prevFilteredValueString) {
 
-                        const newStatusArr = Object.values(newStatusMap).flat();                             
+                        const newStatusArr = Object.values(newStatusMap).flat();
                         const FILTERS = dogenerateFilters(IdCollection, newStatusMap, columnKey);
-                         //console.log('Filtered Values:', FILTERS);    
-                
+                         //console.log('Filtered Values:', FILTERS);
                         valueRef.current = FILTERS
                         return newFilteredValues;
-                    }          
-                  
+                    }
                 return {
-                   
                   ...newFilteredValues,
                   [columnKey]: newFilteredValues,
                 };
-               
-           
-         
         };
 
         const onChange = (pagination, filters, sorter, extra) => {
@@ -371,11 +317,9 @@ const FiltersTable = () => {
             //console.log( pagination);
             const current = pagination ? pagination.current : 1
             setLoading(true);
-         
-            IdCollection ? 
-            dogetCollectionReference(IdCollection,current) : 
-            dogetCollectionReference('29', current);   
-        
+            IdCollection ?
+            dogetCollectionReference(IdCollection,current) :
+            dogetCollectionReference('29', current);
         };
 
         const columns = [
@@ -384,10 +328,10 @@ const FiltersTable = () => {
                 align: 'center',
                 dataIndex: 'reference',
                 key: 'reference',
-                width: '10%', 
-                filters:SoloReferenceMap,            
+                width: '10%',
+                filters:SoloReferenceMap,
                 onFilter: (value, record) => record.references.startsWith(value),
-                filterSearch: true,            
+                filterSearch: true,
                 // ...getColumnSearchProps('reference'),
                 sorter: (a, b) => a.references - b.references,
             },
@@ -397,81 +341,73 @@ const FiltersTable = () => {
                 dataIndex: 'drawings',
                 key: 'drawings',
                 width: '8%',
-            
             },
             {
                 title: 'COLLECTION',
                 align: 'center',
                 dataIndex: 'collection',
                 key: 'collection',
-                width: '15%', 
-                
+                width: '15%',
             },
             {
                 title: 'GENDER',
                 align: 'center',
                 dataIndex: 'gender',
                 key: 'gender',
-                width: '10%',             
-                filters: filtersGenderMap, 
-                onFilter: (value, record) => record.gender.startsWith(value),               
-                filterSearch: true,        
+                width: '10%',
+                filters: filtersGenderMap,
+                onFilter: (value, record) => record.gender.startsWith(value),
+                filterSearch: true,
             },
             {
                 title: 'PRODUCT',
                 align: 'center',
                 dataIndex: 'typeproduct',
                 key: 'typeproduct',
-                width: '10%', 
-                filters: filtersProductMap,            
-                onFilter: (value, record) => record.typeproduct.startsWith(value), 
+                width: '10%',
+                filters: filtersProductMap,
+                onFilter: (value, record) => record.typeproduct.startsWith(value),
                 filterSearch: true,
-            
             },
             {
                 title: 'THEME',
                 align: 'center',
                 dataIndex: 'theme',
-                key: 'theme',  
-                width: '10%',           
-                filters: filtersThemesMap,           
+                key: 'theme',
+                width: '10%',
+                filters: filtersThemesMap,
                 onFilter: (value, record) => record.theme.startsWith(value),
                 filterSearch: true,
-            
             },
             {
                 title: 'STAMP',
                 align: 'center',
                 dataIndex: 'stamp',
-                key: 'stamp', 
-                width: '10%',            
-                filters: filtersStampsMap,            
+                key: 'stamp',
+                width: '10%',
+                filters: filtersStampsMap,
                 onFilter: (value, record) => record.stamps.startsWith(value),
                 filterSearch: true,
-            
             },
             {
                 title: 'SIZE',
                 align: 'center',
                 dataIndex: 'sizeref',
                 key: 'sizeref',
-                width: '25%',          
-                filters: filtersSizeMap,            
+                width: '25%',
+                filters: filtersSizeMap,
                 onFilter: (value, record) => record.sizeref.includes(value),
                 filterSearch: true,
-            
-            },        
+            },
             {
                 title: 'STATUS',
                 align: 'center',
                 dataIndex: 'status',
-                key: 'status', 
-                filters: filtersStatusMap,            
+                key: 'status',
+                filters: filtersStatusMap,
                 onFilter: (value, record) => record.status.includes(value),
                 filterSearch: true,
-            
             },
-           
             // {
             //     title: 'ACTION',
             //     align: 'center',
@@ -479,32 +415,27 @@ const FiltersTable = () => {
             //     key: 'Action',
             //     fixed: 'right',
             //     width: 100,
-            
             // },
-            
-            
             ];
-     
-  return (  
-    
-    <>  
+  return (
+    <>
     <Space
         align="center"
         style={{
           marginBottom: 20,
         }}
       >
-         <ButtonExport  /> 
+         <ButtonExport  />
 
-         <ExportZipImg /> 
+         <ExportZipImg />
 
-         <SearchReference /> 
+         <SearchReference />
 
          <ButtonRecharge />
-         
-      </Space>   
-     {datos.length > 0 && ( 
-        <Table 
+
+      </Space>
+     {datos.length > 0 && (
+        <Table
             {...tableProps}
             bordered
             columns={columns.map(column => ({
@@ -512,27 +443,22 @@ const FiltersTable = () => {
                 onFilter: (value, record) => {
                   const result = column.onFilter(value, record);
                   handleFilterChange(column.key, result ? [value] : [value]);
-                 
                   return result;
                 },
               }))}
             dataSource={datos}
             onChange={onChange}
-            
             pagination={{
                 pageSize:MetaReferenceMap ? MetaReferenceMap.pagination.pageSize : 0,
                 total: MetaReferenceMap ? MetaReferenceMap.pagination.total : 0
             }}
             scroll={{
-                x: 1000,                
+                x: 1000,
             }}
             className=" font-medium text-gray-900 whitespace-nowrap dark:text-white"
-            
-            />         
-         )}   
-             
+            />
+         )}
     </>
-   
   )
 }
 

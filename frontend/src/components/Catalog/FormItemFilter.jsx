@@ -1,5 +1,5 @@
 import  'flowbite'
-import  React, {useEffect, useState, useRef  } from "react"; 
+import  React, {useEffect, useState, useRef  } from "react";
 import { useTasks } from "utils/ProviderContext";
 import { BasicTasks } from "utils/Provider/BasicProvider";
 import { Button, Checkbox, Form, Input, Select, Space, Radio, Card  } from 'antd';
@@ -7,9 +7,9 @@ import { MinusCircleOutlined, PlusOutlined, PlusCircleTwoTone } from '@ant-desig
 
 
 
-export function FormItemGender({form, ItemFilter, SelectGender }) {       
-    
-  const { 
+export function FormItemGender({form, ItemFilter, SelectGender }) {
+
+  const {
     IdCollection,
     ReferenceMap,
     StaticReferenceMap,
@@ -21,108 +21,108 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
     filtersGenderMap,
     dogenerateFilters,
     setStaticReferenceMap
-    
-     } = useTasks();      
-      const { 
-         ItemGender,          
+
+     } = useTasks();
+      const {
+         ItemGender,
          ItemTheme,
-         ItemProduct, 
+         ItemProduct,
          setItemGender,
          setItemTheme,
          setItemProduct,
          ReferenceMapStatus,
          setReferenceMapStatus,
-             
-          } = BasicTasks();       
+
+          } = BasicTasks();
 
 
-          
-    const [filtersStatusMap, setfiltersStatusMap] = useState([]);          
-    const [ClonReferenceMap, setClonReferenceMap] = useState([]);  
+
+    const [filtersStatusMap, setfiltersStatusMap] = useState([]);
+    const [ClonReferenceMap, setClonReferenceMap] = useState([]);
     //const [initialValue, setInitialValue] = useState();
-    const initialValue = useRef();   
+    const initialValue = useRef();
     const [formCatalogView] = Form.useForm();
-  
+
     const groupGender = function(){
-     
-      let ItemStatusMap = [];      
-     
+
+      let ItemStatusMap = [];
+
         if (filtersGenderMap.length > 0) {
-          initialValue.current = filtersGenderMap[0].value            
+          initialValue.current = filtersGenderMap[0].value
           setItemGender(filtersGenderMap[0].value)
-        }          
+        }
         // Actualizar ItemStatusMap
         ItemStatusMap = filtersGenderMap;
         setfiltersStatusMap([...ItemStatusMap])
     }
-          
-    useEffect(() => {       
-      groupGender();        
-      form.setFieldsValue({genders: initialValue.current}); 
-      form.setFieldsValue({theme: 'Search to Select'}); 
+
+    useEffect(() => {
+      groupGender();
+      form.setFieldsValue({genders: initialValue.current});
+      form.setFieldsValue({theme: 'Search to Select'});
       form.setFieldsValue({product: 'Search to Select'});
 
-      if(filtersGenderMap.length>= 1){   
+      if(filtersGenderMap.length>= 1){
 
         const FILTERS = dogenerateFilters(IdCollection, [initialValue.current], 'gender');
          dofindCollectionFilters(FILTERS)
-        .then(  keys => {                    
-          
+        .then(  keys => {
+
             if(keys.data.length>= 1){
-               doReferenceMapFilters(keys.data);          
+               doReferenceMapFilters(keys.data);
                setStaticReferenceMap(keys.data);
-            }                         
-           
-        });       
+            }
+
+        });
       }
-     
-    }, [filtersGenderMap]);     
-      
-    const genders = filtersGenderMap;    
-          
+
+    }, [filtersGenderMap]);
+
+    const genders = filtersGenderMap;
+
 
     const handleChange = async (value, label) => {
       try {
       setItemGender(value)
       SelectGender(label.value)
-      form.setFieldsValue({theme: 'Search to Select'}); 
-      form.setFieldsValue({product: 'Search to Select'});           
-   
-      if(ItemGender){   
+      form.setFieldsValue({theme: 'Search to Select'});
+      form.setFieldsValue({product: 'Search to Select'});
+
+      if(ItemGender){
 
         const FILTERS = dogenerateFilters(IdCollection, [value], 'gender');
         const response = await dofindCollectionFilters(FILTERS)
-        .then(  keys => {                    
-          
+        .then(  keys => {
+
             if(keys.data.length>= 1){
-             setReferenceMapStatus(false)         
-             doReferenceMapFilters(keys.data); 
+             setReferenceMapStatus(false)
+             doReferenceMapFilters(keys.data);
              setStaticReferenceMap(keys.data);
              setFilterCatalogSelect(keys.data);
-            }                         
-           
-        });   
+            }
+
+        });
       }
 
     } catch (error) {
       console.error('Error fetching collection filters:', error);
   }
-  
-    
+
+
     };
-        
-    
+
+
   return (
   <>
-    
-    <div className="grid grid-cols-1 gap-1 m-0">      
-          <div className="col-span-6 sm:col-span-1  ">    
-          {genders.length > 0 && (  
+
+    <div className="grid grid-cols-1 gap-1 m-0">
+          <div className="col-span-6 sm:col-span-1  ">
+          {genders.length > 0 && (
               <Form.Item
                   name="genders"
-                  label="Gender" 
-                  initialValue={initialValue.current}       
-                  
+                  label="Gender"
+                  initialValue={initialValue.current}
+
                   rules={[
                   {
                       required: false,
@@ -130,80 +130,77 @@ export function FormItemGender({form, ItemFilter, SelectGender }) {
                   },
                   ]}
               >
-                  <Select 
-                  
-                  options={genders}                         
-                  showSearch  
-                  onChange={handleChange}        
+                  <Select
+
+                  options={genders}
+                  showSearch
+                  onChange={handleChange}
                   placeholder="Search to Select"
                   optionFilterProp="children"
                   filterOption={(input, option) => option?.label.toString().toLowerCase().includes(input.toLowerCase())}
                   //filterOption={(input, option) => (option?.label ?? '').includes(input)}
                   // filterSort={(optionA, optionB) =>
                   //     (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                    
+
                   // }
-                  
+
                   />
-              </Form.Item>    
+              </Form.Item>
 
             )}
-          </div> 
-    
-  </div> 
+          </div>
+
+  </div>
   </>
 
 )
 }
 
-export function FormItemTheme({form, ItemFilter, SelectTheme}) {   
-    
-    const { 
-      Themes, 
-      IdCollection, 
-      doReferenceMapFilters, 
+export function FormItemTheme({form, ItemFilter, SelectTheme}) {
+
+    const {
+      Themes,
+      IdCollection,
+      doReferenceMapFilters,
       dogenerateFilters,
-      dofindCollectionFilters,      
-      ReferenceMap, 
+      dofindCollectionFilters,
+      ReferenceMap,
       StaticReferenceMap,
       filtersThemesMap
     } = useTasks();
 
-    const { 
-         ItemGender,          
+    const {
+         ItemGender,
          ItemTheme,
-         ItemProduct, 
+         ItemProduct,
          setIemtGender,
          setItemTheme,
-         setItemProduct, 
-         ReferenceMapStatus,         
+         setItemProduct,
+         ReferenceMapStatus,
          setReferenceMapStatus,
-         setFilterCatalogSelect,        
-    } = BasicTasks();   
-    
-    
-    
-    const [filtersStatusMap, setfiltersStatusMap] = useState([]);  
+         setFilterCatalogSelect,
+    } = BasicTasks();
+
+
+
+    const [filtersStatusMap, setfiltersStatusMap] = useState([]);
     const [ClonReferenceMap, setClonReferenceMap] = useState([]);
     const [ItemOpen, setItemOpen] = useState(true);
-    const [Themevalue, setThemevaluet] = useState();  
-    const [initialValue, setInitialValue] = useState();                        
-   
-    
+    const [Themevalue, setThemevaluet] = useState();
+    const [initialValue, setInitialValue] = useState();
+
     const groupTheme = function(){
 
-      const newStatusMap = {}; 
+      const newStatusMap = {};
       let ItemStatusMap = [];
-     
-    
-      const ArryFilterGender = ItemGender ?      
+      const ArryFilterGender = ItemGender ?
              StaticReferenceMap.filter(type => type.attributes.genderName == ItemGender )
             :StaticReferenceMap.filter(type => type.attributes.genderName == 'Baby Girl' )
-      
+
           ArryFilterGender?.forEach((dataRef) => {
-            const {  theme, Composition } = dataRef.attributes || {};  
-            const {  attributes } =  theme.data || {};    
-          
+            const {  theme, Composition } = dataRef.attributes || {};
+            const {  attributes } =  theme.data || {};
+
              // Verificar si el theme ya existe en el mapa
             if (!newStatusMap[attributes.name]) {
                 newStatusMap[attributes.name] = {
@@ -219,61 +216,58 @@ export function FormItemTheme({form, ItemFilter, SelectTheme}) {
         // Ordenar el arreglo por el campo order_show de manera ascendente
         newStatusArr.sort((a, b) => a.order_show - b.order_show);
         // Establecer el valor inicial
-         
+
         if (newStatusArr.length > 0) {
           setInitialValue(newStatusArr[0].value);
-          setItemTheme(newStatusArr[0].value);  
-         
+          setItemTheme(newStatusArr[0].value);
         }
 
         // Actualizar ItemStatusMap
         ItemStatusMap = newStatusArr;
         setfiltersStatusMap([...ItemStatusMap])
-       
-    }   
-    
-    useEffect(() => {   
+
+    }
+
+    useEffect(() => {
       groupTheme();
-    
-    }, [ReferenceMap]);  
-   
-    
-    const theme = filtersStatusMap;  
+    }, [ReferenceMap]);
+
+    const theme = filtersStatusMap;
 
     const handleChange = async (value, label) => {
-        
+
       setItemTheme(value);
       SelectTheme(label.label);
-      if(ItemGender){    
+      if(ItemGender){
 
-        let ArryFilterTheme = StaticReferenceMap.filter(type => type.attributes.theme.data.attributes.name === value)      
-        let ArryFilterGender = ArryFilterTheme.filter(type => type.attributes.genderName === ItemGender)      
-        
+        let ArryFilterTheme = StaticReferenceMap.filter(type => type.attributes.theme.data.attributes.name === value)
+        let ArryFilterGender = ArryFilterTheme.filter(type => type.attributes.genderName === ItemGender)
+
         console.log(ArryFilterGender)
-        
-        setReferenceMapStatus(false); 
-        doReferenceMapFilters(ArryFilterTheme); 
-        setFilterCatalogSelect(ArryFilterGender);
-        
-       }
-          
 
-    };    
+        setReferenceMapStatus(false);
+        doReferenceMapFilters(ArryFilterTheme);
+        setFilterCatalogSelect(ArryFilterGender);
+
+       }
+
+
+    };
 
   return (
   <>
-   
-   <div className="grid grid-cols-1 gap-1 m-0">
-        <div className="grid grid-cols-2 gap-1 m-0">         
 
-                {ItemOpen ? (         
+   <div className="grid grid-cols-1 gap-1 m-0">
+        <div className="grid grid-cols-2 gap-1 m-0">
+
+                {ItemOpen ? (
                   <div className="col-start-1 col-span-4">
-                    {theme.length > 0 && (   
-                     
+                    {theme.length > 0 && (
+
                         <Form.Item
                             name="theme"
                             label="Theme"
-                            //initialValue={initialValue}                        
+                            //initialValue={initialValue}
                             rules={[
                             {
                                 required: false,
@@ -281,76 +275,76 @@ export function FormItemTheme({form, ItemFilter, SelectTheme}) {
                             },
                             ]}
                         >
-                            <Select 
-                          
-                            options={theme} 
-                            onChange={handleChange} 
+                            <Select
+
+                            options={theme}
+                            onChange={handleChange}
                             showSearch
-                            
+
                             placeholder="Search to Select"
                             optionFilterProp="children"
                             filterOption={(input, option) => option?.label.toString().toLowerCase().includes(input.toLowerCase())}
                             //filterOption={(input, option) => (option?.label ?? '').includes(input)}
                             filterSort={(optionA, optionB) =>
                                 (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                              
+
                             }
-                            
+
                             />
-                        </Form.Item>    
-                          
+                        </Form.Item>
+
                      )}
-                  </div> 
-                ) : null} 
+                  </div>
+                ) : null}
 
-                
 
-        </div>  
-    </div>          
-    
-  
+
+        </div>
+    </div>
+
+
   </>
 
 )
 }
 
-export function FormItemProduct({ItemFilter, SelectProduct}) {   
+export function FormItemProduct({ItemFilter, SelectProduct}) {
 
     const { IdCollection, filtersProductMap, doReferenceMapFilters, ReferenceMap, StaticReferenceMap, } = useTasks();
 
-    const { 
-      ItemGender,          
+    const {
+      ItemGender,
       ItemTheme,
-      ItemProduct, 
+      ItemProduct,
       setItemGender,
       setItemTheme,
-      setItemProduct, 
+      setItemProduct,
       ReferenceMapStatus,
       setReferenceMapStatus,
-      setFilterCatalogSelect       
-       } = BasicTasks(); 
-     
-      
-       let ItemStatusMap = [];        
-       const [filtersStatusMap, setfiltersStatusMap] = useState([]); 
-       const [ClonReferenceMap, setClonReferenceMap] = useState([]);                           
-       const [initialValue, setInitialValue] = useState();  
-       
+      setFilterCatalogSelect
+       } = BasicTasks();
+
+
+       let ItemStatusMap = [];
+       const [filtersStatusMap, setfiltersStatusMap] = useState([]);
+       const [ClonReferenceMap, setClonReferenceMap] = useState([]);
+       const [initialValue, setInitialValue] = useState();
+
        const groupProduct = function(){
 
-        const newStatusMap = {}; 
+        const newStatusMap = {};
         let ItemStatusMap = [];
-       
-      
-        const ArryFilterGender = ItemGender ?      
+
+
+        const ArryFilterGender = ItemGender ?
               StaticReferenceMap.filter(type => type.attributes.genderName == ItemGender )
               :StaticReferenceMap.filter(type => type.attributes.genderName == 'Baby Girl' )
-        
+
             ArryFilterGender?.forEach((dataRef) => {
-              const { Composition } = dataRef.attributes || {};  
-              const { typeproduct } = Composition; 
-              const { attributes } =  typeproduct.data || {};    
-            
+              const { Composition } = dataRef.attributes || {};
+              const { typeproduct } = Composition;
+              const { attributes } =  typeproduct.data || {};
+
                // Verificar si el theme ya existe en el mapa
               if (!newStatusMap[attributes.name]) {
                   newStatusMap[attributes.name] = {
@@ -360,66 +354,66 @@ export function FormItemProduct({ItemFilter, SelectProduct}) {
                 };
               }
           });
-  
+
           // Convertir el objeto en un arreglo de valores
           const newStatusArr = Object.values(newStatusMap);
           // Ordenar el arreglo por el campo order_show de manera ascendente
           newStatusArr.sort((a, b) => a.order_show - b.order_show);
           // Establecer el valor inicial
-          
+
           if (newStatusArr.length > 0) {
             setInitialValue(newStatusArr[0].value);
             setItemProduct(newStatusArr[0].value);
-           
-           
+
+
           }
-  
+
           // Actualizar ItemStatusMap
           ItemStatusMap = newStatusArr;
           setfiltersStatusMap([...ItemStatusMap])
-         
+
       }
-       
-       
-       useEffect(() => {       
+
+
+       useEffect(() => {
           groupProduct();
-           }, [ReferenceMap]);   
+           }, [ReferenceMap]);
 
-   
-      const product = filtersStatusMap;   
 
-      const [ItemOpen, setItemOpen] = useState(true);        
-   
+      const product = filtersStatusMap;
+
+      const [ItemOpen, setItemOpen] = useState(true);
+
 
        const handleChange = (value, label) => {
-  
-             console.log(`selected ${value}`);  
+
+             console.log(`selected ${value}`);
 
              setItemProduct(value);
              SelectProduct(label.label);
 
              if(ItemGender){
 
-              let ArryFilter = StaticReferenceMap.filter(type => type.attributes.Composition.typeproduct.data.attributes.name === value)      
+              let ArryFilter = StaticReferenceMap.filter(type => type.attributes.Composition.typeproduct.data.attributes.name === value)
               let ArryFilterGender = ArryFilter.filter(type => type.attributes.genderName === ItemGender)
-   
-              setReferenceMapStatus(false); 
-              doReferenceMapFilters(ArryFilterGender); 
+
+              setReferenceMapStatus(false);
+              doReferenceMapFilters(ArryFilterGender);
               setFilterCatalogSelect(ArryFilterGender);
              }
-      
+
       };
-      
-  
+
+
     return (
     <>
-      
+
       <div className="grid grid-cols-1 gap-1 m-0">
         <div className="grid grid-cols-2 gap-1 m-0">
-             
-              {ItemOpen ? (  
-                <div className="col-start-1 col-span-4">   
-                 
+
+              {ItemOpen ? (
+                <div className="col-start-1 col-span-4">
+
                     <Form.Item
                         name="product"
                         label="Product"
@@ -430,49 +424,41 @@ export function FormItemProduct({ItemFilter, SelectProduct}) {
                         },
                         ]}
                     >
-                        <Select 
-                        options={product} 
-                        onChange={handleChange} 
-                        showSearch         
+                        <Select
+                        options={product}
+                        onChange={handleChange}
+                        showSearch
                         placeholder="Search to Select"
                         optionFilterProp="children"
                         filterOption={(input, option) => option?.label.toString().toLowerCase().includes(input.toLowerCase())}
                         //filterOption={(input, option) => (option?.label ?? '').includes(input)}
                         filterSort={(optionA, optionB) =>
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                          
+
                         }
-                        
+
                         />
-                    </Form.Item>       
+                    </Form.Item>
                 </div>
-              ) : null}   
-  
-  
-        
-         </div> 
-  
-  
-          
-       
-    </div> 
+              ) : null}
+         </div>
+    </div>
     </>
-  
+
   )
-}  
+}
 
 
 
-export function FormSelectCatalog({CatalogSelec, SelectTheme, SelectProduct}) {   
+export function FormSelectCatalog({CatalogSelec, SelectTheme, SelectProduct}) {
   const {
-    IdCollection,         
-    doReferenceMapFilters, 
+    IdCollection,
+    doReferenceMapFilters,
     StaticReferenceMap,
-            
-   } = useTasks();  
-      
-   const { 
-        setReferenceMapStatus,   
+   } = useTasks();
+
+   const {
+        setReferenceMapStatus,
    } = BasicTasks();
 
         const { Option } = Select;
@@ -485,29 +471,28 @@ export function FormSelectCatalog({CatalogSelec, SelectTheme, SelectProduct}) {
             label: 'Gender / Product Catalog',
             value: 'Gender / Product Catalog',
           },
-         
+          {
+            label: 'Combination Catalog',
+            value: 'Combination Catalog',
+          }
         ];
-    
-       
-        const handleChange = (value) => {          
+        const handleChange = (value) => {
           console.log(value);
           CatalogSelec(value);
           SelectTheme();
           SelectProduct();
 
           setReferenceMapStatus(true);
-          doReferenceMapFilters(StaticReferenceMap);   
+          doReferenceMapFilters(StaticReferenceMap);
         };
       return (
       <>
-       
-        <div className="grid grid-cols-1 gap-1 m-0">      
-              <div className="col-span-6 sm:col-span-1  ">    
-                  
+        <div className="grid grid-cols-1 gap-1 m-0">
+              <div className="col-span-6 sm:col-span-1  ">
                   <Form.Item
                       name="status"
-                      label="Select Catalog type"   
-                      initialValue="Collection Catalog"                  
+                      label="Select Catalog type"
+                      initialValue="Collection Catalog"
                       rules={[
                       {
                           required: false,
@@ -515,24 +500,21 @@ export function FormSelectCatalog({CatalogSelec, SelectTheme, SelectProduct}) {
                       },
                       ]}
                   >
-                      <Select 
-                      options={Status}                
-                      showSearch                     
-                      onChange={handleChange}       
+                      <Select
+                      options={Status}
+                      showSearch
+                      onChange={handleChange}
                       placeholder="Search to Select"
                       optionFilterProp="children"
                       filterOption={(input, option) => (option?.label ?? '').includes(input)}
                       filterSort={(optionA, optionB) =>
                           (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                        
+
                       }
-                      
                       />
-                  </Form.Item>       
-              </div> 
-        
-      </div> 
+                  </Form.Item>
+              </div>
+      </div>
       </>
-    
     )
     }

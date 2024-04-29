@@ -4,121 +4,229 @@ import toast from 'react-hot-toast';
 import { useTasks } from 'utils/ProviderContext';
 import Image from 'next/image';
 
-export const CreateCombination = ({ editor, onReady, allReferences, availableImages, setAvailableImages, selectedImages,setSelectedImages, onAddImage, obtenerValorOption, obtenerValorTheme, obtenerValorGender, idReferencesInCombination, setIdReferencesInCombination,  themes, genders, parts }) => {
-  const {
-    IdCollection,
-    doCreateCombination,
-  } = useTasks()
+import logoEpkOld from '@/images/logoEpkOld.png';
 
-  //Funciones para CREAR O EDITAR
-  function createCombinationFunction() {
-    if(selectedImages.length !== 0){
-      var option = obtenerValorOption('create');
-      var theme = obtenerValorTheme('create');
-      var gender = obtenerValorGender('create');
-      const jsonCobinationCanva = editor?.canvas.toJSON()
+export const CreateCombination = ({
+  editor,
+  onReady,
+  allReferences,
+  availableImages,
+  setAvailableImages,
+  selectedImages,
+  setSelectedImages,
+  onAddImage,
+  obtenerValorOption,
+  obtenerValorTheme,
+  obtenerValorGender,
+  idReferencesInCombination,
+  setIdReferencesInCombination,
+  themes,
+  genders,
+  parts,
+  formatCombinationImage,
+  canvaToImage,
+  revertCombinationImage,
+  fetchLastCombinationId,
+}) => {
+  const { IdCollection, doCreateCombination, NameCollection } = useTasks()
 
-      const canvaImage = editor?.canvas.toDataURL({
-        format: 'png',
-        quality: 0.8,
-      });
-
-      const references = idReferencesInCombination;
-
-      toast.promise(
-        doCreateCombination(gender,theme,references,jsonCobinationCanva,IdCollection,option,canvaImage),
+  function saveCombination({
+    refId,
+    editor,
+    canvaImage,
+    idReferencesInCombination,
+    selectedImages,
+    allReferences,
+    gender,
+    theme,
+    option,
+    jsonCobinationCanva
+  }) {
+    const references = idReferencesInCombination
+    console.log(selectedImages)
+    toast
+      .promise(
+        doCreateCombination({
+          refId: refId,
+          genderID: gender,
+          themeID: theme,
+          references: references,
+          canvas: jsonCobinationCanva,
+          collectionID: IdCollection,
+          type: option,
+          file: canvaImage
+        }),
         {
           loading: 'Saving...',
           success: <p>Combination created successfully!</p>,
           error: <p>An error has occurred, try again!</p>,
         }
-      ).then(() => {
+      )
+      .then(() => {
         //Borramos las imagenes seleccionadas
-        editor.canvas.getObjects().forEach(obj => {
+        editor.canvas.getObjects().forEach((obj) => {
           if (obj.type === 'image') {
-            editor.canvas.remove(obj);
+            editor.canvas.remove(obj)
           }
-        });
-        setIdReferencesInCombination([]);
-        setSelectedImages([]);
-        setAvailableImages(allReferences);
-      });
-    }else{
-      toast.error('You must select at least one image to create a combination');
+        })
+        setIdReferencesInCombination([])
+        setSelectedImages([])
+        setAvailableImages(allReferences)
+      })
+  }
+
+  async function createCombinationFunction() {
+    if (selectedImages.length !== 0) {
+      let option = obtenerValorOption('create')
+      let theme = obtenerValorTheme('create')
+      let gender = obtenerValorGender('create')
+      const jsonCobinationCanva = editor?.canvas.toJSON()
+
+      let logo
+      // Load the image
+      fabric.Image.fromURL(
+        logoEpkOld.src,
+        async function (img) {
+          const originalHeight = editor?.canvas.getHeight()
+          const backgroundImage = editor?.canvas.backgroundImage
+          const newObjects = []
+
+          const refId = await fetchLastCombinationId() + 1
+
+          console.log('RefId', refId)
+
+          await formatCombinationImage(
+            editor,
+            newObjects,
+            selectedImages,
+            backgroundImage,
+            originalHeight,
+            NameCollection,
+            refId
+          )
+
+          img.scaleToWidth(48)
+          img.set({
+            left: editor?.canvas.getWidth() - img.getScaledWidth() - 2,
+            top: 2,
+          })
+          editor?.canvas.add(img)
+          img.bringToFront()
+          logo = img
+
+          const canvaImage = canvaToImage(editor)
+          revertCombinationImage(
+            editor,
+            newObjects,
+            logo,
+            backgroundImage,
+            originalHeight
+          )
+
+          saveCombination({
+            refId,
+            editor,
+            canvaImage,
+            idReferencesInCombination,
+            selectedImages,
+            allReferences,
+            gender,
+            theme,
+            option,
+            jsonCobinationCanva
+          })
+        },
+        { crossOrigin: 'anonymous' }
+      )
+    } else {
+      toast.error('You must select at least one image to create a combination')
     }
   }
 
-  const [genderType, setGenderType] = useState('');
-  const [themeType, setThemeType] = useState('');
-  const [partType, setPartType] = useState('');
-  const [vacio, setVacio] = useState(false);
+  const [genderType, setGenderType] = useState('')
+  const [themeType, setThemeType] = useState('')
+  const [partType, setPartType] = useState('')
+  const [vacio, setVacio] = useState(false)
 
   useEffect(() => {
-    if(genderType === '' && themeType === '' && partType === ''){
-      setVacio(false);
-      setAvailableImages(allReferences);
-    }else{
-      var newArrayValueFilters = [];
-      if(genderType !== ''){
-        newArrayValueFilters = allReferences.filter(reference => reference.genderType === genderType)
+    if (genderType === '' && themeType === '' && partType === '') {
+      setVacio(false)
+      setAvailableImages(allReferences)
+    } else {
+      var newArrayValueFilters = []
+      if (genderType !== '') {
+        newArrayValueFilters = allReferences.filter(
+          (reference) => reference.genderType === genderType
+        )
       }
-      if(themeType !== ''){
-        if(newArrayValueFilters.length !== 0){
-          newArrayValueFilters = newArrayValueFilters.filter(reference => reference.themeType === themeType);
-        }else {
-          newArrayValueFilters = allReferences.filter(reference => reference.themeType === themeType);
+      if (themeType !== '') {
+        if (newArrayValueFilters.length !== 0) {
+          newArrayValueFilters = newArrayValueFilters.filter(
+            (reference) => reference.themeType === themeType
+          )
+        } else {
+          newArrayValueFilters = allReferences.filter(
+            (reference) => reference.themeType === themeType
+          )
         }
       }
-      if(partType !== ''){
-        if(newArrayValueFilters.length !== 0){
-          newArrayValueFilters = newArrayValueFilters.filter(reference => reference.partType === partType);
-        }else {
-          newArrayValueFilters = allReferences.filter(reference => reference.partType === partType);
+      if (partType !== '') {
+        if (newArrayValueFilters.length !== 0) {
+          newArrayValueFilters = newArrayValueFilters.filter(
+            (reference) => reference.partType === partType
+          )
+        } else {
+          newArrayValueFilters = allReferences.filter(
+            (reference) => reference.partType === partType
+          )
         }
       }
-      if(newArrayValueFilters.length === 0){
-        setVacio(true);
-      }else{
-        setVacio(false);
+      if (newArrayValueFilters.length === 0) {
+        setVacio(true)
+      } else {
+        setVacio(false)
         setAvailableImages(newArrayValueFilters)
       }
     }
   }, [genderType, themeType, partType])
 
   function handleGenderChange(event) {
-    if(event.target.value !== '0'){
-      setGenderType(event.target.selectedOptions[0].textContent);
-    }else{
-      setGenderType('');
+    if (event.target.value !== '0') {
+      setGenderType(event.target.selectedOptions[0].textContent)
+    } else {
+      setGenderType('')
     }
   }
 
   function handlePartChange(event) {
-    if(event.target.value !== '0'){
-      setPartType(event.target.selectedOptions[0].textContent);
-    }else{
-      setPartType('');
+    if (event.target.value !== '0') {
+      setPartType(event.target.selectedOptions[0].textContent)
+    } else {
+      setPartType('')
     }
   }
 
   function handleThemeChange(event) {
-    if(event.target.value !== '0'){
-      setThemeType(event.target.selectedOptions[0].textContent);
-    }else{
-      setThemeType('');
+    if (event.target.value !== '0') {
+      setThemeType(event.target.selectedOptions[0].textContent)
+    } else {
+      setThemeType('')
     }
   }
 
-  function renderImages(){
-    if(vacio){
+  function renderImages() {
+    if (vacio) {
+      return <h2>No images found with the selected filters</h2>
+    } else {
       return (
-        <h2>No images found with the selected filters</h2>
-      );
-    }else{
-      return(
         <>
           {availableImages.map((image, index) => (
-            <div key={image.id} onClick={() => onAddImage(image.src, image.id)}>
+            <div
+              key={image.id}
+              onClick={() =>
+                onAddImage(image.src, image.id, image.typeproduct, image.ref)
+              }
+            >
               <article className="flex h-32 w-32 flex-col items-center justify-center border hover:border-black">
                 <img
                   src={image.src}

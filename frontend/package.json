@@ -12,7 +12,7 @@
   "dependencies": {
     "@ant-design/compatible": "^5.1.2",
     "@docsearch/react": "^3.2.1",
-    "@headlessui/react": "^1.7.13",
+    "@headlessui/react": "^1.7.19",
     "@markdoc/markdoc": "0.1.7",
     "@markdoc/next.js": "0.1.6",
     "@react-pdf/renderer": "^3.1.12",
