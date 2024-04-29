@@ -329,15 +329,12 @@ export function CatalogDroppable() {
                                 {/* {item.url} */}
                                 {item.url  && <ImgReference  key={item.url} url={item.url} UrlId={item.id} compact={true} />}
                             </div>
-
                             {PrintMode && <Button type="link"
                                         onClick={() => { doshowDrawer( item.reference), dogetSystemColor();   }}
                                 >{item.reference}
                                 </Button>}
-
                           </div>
                       // </div>
-
                         )}
                       </Draggable>
                     </div>

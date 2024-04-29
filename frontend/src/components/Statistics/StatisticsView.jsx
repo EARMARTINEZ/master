@@ -4,10 +4,12 @@ import { useTasks } from 'utils/ProviderContext'
 import { Disclosure } from '@headlessui/react'
 
 import { Listbox, Transition } from '@headlessui/react'
-import { Tabs } from 'antd'
+import { Button, Drawer, Spin, Tabs } from 'antd'
 const { TabPane } = Tabs;
 
 import { Space, Table, Tag } from 'antd';
+import { CardReference } from '../Cards/DetailReference/CardReference'
+import { CardStamp } from '../DetailStamp/CardStamp'
 
 
 const filters = [
@@ -25,6 +27,10 @@ export function StatisticsView() {
     dofindGender,
     dofindParts,
     dofetchCombinationByCollection,
+    open,
+    StampsOpen,
+    onClose,
+    onCloseStamps,
   } = useTasks()
 
   const [typeFilter, setTypeFilter] = useState(filters[0].name);
@@ -172,7 +178,33 @@ export function StatisticsView() {
                 }
             </section>
           </>
-        ): null }
+        ): (
+          <div className='mt-32 flex flex-col justify-center items-center'>
+            <Spin size="large" className='scale-200'/>
+          </div>
+        ) }
+        <Drawer
+          title="Close"
+          placement="right"
+          onClose={() => onClose( ) }
+          open={open}
+          size={'large'}
+          width={2000}
+          className="bg-gray-900"
+          >
+          <CardReference  />
+        </Drawer>
+        <Drawer
+          title="Close"
+          placement="right"
+          onClose={() => onCloseStamps( ) }
+          open={StampsOpen}
+          size={'large'}
+          width={2000}
+          className="bg-gray-900"
+          >
+          <CardStamp />
+        </Drawer>
     </div>
   )
 }
@@ -292,12 +324,24 @@ const DisclosurePanelComponent = ({ objects }) => {
 }
 
 const TableComponent = ({ items }) => {
+  const {
+    dogetSystemColor,
+    doshowDrawer,
+  } = useTasks();
+
   const columns = [
     {
       title: 'Ref',
       dataIndex: 'ref',
       key: 'ref',
-      render: (text) => <a className='text-blue-600 '>{text}</a>,
+      render: (text) =>
+        <Button type="link"
+          onClick={() => {
+          doshowDrawer(text),
+          dogetSystemColor()
+          }}
+        >{text}</Button>
+      ,
     },
     {
       title: 'Prod. Name',

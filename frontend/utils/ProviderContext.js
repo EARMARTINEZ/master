@@ -269,10 +269,10 @@ const UserProvider = ({ children }) => {
                 color: Composition.color.data.attributes.name,
                 fabric: Composition.fabric.data.attributes.name,
                 theme: theme.data ? theme.data.attributes.name : '',
-                silhouette: {
+                silhouette: silhouette.data ? {
                   id: silhouette.data.id,
                   url: getStrapiURL(silhouette.data.attributes.url),
-                }
+                } : null
               }
               silMap.push(ParsedDataSource)
             })
