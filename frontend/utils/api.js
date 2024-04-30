@@ -1062,7 +1062,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
   const gqlEndpoint = getStrapiURL("/graphql");
 
   const Start = start ? start : 1
-  const Limite = 200
+  const Limite = 500
 
   const pagesRes = await fetch(gqlEndpoint, {
     method: 'POST',
@@ -1110,7 +1110,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
                   }
                 }
                 Composition {
-                  color {
+                   color {
                     data {
                       id
                       attributes {
@@ -1183,7 +1183,7 @@ export async function getCombinationByCollection({ NCollection, start }) {
   const gqlEndpoint = getStrapiURL("/graphql");
 
   const Start = start ? start : 1
-  const Limite = 200
+  const Limite = 400
 
   const pagesRes = await fetch(gqlEndpoint, {
     method: 'POST',
@@ -1223,6 +1223,7 @@ export async function getCombinationByCollection({ NCollection, start }) {
                     id
                     attributes {
                       name
+                      order_show
                     }
                   }
                 }
@@ -1324,6 +1325,7 @@ export async function getCombinationById(id) {
                         id
                         attributes {
                           name
+                          order_show
                         }
                       }
                     }
@@ -1436,6 +1438,7 @@ export async function createCombination( combinationData, file ) {
                   id
                   attributes {
                     name
+                    order_show
                   }
                 }
               }
@@ -1545,6 +1548,7 @@ export async function updateCombination(id, data, file ) {
                     id
                     attributes {
                       name
+                      order_show
                     }
                   }
                 }
@@ -2352,7 +2356,7 @@ export async function getCollectionFilters({FILTERS} ) {
             filters:{
               ${FILTERS}
             }
-            pagination:{limit:100 }
+            pagination:{limit:400 }
           ){
             data {
               id
@@ -2484,4 +2488,120 @@ export async function getCollectionFilters({FILTERS} ) {
   return pagesData.data;
 }
 
+export async function getCollectionFiltersCombination({ FILTERS }) {
+  console.log("GET COLLECTION FILTERS COMBINATION")
+  // Find the pages that match this slug
+  const gqlEndpoint = getStrapiURL('/graphql')
+  FILTERS ? FILTERS : ''
+  //console.log(FILTERS)
+  const pagesRes = await fetch(gqlEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+      query {
+          combinations(
+            sort:"id:desc"
+            filters:{
+              ${FILTERS}
+            }
+            pagination:{limit:400}
+          ){
+            data {
+              id
+              attributes {
+                refId
+                type
+                canvas
+                collection {
+                  data {
+                    id
+                    attributes {
+                      name
+                      prefix_id
+                      collection_type{data{attributes{prefix_id}}}
+                    }
+                  }
+                }
+                gender {
+                  data {
+                    id
+                    attributes {
+                      name
+                      order_show
+                    }
+                  }
+                }
+                theme {
+                  data {
+                    id
+                    attributes {
+                      name
+                    }
+                  }
+                }
+                image {
+                  data {
+                    id
+                    attributes {
+                      url
+                      name
+                    }
+                  }
+                }
+                a_create_references(publicationState: PREVIEW) {
+                  data {
+                    id
+                    attributes {
+                      referencia
+                      Composition {
+                        typeproduct {
+                          data {
+                            attributes {
+                              name
+                            }
+                          }
+                        }
+                      }
+                      silhouette {
+                        data {
+                          id
+                          attributes {
+                            url
+                            name
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            meta {
+              pagination {
+                page
+                pageSize
+                total
+                pageCount
+              }
+            }
+          }
+       }
+      `,
+    }),
+  })
+
+  const pagesData = await pagesRes.json()
+  console.log("PAGES DATA FILTERED")
+  console.log(pagesData)
+  // Make sure we found something, otherwise return null
+  if (pagesData.data?.combinations == null || pagesData.data.combinations.length === 0) {
+    return null
+  }
+  //console.log(pagesData.data.combinations.data)
+  // Return the first item since there should only be one result per slug
+  return pagesData.data
+}
 

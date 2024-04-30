@@ -297,9 +297,17 @@ const DisclosurePanelComponent = ({ objects }) => {
   //Logica para el cambio de la tabs
   const [activeKey, setActiveKey] = useState("1");
   const [infoInChart, setInfoInChart] = useState([]);
+  const [itemsArray, setItemsArray] = useState([])
+
   const handleChangeTab = (key) => {
     setActiveKey(key);
   };
+
+  useEffect(() => {
+    const itemsArray = groupByProductName(objects).reduce((acc, curr) => [...acc, ...curr.items], []);
+    setItemsArray(itemsArray);
+  }, [])
+
   return(
     <Disclosure.Panel className="px-4 text-sm text-gray-500">
       <Tabs
@@ -313,17 +321,17 @@ const DisclosurePanelComponent = ({ objects }) => {
           tab="Chart"
           key="1"
         >
-          <ChartsComponent objects={objects} changeTab={handleChangeTab} setInfoInChart={setInfoInChart}/>
+          <ChartsComponent objects={objects} changeTab={handleChangeTab} setInfoInChart={setInfoInChart} setItemsArray={setItemsArray}/>
         </TabPane>
         <TabPane tab="Table" key="2">
-          <TableComponent items={infoInChart}/>
+          <TableComponent items={infoInChart} itemsArray={itemsArray}/>
         </TabPane>
       </Tabs>
     </Disclosure.Panel>
   )
 }
 
-const TableComponent = ({ items }) => {
+const TableComponent = ({ items, itemsArray }) => {
   const {
     dogetSystemColor,
     doshowDrawer,
@@ -364,7 +372,10 @@ const TableComponent = ({ items }) => {
       key: 'fabric',
     },
   ];
-    const newData = items.map((item, index) => ({
+  
+  var newData = [];
+  if(itemsArray.length !== 0){
+    newData = itemsArray.map((item, index) => ({
       key: index,
       ref: item.ref,
       name: item.productName,
@@ -372,6 +383,16 @@ const TableComponent = ({ items }) => {
       color: item.color,
       fabric: item.fabric,
     }));
+  }else{
+    newData = items.map((item, index) => ({
+      key: index,
+      ref: item.ref,
+      name: item.productName,
+      theme: item.themeType,
+      color: item.color,
+      fabric: item.fabric,
+    }));
+  }
   return (
     <Table columns={columns} dataSource={newData} />
   )
@@ -406,29 +427,46 @@ function groupByProductName(data) {
   return result;
 }
 
-const ChartsComponent = ({ objects, changeTab, setInfoInChart}) => {
+const ChartsComponent = ({ objects, changeTab, setInfoInChart, setItemsArray}) => {
   const [statics, setStatics] = useState([]);
+
   useEffect(() => {
     var groupedData = groupByProductName(objects);
     setStatics(groupedData);
   }, [])
 
-  const handleClick = (items) => {
-    setInfoInChart(items)
-    changeTab("2");
-  };
-
   return (
     <div className='flex flex-col justify-center items-center '>
       {statics.map((item, index) => (
-        <div key={index} className='flex flex-row justify-start items-center gap-5 w-[100%] mb-2 hover:shadow-sm p-1 rounded-sm' onClick={() => handleClick(item.items)}>
-          <h4 className='m-0 w-[35%]' style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.productName} ({item.items.length} items)</h4>
-          <div className='w-[65%] flex flex-row justify-start items-center gap-5'>
-            <h4 className='m-0'>{item.percentage % 1 === 0 ? parseInt(item.percentage) : item.percentage}%</h4>
-            <ul className={`m-0 py-2 bg-blue-300 w-[${parseInt(item.percentage)}%] -z-10  `}></ul>
-          </div>
-        </div>
+        <RenderRow key={index} changeTab={changeTab} setInfoInChart={setInfoInChart} items={item.items} productName={item.productName} percentage={item.percentage} setItemsArray={setItemsArray}/>
       ))}
+    </div>
+  )
+}
+
+const RenderRow = ({changeTab, setInfoInChart, index, items, productName, percentage, setItemsArray}) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const handleClick = (items) => {
+    setItemsArray([]);
+    setInfoInChart(items);
+    changeTab("2");
+  };
+  return (
+    <div
+    key={index}
+    className='relative flex flex-row justify-start items-center gap-5 w-[100%] mb-2 py-2 px-5 rounded-xl hover:border-2 group'
+    onClick={() => handleClick(items)}
+    onMouseEnter={() => setIsHovered(true)}
+    onMouseLeave={() => setIsHovered(false)}
+    >
+      <h4 className='m-0 w-[35%]' style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{productName} ({items.length} items)</h4>
+      <div className='w-[65%] flex flex-row justify-start items-center gap-5'>
+        <h4 className='m-0'>{percentage % 1 === 0 ? parseInt(percentage) : percentage}%</h4>
+        <ul className={`m-0 py-2 bg-blue-300 w-[${parseInt(percentage)}%] -z-10 mr-4`}></ul>
+        <svg className={`absolute right-2 w-5 h-5" ${isHovered ? 'text-blue-900 flex text-xs' : 'hidden'}`}  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+        </svg>
+      </div>
     </div>
   )
 }

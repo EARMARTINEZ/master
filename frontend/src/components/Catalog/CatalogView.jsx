@@ -26,6 +26,7 @@ export function CatalogView() {
 
   const {
     IdCollection,
+    setIdCollection,
     ReferenceMap,
     StaticReferenceMap,
     NameCollection,
@@ -36,8 +37,10 @@ export function CatalogView() {
     StampsOpen,
     onCloseStamps,
     doReferenceMapFilters,
-    ItemGender
-   } = useTasks();
+    ItemGender,
+    dofetchCombinationByCollection,
+    combinationsMap,
+  } = useTasks()
 
    const {
     PrintMode,
@@ -57,10 +60,15 @@ export function CatalogView() {
 
    let isCatalogSelec = CatalogSelect === 'Collection Catalog'
    let isProductCatalog = CatalogSelect === 'Gender / Product Catalog'
+   let isCombinationCatalog = CatalogSelect === 'Combination Catalog'
+
+   let catalogType = isCatalogSelec ? 'reference' :
+                    isProductCatalog ? 'reference' :
+                    isCombinationCatalog ? 'combination' : ''
 
    let ItemFilterSelect = isCatalogSelec ? ['theme','genderName'] :
-                          isProductCatalog ? ['typeproduct','genderName'] : []
-
+                          isProductCatalog ? ['typeproduct','genderName'] :
+                          isCombinationCatalog ? ['theme','genderName'] : []
 
    const onCloseCatalag = () => {
     setOpenCatalog(false);
@@ -68,128 +76,129 @@ export function CatalogView() {
 
 
 useEffect(() => {
+  console.log("IDCoollll", IdCollection)
    IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('29');
    IdCollection ? dofetchIDCollection(IdCollection) : dofetchIDCollection('29');
-}, []);
+   IdCollection ? dofetchCombinationByCollection(IdCollection) : dofetchCombinationByCollection('29');
+}, [IdCollection]);
 
-
-// console.log(ItemSelectProduct);
   return (
-  <>
-
-<div className="overflow-hidden bg-white dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]">
-  <div className="py-1 sm:px-2 lg:relative lg:px-0 lg:py-1">
-      <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-1 px-4 lg:max-w-8xl lg:grid-cols-1 lg:px-8 xl:gap-x-16 xl:px-12">
-      <div className="grid grid-cols-2 gap-1">
-
-          <div className="col-span-6 sm:col-span-1  ">
-          {<Form  >
-            <FormSelectCatalog
-            CatalogSelec={setCatalogSelect}
-            SelectTheme={setItemSelectTheme}
-            SelectProduct={setItemSelectProduct}
-          />
-          </Form>}
-          </div>
-
-          <div className="col-span-6 sm:col-span-1  ">
-          {<ButtonRecharge />}
-          </div>
-      </div>
-        <Form
-        form={formCatalogView}
-        name="form_CatalogViewFilterSelect"
-        >
-          <div className="grid grid-cols-2 gap-1">
+    <>
+      <div className="overflow-hidden bg-white dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]">
+        <div className="py-1 sm:px-2 lg:relative lg:px-0 lg:py-1">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-1 px-4 lg:max-w-8xl lg:grid-cols-1 lg:px-8 xl:gap-x-16 xl:px-12">
+            <div className="grid grid-cols-2 gap-1">
               <div className="col-span-6 sm:col-span-1  ">
-              {
-                <FormItemGender
-                  ItemFilter={ItemFilterSelect}
-                  SelectGender={setItemSelectGender}
-                  form={formCatalogView}
-                  />
-                  }
+                {
+                  <Form>
+                    <FormSelectCatalog
+                      CatalogSelec={setCatalogSelect}
+                      SelectTheme={setItemSelectTheme}
+                      SelectProduct={setItemSelectProduct}
+                    />
+                  </Form>
+                }
               </div>
-              {isCatalogSelec &&
+              <div className="col-span-6 sm:col-span-1  ">
+                {<ButtonRecharge />}
+              </div>
+            </div>
+            <Form form={formCatalogView} name="form_CatalogViewFilterSelect">
+              <div className="grid grid-cols-2 gap-1">
+                <div className="col-span-6 sm:col-span-1  ">
+                  {
+                    <FormItemGender
+                      ItemFilter={ItemFilterSelect}
+                      SelectGender={setItemSelectGender}
+                      form={formCatalogView}
+                      catalogType={catalogType}
+                    />
+                  }
+                </div>
+                {(isCatalogSelec || isCombinationCatalog) && (
                   <div className="col-span-6 sm:col-span-1  ">
                     <FormItemTheme
                       SelectTheme={setItemSelectTheme}
                       form={formCatalogView}
-                   />
+                      catalogType={catalogType}
+                    />
                   </div>
-              }
-              {isProductCatalog &&
-                <div className="col-span-6 sm:col-span-1  ">
-                  <FormItemProduct
-                    SelectProduct={setItemSelectProduct}
-                  />
-                </div>
-              }
-          </div>
-        </Form>
-           <div className="grid grid-cols-1 gap-1">
-            <div className="col-span-6 sm:col-span-1 py-5 ">
-               {PrintMode && <Button type="dashed"
-                  onClick={() => { setOpenCatalog( true)  }}
-                ><PrinterOutlined />Print Mode</Button>}
+                )}
+                {isProductCatalog && (
+                  <div className="col-span-6 sm:col-span-1  ">
+                    <FormItemProduct SelectProduct={setItemSelectProduct} />
+                  </div>
+                )}
+              </div>
+            </Form>
+            <div className="grid grid-cols-1 gap-1">
+              <div className="col-span-6 py-5 sm:col-span-1 ">
+                {PrintMode && (
+                  <Button
+                    type="dashed"
+                    onClick={() => {
+                      setOpenCatalog(true)
+                    }}
+                  >
+                    <PrinterOutlined />
+                    Print Mode
+                  </Button>
+                )}
               </div>
               <div className="col-span-6 sm:col-span-1  ">
-                <CatalogDroppable />z
+                <CatalogDroppable catalogType={catalogType} />
               </div>
+            </div>
           </div>
-         </div>
+        </div>
       </div>
-    </div>
 
-          <Drawer
-              title="Close"
-              placement="right"
-              onClose={() => {
-                               doReferenceMapFilters(FilterCatalogSelect),
-                               onClose(true)
-                              }}
-              open={open}
-              size={'large'}
-              width={2000}
-              className="bg-gray-900"
-              >
-              <CardReference  />
-          </Drawer>
+      <Drawer
+        title="Close"
+        placement="right"
+        onClose={() => {
+          doReferenceMapFilters(FilterCatalogSelect), onClose(true)
+        }}
+        open={open}
+        size={'large'}
+        width={2000}
+        className="bg-gray-900"
+      >
+        <CardReference />
+      </Drawer>
 
-          <Drawer
-              title="Close"
-              placement="right"
-              onClose={() => onCloseCatalag( ) }
-              open={openCatalog}
-              size={'large'}
+      <Drawer
+        title="Close"
+        placement="right"
+        onClose={() => onCloseCatalag()}
+        open={openCatalog}
+        size={'large'}
+        className="bg-gray-900"
+      >
+        <PDFViewer height={600} width={600}>
+          <ReporViewer
+            CaptureR={CaptureReport}
+            NameCollection={NameCollection}
+            ItemSelectTheme={ItemSelectTheme}
+            ItemSelectGender={ItemSelectGender}
+            ItemSelectProduct={ItemSelectProduct}
+          />
+        </PDFViewer>
+      </Drawer>
 
-              className="bg-gray-900"
-              >
-                <PDFViewer height={600} width={600} >
-                  <ReporViewer CaptureR={CaptureReport}
-                  NameCollection={NameCollection}
-                  ItemSelectTheme={ItemSelectTheme}
-                  ItemSelectGender={ItemSelectGender}
-                  ItemSelectProduct={ItemSelectProduct}
-                  />
-                </PDFViewer>
-
-          </Drawer>
-
-          <Drawer
-                title="Close"
-                placement="right"
-                onClose={() => onCloseStamps( ) }
-                open={StampsOpen}
-                size={'large'}
-                width={2000}
-                className="bg-gray-900"
-                >
-                <CardStamp  />
-            </Drawer>
-
-  </>
-)
+      <Drawer
+        title="Close"
+        placement="right"
+        onClose={() => onCloseStamps()}
+        open={StampsOpen}
+        size={'large'}
+        width={2000}
+        className="bg-gray-900"
+      >
+        <CardStamp />
+      </Drawer>
+    </>
+  )
 }
 
 

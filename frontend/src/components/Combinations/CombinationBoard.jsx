@@ -7,6 +7,7 @@ import { fabric } from 'fabric';
 import { useTasks } from 'utils/ProviderContext'
 import { UpdateCombination } from './UpdateCombination';
 import { CreateCombination } from './CreateCombination';
+import { set } from 'react-hook-form';
 
 const CombinationBoard = ({ action }) => {
 
@@ -118,6 +119,7 @@ const CombinationBoard = ({ action }) => {
         fontSize: 22,
         fontFamily: "Arial",
         fontWeight: "normal",
+        width: canvasWidth,
       });
       newObjects.push(text);
       editor?.canvas.add(text);
@@ -202,7 +204,7 @@ const CombinationBoard = ({ action }) => {
 
   // // Borrar al hacer commit
   // useEffect(() => {
-  //   setIdCollection(35)
+  //   setIdCollection(29)
   // })
 
   // // IMPORTANTE AAAA ^^^^
@@ -214,7 +216,8 @@ const CombinationBoard = ({ action }) => {
     console.log('IdCollection', IdCollection)
 
     if (!IdCollection) {
-      return;
+      setIdCollection(29)
+      return
     }
 
     const fetchCollectioName = async () => {
@@ -224,7 +227,8 @@ const CombinationBoard = ({ action }) => {
 
     const fetchSilhouettes = async () => {
       const response = await dofetchReferenceForSilhouettes(IdCollection);
-      const initialImages = response.map((item) => ({
+      let initialImages = response.map((item) => {
+      return item.silhouette ? {
         id: item.id,
         ref: item.ref,
         src: item.silhouette.url,
@@ -232,7 +236,10 @@ const CombinationBoard = ({ action }) => {
         themeType: item.theme,
         partType: item.part,
         typeproduct: item.typeproduct
-      }));
+        } : null;
+      });
+      // Filtrar las imágenes que no tienen silhouette
+      initialImages = initialImages.filter((item) => item !== null);
       console.log('initialImages', initialImages)
       setAllReferences(initialImages);
       setAvailableImages(initialImages);
@@ -270,7 +277,8 @@ const CombinationBoard = ({ action }) => {
     fetchParts();
 
     dofetchCombinationByCollection(IdCollection);
-  }, []);
+  }, [IdCollection]);
+  // Cuidado con ese IdCollection, podria dar un bucle
 
   //CARGA LA IMAGEN DE FONDO DEL CANVAS
   useEffect(() => {

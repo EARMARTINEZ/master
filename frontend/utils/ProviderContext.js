@@ -18,9 +18,10 @@ import {getCollectionReference,
         createCombination,
         updateCombination,
         deleteCombination,
+        getCollectionFiltersCombination,
       } from "utils/api";
 import { linstance } from "utils/axioapi";
-import { Button, Select, Space } from 'antd';
+import { Button, Select, Space, theme } from 'antd';
 import ImgReference from '@/components/Cards/DetailReference/ImgReference'
 import { set } from 'react-hook-form';
 export const UserContext = createContext({ isAuthenticated: false });
@@ -139,7 +140,7 @@ const UserProvider = ({ children }) => {
 
                 const {
                   referencia,
-                  description = description ? description : '',
+                  description = description || '',
                   genderName,
                   status,
                   collection,
@@ -210,7 +211,6 @@ const UserProvider = ({ children }) => {
                       'sizeref':CodigoSizes.join(' '),
                       'drawings':<div className="flex mb-5 -space-x-4">
                                   {dataRef.attributes.drawings.data?.map((_ImgRef) => (
-
                                     _ImgRef.attributes.name===referencia+'.jpg' &&  <ImgReference  key={ _ImgRef.attributes.url} url={ _ImgRef.attributes.formats.thumbnail.url} UrlId={_ImgRef.attributes.id} compact={true} />
                                   ))}
                                 </div>,
@@ -283,7 +283,6 @@ const UserProvider = ({ children }) => {
         function MapCombinations(MapValues) {
           let combinationMap = []
           MapValues.data?.map((dataRef, index) => {
-            console.log(dataRef)
             const {
               refId,
               type,
@@ -305,10 +304,10 @@ const UserProvider = ({ children }) => {
                 name: collection.data.attributes.name,
               },
               gender: gender.data.attributes.name,
+              g_order_show: gender.data.attributes.order_show,
               theme: theme.data ? theme.data.attributes.name : '',
               image: getStrapiURL(image?.data.attributes.url),
               references: a_create_references.data.map((ref, index) => {
-                console.log(ref)
                 return {
                   id: ref.id,
                   typeproduct:ref.attributes.Composition.typeproduct.data.attributes.name,
@@ -350,6 +349,7 @@ const UserProvider = ({ children }) => {
                 name: collection.data.attributes.name,
               },
               gender: gender.data.attributes.name,
+              g_order_show: gender.data.attributes.order_show,
               theme: theme.data ? theme.data.attributes.name : '',
               image: getStrapiURL(image?.data.attributes.url),
               references: a_create_references.data.map((ref, index) => {
@@ -475,6 +475,7 @@ const UserProvider = ({ children }) => {
     // hacer tantas peticiones como pageCount hayan
     async function dofetchReferenceForSilhouettes(values) {
       try {
+        console.log(values)
         await fetchCollectionName(values);
         const pageData = await  getSilhouetteByCollection({
           NCollection: values | '0'
@@ -495,10 +496,7 @@ const UserProvider = ({ children }) => {
           const pageData = await  getCombinationByCollection({
             NCollection: collectionID | '0'
           }).then( keys => {
-            console.log(keys)
             MapCombinations(keys.combinations);
-            // Quitar console.log
-            console.log(combinationsMap)
             return keys.combinations;
         });
           setShowModalLoading(false);
@@ -621,6 +619,23 @@ const UserProvider = ({ children }) => {
             }
         }
 
+        async function dofindCollectionFiltersCombination(Filters) {
+          console.log("do find collection filters combination!!")
+          console.log("with filter:", Filters)
+          try {
+              const pageData = await  getCollectionFiltersCombination({
+                FILTERS: Filters ? Filters : ' ',
+              }).then( keys => {
+                //MapReference(keys.masters);
+                console.log(keys)
+                return keys?.combinations;
+            });
+            return pageData;
+            } catch (error) {
+                console.log("error", error)
+          }
+        }
+
           async function doReferenceMapFilters(ArrayMap) {
             try {
               let data = {data: ArrayMap ? ArrayMap : [] };
@@ -629,7 +644,19 @@ const UserProvider = ({ children }) => {
                   console.log("error", error)
                 }
           }
-            const dogenerateFilters = (IdCollection, newStatusMap, columnKey) => {
+
+          async function doCombinationMapFilters(arrayMap) {
+            try {
+              // let data = {data: arrayMap ? arrayMap : [] };
+              let data = {data: arrayMap || []};
+                  MapCombinations(data);
+              } catch (error) {
+                  console.log("error", error)
+              }
+          }
+
+            //reference=true, filtro para referencia | reference=false, filtro para combinaciones
+            const dogenerateFilters = (IdCollection, newStatusMap, columnKey, reference = true) => {
               const newStatusArr = Object.values(newStatusMap).flat();
               let response;
 
@@ -641,8 +668,19 @@ const UserProvider = ({ children }) => {
                   sizeref:'sizes',
                   status:'status'
               };
+
+              const combinationColumnKeys = {
+                  theme: 'theme',
+                  gender: 'gender',
+              }
+
               const defaultColumnKey = 'theme';
-              const selectedColumnKey = columnKeys[columnKey] || defaultColumnKey;
+              let selectedColumnKey;
+              if (reference) {
+                selectedColumnKey = columnKeys[columnKey] || defaultColumnKey;
+              } else {
+                selectedColumnKey = combinationColumnKeys[columnKey] || defaultColumnKey;
+              }
 
               console.log(selectedColumnKey)
 
@@ -663,9 +701,15 @@ const UserProvider = ({ children }) => {
                                   ${selectedColumnKey}:{in: ${JSON.stringify(newStatusArr)}}`;
                               break;
                           default:
-                                response = `collection:{
-                                    id:{eq:"${IdCollection || null}"}}
+                                if (reference) {
+                                  response = `
+                                    collection:{id:{eq:"${IdCollection || null}"}}
                                     ${selectedColumnKey}:{in: ${JSON.stringify(newStatusArr)}}`;
+                                  } else { // combination
+                                  response =
+                                    `collection:{id:{eq:"${IdCollection || null}"}}
+                                    ${selectedColumnKey}:{name:{in: ${JSON.stringify(newStatusArr)}}}`;
+                                  }
                                 break;
                       }
                   }
@@ -857,6 +901,7 @@ const UserProvider = ({ children }) => {
                     };
                     ItemGenderMap.push(ItemGender,);
                 });
+                console.log(ItemGenderMap)
                   setfiltersGenderMap(ItemGenderMap);
                   return MapGender;
               });
@@ -1905,6 +1950,8 @@ const UserProvider = ({ children }) => {
   const [filtersThemesMap, setfiltersThemesMap] = useState([]);
   const [filtersStampsMap, setfiltersStampsMap] = useState([]);
 
+  const [staticCombinationMap, setStaticCombinationMap] = useState([])
+
   const [silhouetteMap, setSilhouetteMap] = useState([])
   const [combinationsMap, setCombinationsMap] = useState([])
 
@@ -2017,6 +2064,10 @@ setIsModalOpen(false);
     dofindThemes: dofindThemes,
     dofindParts: dofindParts,
     doFetchLastCombinationId: doFetchLastCombinationId,
+    dofindCollectionFiltersCombination: dofindCollectionFiltersCombination,
+    doCombinationMapFilters: doCombinationMapFilters,
+    staticCombinationMap: staticCombinationMap,
+    setStaticCombinationMap: setStaticCombinationMap,
     //
 
     dofetchCollection: dofetchCollection,

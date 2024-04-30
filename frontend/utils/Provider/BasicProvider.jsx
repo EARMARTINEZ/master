@@ -48,17 +48,15 @@ const BasicProvider = ({ children }) => {
       setfiltersGenderMap([]);
       const pageData = await fetchAPI("/genders", {
       }).then( MapGender => {
-
           MapGender.data?.map((dataRef, index) => {
             let ItemGender = {
               value: dataRef.id ? dataRef.id: '',
               label:dataRef.attributes ? dataRef.attributes.name: ''
             };
             ItemGenderMap.push(ItemGender,);
-
          });
+         console.log(ItemGenderMap)
           setfiltersGenderMap(ItemGenderMap);
-
           return MapGender;
       });
           return pageData;
@@ -518,19 +516,14 @@ const BasicProvider = ({ children }) => {
     try {
       let ItemMap = [];
       setCaptureReport([]);
-
       const pageData = await fetchAPI("/reportcapture", {
       }).then( MapGender => {
-
           return MapGender;
       });
-
           return pageData;
-
       } catch (error) {
           console.log("error", error)
-
-        }
+      }
   }
 
   function doDivideEnPartesIguales(array) {
