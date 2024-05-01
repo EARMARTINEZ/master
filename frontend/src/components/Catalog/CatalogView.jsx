@@ -76,7 +76,7 @@ export function CatalogView() {
 
 
 useEffect(() => {
-  console.log("IDCoollll", IdCollection)
+  // console.log("IDCoollll", IdCollection)
    IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('29');
    IdCollection ? dofetchIDCollection(IdCollection) : dofetchIDCollection('29');
    IdCollection ? dofetchCombinationByCollection(IdCollection) : dofetchCombinationByCollection('29');

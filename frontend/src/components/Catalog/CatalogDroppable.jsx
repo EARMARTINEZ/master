@@ -123,8 +123,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
              ReferenceMap.filter(type => type.attributes.genderName == ItemGender )
             :ReferenceMap.filter(type => type.attributes.genderName == 'Baby Girl' )
 
-        console.log('ItemGender')
-        console.log(ItemGender)
+        // console.log(ItemGender)
 
         ArryFilter?.map((dataRef, index) => {
           const { referencia, drawings, Composition, status } = dataRef
@@ -212,7 +211,6 @@ export function CatalogDroppable({ catalogType="reference" }) {
         })
 
       } else if (catalogType == "combination") {
-        console.log(combinationsMap)
         // {
         //   "id": "42",
         //   "refId": 1,
@@ -241,9 +239,6 @@ export function CatalogDroppable({ catalogType="reference" }) {
              combinationsMap.filter(type => type.gender == ItemGender )
             :combinationsMap.filter(type => type.gender == 'Baby Girl' )
 
-        console.log("ItemGender");
-        console.log(ItemGender);
-
         ArryFilter?.map((dataRef, index) => {
               const { id, refId, type, gender, g_order_show, theme, image, references } = dataRef ? dataRef : '0';
               dataRef.theme = {data: {attributes : {name: theme}}};
@@ -270,7 +265,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
               //ItemRandomMap
               newDataDrawings?.map((dataDrawings, index) => {
                   // const valor = Math.trunc (Object.keys(ItemBaseMap).length / 3 )
-                  console.log(dataDrawings)
+                  // console.log(dataDrawings)
                           let FiltersTableReferences = {
                               id: dataDrawings.id,
                               content: dataDrawings.references.map((reference) => reference.id).join(', '),
@@ -323,7 +318,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                             }
                     });
       }
-          console.log([ItemMap, ItemRandomMap,  ItemRestMap ])
+          // console.log([ItemMap, ItemRandomMap,  ItemRestMap ])
     }
 
         //const flattenedArray = [].concat(...ItemRandomMap, ...ItemMap,  ...ItemRestMap);
@@ -339,7 +334,6 @@ export function CatalogDroppable({ catalogType="reference" }) {
     }, [ReferenceMap, combinationsMap]);
 
     useEffect(() => {
-      console.log("state")
       console.log(state)
         setState(state)
         setCaptureReport(state)

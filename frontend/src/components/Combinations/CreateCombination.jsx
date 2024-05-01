@@ -43,7 +43,7 @@ export const CreateCombination = ({
     jsonCobinationCanva
   }) {
     const references = idReferencesInCombination
-    console.log(selectedImages)
+    // console.log(selectedImages)
     toast
       .promise(
         doCreateCombination({
@@ -92,8 +92,6 @@ export const CreateCombination = ({
           const newObjects = []
 
           const refId = await fetchLastCombinationId() + 1
-
-          console.log('RefId', refId)
 
           await formatCombinationImage(
             editor,

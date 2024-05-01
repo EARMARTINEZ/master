@@ -8,7 +8,6 @@ import  TableSearchComments  from '@/components/RecentComment/TableSearchComment
 import  {CatalogView}  from '@/components/Catalog/CatalogView'
 import  {CombinationView}  from '@/components/Combinations/CombinationView'
 import  {StatisticsView}  from '@/components/Statistics/StatisticsView'
-import { BrowserRouter as Router } from 'react-router-dom'
 
 
 const tags = {
@@ -71,12 +70,7 @@ const tags = {
     render: CatalogView,
   },
   'combination-view': {
-    render: (props) => (
-      <Router>
-        <CombinationView {...props} />
-      </Router>
-    ),
-    // render: CombinationView,
+    render: CombinationView,
   },
   'statistics-view': {
     render: StatisticsView,

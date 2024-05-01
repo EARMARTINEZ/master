@@ -39,10 +39,10 @@ const ImgReference = ({url, UrlId, compact, onActiveCarousel}) => {
         onOk() {
           setShowModalLoading(true);
           doDeleteImgReference(IdIMG);
-          console.log('OK' + IdIMG);
+          // console.log('OK' + IdIMG);
         },
         onCancel() {
-          console.log('Cancel');
+          // console.log('Cancel');
         },
       });
     };

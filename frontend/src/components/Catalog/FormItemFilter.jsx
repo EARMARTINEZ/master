@@ -45,7 +45,6 @@ export function FormItemGender({form, ItemFilter, SelectGender, catalogType }) {
     const groupGender = function(){
       let ItemStatusMap = [];
         if (filtersGenderMap.length > 0) {
-          console.log(filtersGenderMap)
           initialValue.current = filtersGenderMap[0].value
           setItemGender(filtersGenderMap[0].value)
         }
@@ -63,7 +62,6 @@ export function FormItemGender({form, ItemFilter, SelectGender, catalogType }) {
 
       if(filtersGenderMap.length>= 1){
         if (catalogType === 'reference') {
-          console.log([initialValue.current])
           const FILTERS = dogenerateFilters(IdCollection, [initialValue.current], 'gender');
           dofindCollectionFilters(FILTERS)
           .then(  keys => {
@@ -74,10 +72,9 @@ export function FormItemGender({form, ItemFilter, SelectGender, catalogType }) {
           });
         } else if (catalogType === 'combination') {
           const FILTERS = dogenerateFilters(IdCollection, [initialValue.current], 'gender', false);//
-          console.log(FILTERS)
+          // console.log(FILTERS)
           dofindCollectionFiltersCombination(FILTERS).
           then(keys => {
-            console.log("KEYS", keys)
             if(keys?.data.length>= 1){
                  doCombinationMapFilters(keys.data); //
                  setStaticCombinationMap(keys.data); //
@@ -113,7 +110,7 @@ export function FormItemGender({form, ItemFilter, SelectGender, catalogType }) {
             });
           } else if (catalogType === 'combination') {
             const FILTERS = dogenerateFilters(IdCollection, [value], 'gender', false);
-            console.log(FILTERS)
+            // console.log(FILTERS)
             dofindCollectionFiltersCombination(FILTERS)
             .then(  keys => {
                 if(keys.data.length>= 1){
@@ -208,8 +205,6 @@ export function FormItemTheme({ form, ItemFilter, SelectTheme, catalogType }) {
   const groupTheme = function () {
     const newStatusMap = {}
     let ItemStatusMap = []
-    console.log("dentro de group themse")
-    console.log("catalogType", catalogType)
     if (catalogType === 'reference') {
       const ArryFilterGender = ItemGender
         ? StaticReferenceMap.filter(
@@ -249,9 +244,6 @@ export function FormItemTheme({ form, ItemFilter, SelectTheme, catalogType }) {
       setfiltersStatusMap([...ItemStatusMap])
 
     } else if (catalogType === 'combination') {
-      console.log('Combination')
-      console.log(ItemGender)
-      console.log(staticCombinationMap)
       const ArryFilterGender = ItemGender
         ? staticCombinationMap.filter(
             (type) => type.attributes.gender.data.attributes.name == ItemGender
@@ -260,15 +252,11 @@ export function FormItemTheme({ form, ItemFilter, SelectTheme, catalogType }) {
             (type) => type.attributes.gender.data.attributes.name == 'Baby Girl'
           )
 
-      console.log(ArryFilterGender)
-
       ArryFilterGender?.forEach((dataRef) => {
         const { theme } = dataRef.attributes || {}
-        console.log(theme)
         const { attributes } = theme.data || {}
 
         // Verificar si el theme ya existe en el mapa
-        console.log("verificar si el theme ya existe en el mapa")
         if (!newStatusMap[attributes.name]) {
           newStatusMap[attributes.name] = {
             value: attributes.name,
@@ -296,13 +284,10 @@ export function FormItemTheme({ form, ItemFilter, SelectTheme, catalogType }) {
   }
 
   useEffect(() => {
-    console.log("enter groupTheme")
     groupTheme()
   }, [ReferenceMap, combinationsMap])
 
   const theme = filtersStatusMap
-
-  console.log("theme filtersStatusMap", theme)
 
   const handleChange = async (value, label) => {
     setItemTheme(value)
@@ -317,7 +302,7 @@ export function FormItemTheme({ form, ItemFilter, SelectTheme, catalogType }) {
           (type) => type.attributes.genderName === ItemGender
         )
 
-        console.log(ArryFilterGender)
+        // console.log(ArryFilterGender)
 
         setReferenceMapStatus(false)
         doReferenceMapFilters(ArryFilterTheme)
@@ -332,7 +317,7 @@ export function FormItemTheme({ form, ItemFilter, SelectTheme, catalogType }) {
           (type) => type.attributes.gender === ItemGender
         )
 
-        console.log(ArryFilterGender)
+        // console.log(ArryFilterGender)
 
         setReferenceMapStatus(false)
         doCombinationMapFilters(ArryFilterTheme)

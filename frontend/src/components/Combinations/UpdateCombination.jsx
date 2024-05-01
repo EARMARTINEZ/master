@@ -36,7 +36,6 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
     option,
     jsonCombinationCanva,
   }) {
-    console.log(selectedImages)
     toast.promise(
       doUpdateCombination({refId: refId, combinationID: idSelectedCombination, genderID:gender, themeID: theme, references: references, canvas: jsonCombinationCanva, collectionID: IdCollection, type: option, file: canvaImage }),
     {
@@ -81,8 +80,6 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
           const newObjects = []
 
           const refId = refIdSelectedCombination
-
-          console.log('RefId', refId)
 
           await formatCombinationImage(
             editor,
@@ -134,8 +131,6 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
 
   //USER SELECT A COMBINATION
   const handleSelectCombination = (e) => {
-
-    console.log(allReferences)
 
     if(e.target.value !== 'select'){
       setIdReferencesInCombination([]);
@@ -383,8 +378,6 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
   // if ref is not null, then we are in the edit tab and we need to select the combination with the ref, after the combinations are loaded
   useEffect(() => {
     if (parseInt(refToEdit) !== 0 && combinationsMap.length > 0 && availableImages.length > 0) {
-      console.log("AAAJAAAAA")
-      console.log(combinationsMap)
       const combination = combinationsMap.find(combination => parseInt(combination.refId) === parseInt(refToEdit))
       if (combination) {
         const selectElement = document.getElementById('combination')

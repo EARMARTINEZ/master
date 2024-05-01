@@ -38,7 +38,7 @@ const FiltersTable = () => {
         dogenerateFilters,
         } = useTasks();
 
-        console.log(MetaReferenceMap)
+        // console.log(MetaReferenceMap)
 
         let ItemStatusMap = [];
         const [filtersStatusMap, setfiltersStatusMap] = useState([]);
@@ -71,7 +71,7 @@ const FiltersTable = () => {
         }, [ReferenceMap])
 
         useEffect( () => {
-            console.log( valueRef.current)
+            // console.log( valueRef.current)
             const fetchData = async () => {
 
                 function MapReference(MapValues) {
@@ -138,7 +138,6 @@ const FiltersTable = () => {
                 .then(  keys => {
                     if(keys.data.length>= 1){
                      MapReference(keys);
-                     console.log( keys)
                     }
                 });
                 } catch (error) {

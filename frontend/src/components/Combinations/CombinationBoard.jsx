@@ -204,7 +204,6 @@ const CombinationBoard = ({ action, refToEdit=0 }) => {
   //CARGA LAS SILUETAS DE LA ROPA, LOS GENEROS Y LOS TEMAS
   useEffect(() => {
 
-    console.log('IdCollection', IdCollection)
 
     if (!IdCollection) {
       setIdCollection(29)
@@ -231,7 +230,6 @@ const CombinationBoard = ({ action, refToEdit=0 }) => {
       });
       // Filtrar las imágenes que no tienen silhouette
       initialImages = initialImages.filter((item) => item !== null);
-      console.log('initialImages', initialImages)
       setAllReferences(initialImages);
       setAvailableImages(initialImages);
     }
