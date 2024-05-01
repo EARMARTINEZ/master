@@ -8,6 +8,8 @@ import  TableSearchComments  from '@/components/RecentComment/TableSearchComment
 import  {CatalogView}  from '@/components/Catalog/CatalogView'
 import  {CombinationView}  from '@/components/Combinations/CombinationView'
 import  {StatisticsView}  from '@/components/Statistics/StatisticsView'
+import { BrowserRouter as Router } from 'react-router-dom'
+
 
 const tags = {
   callout: {
@@ -53,43 +55,32 @@ const tags = {
   'card-doughnut': {
     render: CardDoughnut,
   },
-  
- 
   'card-reference': {
-     render: CardTableSearchReference,
-    
+    render: CardTableSearchReference,
   },
-
   'filterstable-stamps': {
     render: TableSearchStamp,
-   
- },
-
- 'recent-pendings': {
-  render: TableSearchPendings,
- 
-},
-
-'recent-comments': {
-  render: TableSearchComments,
- 
-},
-
-'catalog-view': {
-  render: CatalogView,
- 
-},
-
-'combination-view': {
-  render: CombinationView,
- 
-},
-'statistics-view': {
-  render: StatisticsView,
- 
-},
-
- 
+  },
+  'recent-pendings': {
+    render: TableSearchPendings,
+  },
+  'recent-comments': {
+    render: TableSearchComments,
+  },
+  'catalog-view': {
+    render: CatalogView,
+  },
+  'combination-view': {
+    render: (props) => (
+      <Router>
+        <CombinationView {...props} />
+      </Router>
+    ),
+    // render: CombinationView,
+  },
+  'statistics-view': {
+    render: StatisticsView,
+  },
 }
 
 export default tags

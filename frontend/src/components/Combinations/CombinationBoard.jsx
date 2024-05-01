@@ -7,9 +7,9 @@ import { fabric } from 'fabric';
 import { useTasks } from 'utils/ProviderContext'
 import { UpdateCombination } from './UpdateCombination';
 import { CreateCombination } from './CreateCombination';
-import { set } from 'react-hook-form';
 
-const CombinationBoard = ({ action }) => {
+
+const CombinationBoard = ({ action, refToEdit=0 }) => {
 
   const {
     setIdCollection,
@@ -33,7 +33,6 @@ const CombinationBoard = ({ action }) => {
   const [genders, setGenders] = useState([]);
   const [parts, setParts] = useState([]);
   const { editor, onReady } = useFabricJSEditor()
-
 
   async function fetchLastCombinationId() {
     const lastCombinationId = await doFetchLastCombinationId()
@@ -200,14 +199,6 @@ const CombinationBoard = ({ action }) => {
       cornerSize: 24,
     });
   }, [availableImages, selectedImages])
-
-
-  // // Borrar al hacer commit
-  // useEffect(() => {
-  //   setIdCollection(29)
-  // })
-
-  // // IMPORTANTE AAAA ^^^^
 
 
   //CARGA LAS SILUETAS DE LA ROPA, LOS GENEROS Y LOS TEMAS
@@ -444,6 +435,7 @@ const CombinationBoard = ({ action }) => {
         formatCombinationImage={formatCombinationImage}
         canvaToImage={canvaToImage}
         revertCombinationImage={revertCombinationImage}
+        refToEdit={refToEdit}
       />
     )
   }

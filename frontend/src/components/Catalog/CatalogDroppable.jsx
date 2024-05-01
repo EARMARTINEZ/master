@@ -5,12 +5,13 @@ import  React, {useEffect, useState, useCallback  } from "react";
 import { useTasks } from "utils/ProviderContext";
 import { BasicTasks } from "utils/Provider/BasicProvider";
 import { getStrapiURL, fetchAPI } from "utils/api";
-import {ConfigProvider, Button, Checkbox, Form, Input, Select, Space, Radio, Card, Row, Col } from 'antd';
+import {ConfigProvider, Button, Modal, Row, Col } from 'antd';
 import {  ExclamationCircleFilled, DeleteTwoTone } from '@ant-design/icons'
 import ImgReference from '@/components/Cards/DetailReference/ImgReference'
 
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuid } from 'uuid';
+import CombinationModal from './CombinationModal';
 
  // fake data generator
  const getItems = (count, offset = 0) =>
@@ -89,6 +90,21 @@ export function CatalogDroppable({ catalogType="reference" }) {
 
   const [state, setState] = useState([]);
   const [StopState, setStopState] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [selectedItem, setSelectedItem] = useState(null)
+
+  const showModal = (item) => {
+    setSelectedItem(item)
+    setIsModalVisible(true)
+  }
+
+  const handleOk = () => {
+    setIsModalVisible(false)
+  }
+
+  const handleCancel = () => {
+    setIsModalVisible(false)
+  }
 
   let ItemMap = [];
   let newDataDrawings = [];
@@ -399,7 +415,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                 <div style={{ display: 'flex' }}>
                   <DragDropContext onDragEnd={onDragEnd}>
                     {state.length == 0 ? (
-                      <div style={{width: 'max-content'}} >No data found</div>
+                      <div style={{ width: 'max-content' }}>No data found</div>
                     ) : (
                       state.map((el, ind) => (
                         <Droppable key={uuid()} droppableId={`${ind}`}>
@@ -465,23 +481,39 @@ export function CatalogDroppable({ catalogType="reference" }) {
                                             />
                                           )}
                                         </div>
-
-                                        {(PrintMode && catalogType === 'reference') && (
-                                          <Button
-                                            type="link"
-                                            onClick={() => {
-                                              doshowDrawer(item.reference),
-                                                dogetSystemColor()
-                                            }}
-                                          >
-                                            {item.reference}
-                                          </Button>
-                                        )}
-                                        {(PrintMode && catalogType === 'combination') && (
-                                          <div>
-                                            {item.reference}
-                                          </div>
-                                        )}
+                                        {PrintMode &&
+                                          catalogType === 'reference' && (
+                                            <Button
+                                              type="link"
+                                              onClick={() => {
+                                                doshowDrawer(item.reference),
+                                                  dogetSystemColor()
+                                              }}
+                                            >
+                                              {item.reference}
+                                            </Button>
+                                          )}
+                                        {PrintMode &&
+                                          catalogType === 'combination' && (
+                                            <>
+                                              <Button
+                                                type="link"
+                                                onClick={ () => showModal(item) }
+                                              >
+                                                {item.reference}
+                                              </Button>
+                                              {selectedItem === item && (
+                                                <CombinationModal
+                                                handleCancel={handleCancel}
+                                                handleOk={handleOk}
+                                                isModalVisible={isModalVisible}
+                                                url={item.url}
+                                                referencia={item.reference}
+                                                id={item.id}
+                                                />
+                                              )}
+                                            </>
+                                          )}
                                       </div>
                                       // </div>
                                     )}

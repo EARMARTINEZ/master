@@ -221,7 +221,6 @@ export function FormItemTheme({ form, ItemFilter, SelectTheme, catalogType }) {
 
       ArryFilterGender?.forEach((dataRef) => {
         const { theme, Composition } = dataRef.attributes || {}
-        console.log(theme)
         const { attributes } = theme.data || {}
 
         // Verificar si el theme ya existe en el mapa
