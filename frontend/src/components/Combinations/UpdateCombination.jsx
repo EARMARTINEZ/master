@@ -389,7 +389,9 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
         }
         handleSelectCombination({ target: { value: `${combination.id},${combination.refId}` } })
       } else {
-        toast.error('Combination not found')
+        if (parseInt(refToEdit) === 0){
+          toast.error('Combination not found')
+        }
       }
     }
   }

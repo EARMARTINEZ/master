@@ -2605,3 +2605,40 @@ export async function getCollectionFiltersCombination({ FILTERS }) {
   return pagesData.data
 }
 
+export async function getLastCollection() {
+  const gqlEndpoint = getStrapiURL("/graphql");
+  const pagesRes = await fetch(gqlEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+      query {
+          collections(
+            sort:"id:desc"
+            pagination:{limit:1}
+          ){
+            data{
+              id
+              attributes{
+                name
+                prefix_id
+                collection_type{data{attributes{prefix_id name}}}
+              }
+            }
+          }
+       }
+      `
+    }),
+  });
+
+  const pagesData = await pagesRes.json();
+
+  // Make sure we found something, otherwise return null
+  if (pagesData.data?.collections == null || pagesData.data.collections.length === 0) {
+    return null;
+  }
+  // Return the first item since there should only be one result per slug
+  return pagesData.data;
+}

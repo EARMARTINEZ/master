@@ -29,7 +29,6 @@ const CombinationModal = ({ title, isModalVisible, handleOk, handleCancel, url, 
                 alt={referencia}
                 width={500}
                 height={500}
-
             />
           ) : '' }
             <div className="mt-4">

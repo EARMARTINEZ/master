@@ -1,25 +1,27 @@
 import { useSession } from 'next-auth/react';
 import { useState, createContext, useContext } from "react";
-import {getCollectionReference,
-        getIDReference,
-        getReference,
-        getCollection,
-        getIDCollection,
-        getStrapiURL,
-        fetchAPI,
-        getSystemColor,
-        getSizesAll,
-        getThemesCollection,
-        getCollectionStamps,
-        getCollectionFilters,
-        getSilhouetteByCollection,
-        getCombinationByCollection,
-        getCombinationById,
-        createCombination,
-        updateCombination,
-        deleteCombination,
-        getCollectionFiltersCombination,
-      } from "utils/api";
+import {
+  getCollectionReference,
+  getIDReference,
+  getReference,
+  getCollection,
+  getIDCollection,
+  getStrapiURL,
+  fetchAPI,
+  getSystemColor,
+  getSizesAll,
+  getThemesCollection,
+  getCollectionStamps,
+  getCollectionFilters,
+  getSilhouetteByCollection,
+  getCombinationByCollection,
+  getCombinationById,
+  createCombination,
+  updateCombination,
+  deleteCombination,
+  getCollectionFiltersCombination,
+  getLastCollection,
+} from 'utils/api'
 import { linstance } from "utils/axioapi";
 import { Button, Select, Space, theme } from 'antd';
 import ImgReference from '@/components/Cards/DetailReference/ImgReference'
@@ -586,8 +588,10 @@ const UserProvider = ({ children }) => {
 
       async function dogetCollectionReference(values, Start ) {
         try {
-            console.log(values)
             setIdCollection(values);
+            //VAMOS A GUARDAR EL ID DE LA COLLECTION EN EL LOCALSTORAGE
+            localStorage.setItem('IdCollection', values);
+
             const pageData = await  getCollectionReference({
               NCollection: values ? values : '0' , //28 29
               start: Start ? Start : 1,
@@ -601,59 +605,69 @@ const UserProvider = ({ children }) => {
             },20000);
             setLoading(false);
           return pageData;
+        } catch (error) {
+          console.log("error", error)
+        }
+      }
+
+      async function dofindCollectionFilters(Filters) {
+        try {
+            const pageData = await  getCollectionFilters({
+              FILTERS: Filters ? Filters : ' ',
+            }).then( keys => {
+                //MapReference(keys.masters);
+              return keys.masters;
+          });
+          return pageData;
           } catch (error) {
-            console.log("error", error)
+              console.log("error", error)
           }
       }
-        async function dofindCollectionFilters(Filters) {
-          try {
-              const pageData = await  getCollectionFilters({
-                FILTERS: Filters ? Filters : ' ',
-              }).then( keys => {
-                 //MapReference(keys.masters);
-                return keys.masters;
-            });
-            return pageData;
-            } catch (error) {
-                console.log("error", error)
-            }
+
+      async function dofindCollectionFiltersCombination(Filters) {
+        try {
+            const pageData = await  getCollectionFiltersCombination({
+              FILTERS: Filters ? Filters : ' ',
+            }).then( keys => {
+              //MapReference(keys.masters);
+              console.log(keys)
+              return keys?.combinations;
+          });
+          return pageData;
+          } catch (error) {
+              console.log("error", error)
         }
+      }
 
-        async function dofindCollectionFiltersCombination(Filters) {
-          console.log("do find collection filters combination!!")
-          console.log("with filter:", Filters)
-          try {
-              const pageData = await  getCollectionFiltersCombination({
-                FILTERS: Filters ? Filters : ' ',
-              }).then( keys => {
-                //MapReference(keys.masters);
-                console.log(keys)
-                return keys?.combinations;
-            });
-            return pageData;
-            } catch (error) {
-                console.log("error", error)
+      async function doReferenceMapFilters(ArrayMap) {
+        try {
+          let data = {data: ArrayMap ? ArrayMap : [] };
+              MapReference(data);
+          } catch (error) {
+              console.log("error", error)
           }
+      }
+
+      async function doCombinationMapFilters(arrayMap) {
+        try {
+          // let data = {data: arrayMap ? arrayMap : [] };
+          let data = {data: arrayMap || []};
+              MapCombinations(data);
+          } catch (error) {
+              console.log("error", error)
+          }
+      }
+
+      async function doGetLastCollection() {
+        try {
+          const pageData = await getLastCollection().then( keys => {
+            return keys.collections.data;
+          });
+          return pageData;
+        } catch (error) {
+          console.log('error', error)
         }
-
-          async function doReferenceMapFilters(ArrayMap) {
-            try {
-              let data = {data: ArrayMap ? ArrayMap : [] };
-                  MapReference(data);
-              } catch (error) {
-                  console.log("error", error)
-                }
-          }
-
-          async function doCombinationMapFilters(arrayMap) {
-            try {
-              // let data = {data: arrayMap ? arrayMap : [] };
-              let data = {data: arrayMap || []};
-                  MapCombinations(data);
-              } catch (error) {
-                  console.log("error", error)
-              }
-          }
+      }
 
             //reference=true, filtro para referencia | reference=false, filtro para combinaciones
             const dogenerateFilters = (IdCollection, newStatusMap, columnKey, reference = true) => {
@@ -2068,6 +2082,7 @@ setIsModalOpen(false);
     doCombinationMapFilters: doCombinationMapFilters,
     staticCombinationMap: staticCombinationMap,
     setStaticCombinationMap: setStaticCombinationMap,
+    doGetLastCollection: doGetLastCollection,
     //
 
     dofetchCollection: dofetchCollection,
