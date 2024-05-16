@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@strapi/plugin-color-picker": "^4.10.7",
+    "@strapi/plugin-color-picker": "^4.4.0",
     "@strapi/plugin-graphql": "^4.0.0",
     "@strapi/plugin-i18n": "4.10.5",
     "@strapi/plugin-users-permissions": "4.10.5",
@@ -8,6 +8,7 @@
     "@strapi/provider-email-sendgrid": "^4.2.2",
     "@strapi/strapi": "4.10.5",
     "lodash.set": "^4.3.2",
+    "mysql": "^2.18.1",
     "passport-google-oauth2": "^0.2.0",
     "pg": "8.6.0",
     "strapi-plugin-import-export-entries": "^1.20.0",
@@ -23,7 +24,6 @@
     "build": "strapi build",
     "strapi": "strapi"
   },
-  "devDependencies": {},
   "author": {
     "name": "A Strapi developer"
   },
