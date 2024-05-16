@@ -161,7 +161,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
           let FiltersTableReferences = {
             id: dataDrawings.id,
             content: dataDrawings.attributes.name,
-            url: dataDrawings.attributes.url,
+            url: dataDrawings.attributes.formats.thumbnail.url,
             reference: dataDrawings.reference,
             order_Part: dataDrawings.order_Part,
             orderShowProduct: dataDrawings.orderShowProduct,
