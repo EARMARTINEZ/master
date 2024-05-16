@@ -1075,14 +1075,14 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
       query GetCollection(
         $NCollection: ID!
         $Start: Int!, $Limite: Int!
-        $Status1: String, $Status2: String,
+       
         ){
           masters(
             publicationState: PREVIEW
             sort:"referencia:asc"
             filters:{
               collection:{id:{eq:$NCollection}}
-              
+             
             }
             pagination:{page: $Start ,pageSize: $Limite }
           ){
@@ -1165,8 +1165,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
         NCollection,
         Start,
         Limite,
-        Status1: 'Approved',
-        Status2: 'Pending',
+      
       },
     }),
   })
