@@ -1071,7 +1071,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
     },
     body: JSON.stringify({
       query: `
-      
+
       query GetCollection(
         $NCollection: ID!
         $Start: Int!, $Limite: Int!
@@ -1082,7 +1082,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
             sort:"referencia:asc"
             filters:{
               collection:{id:{eq:$NCollection}}
-              status:{in:[$Status1, $Status2]}
+              
             }
             pagination:{page: $Start ,pageSize: $Limite }
           ){
