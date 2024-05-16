@@ -1146,7 +1146,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
                     }
                   }
                 }
-                silhouette { data {id attributes {url} } }
+                silhouette { data {id attributes {url formats} } }
               }
             }
             meta {
