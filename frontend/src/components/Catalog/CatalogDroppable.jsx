@@ -182,7 +182,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                 let FiltersTableReferences = {
                   id: ItemBaseMap[random].id,
                   content: ItemBaseMap[random].attributes.name,
-                  url: ItemBaseMap[random].attributes.url,
+                  url: ItemBaseMap[random].attributes.formats.thumbnail.url,
                   reference: ItemBaseMap[random].reference,
                 }
                 ItemMap.push(FiltersTableReferences)
@@ -200,7 +200,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                 let FiltersTableReferences = {
                   id: ItemBaseMap[index].id,
                   content: ItemBaseMap[index].attributes.name,
-                  url: ItemBaseMap[index].attributes.url,
+                  url: ItemBaseMap[index].attributes.formats.thumbnail.url,
                   reference: ItemBaseMap[index].reference,
                 }
 
@@ -291,7 +291,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                                   let FiltersTableReferences = {
                                       id: ItemBaseMap[random].id,
                                       content: ItemBaseMap[random].attributes.name,
-                                      url: ItemBaseMap[random].attributes.url,
+                                      url: ItemBaseMap[random].attributes.formats.thumbnail.url,
                                       reference: ItemBaseMap[random].reference,
                                   };
                                   ItemMap.push(FiltersTableReferences);
@@ -309,7 +309,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                                     let FiltersTableReferences = {
                                         id: ItemBaseMap[index].id,
                                         content: ItemBaseMap[index].attributes.name,
-                                        url: ItemBaseMap[index].attributes.url,
+                                        url: ItemBaseMap[index].attributes.formats.thumbnail.url,
                                         reference: ItemBaseMap[index].reference,
                                         };
                                         ItemRestMap.push(FiltersTableReferences);
