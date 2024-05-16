@@ -1071,6 +1071,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
     },
     body: JSON.stringify({
       query: `
+      
       query GetCollection(
         $NCollection: ID!
         $Start: Int!, $Limite: Int!
