@@ -221,7 +221,7 @@ const CombinationBoard = ({ action, refToEdit=0 }) => {
       return item.silhouette ? {
         id: item.id,
         ref: item.ref,
-        src: item.silhouette.formats.thumbnail.url,
+        src: item.silhouette.url,
         genderType: item.gender,
         themeType: item.theme,
         partType: item.part,

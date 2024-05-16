@@ -273,11 +273,12 @@ const UserProvider = ({ children }) => {
                 theme: theme.data ? theme.data.attributes.name : '',
                 silhouette: silhouette.data ? {
                   id: silhouette.data.id,
-                  url: getStrapiURL(silhouette.data.attributes.formats.thumbnail.url),
+                  url: getStrapiURL(silhouette.data.attributes.url),
                 } : null
               }
               silMap.push(ParsedDataSource)
             })
+            console.log(silMap)
           setSilhouetteMap(silMap)
           return silMap
         }
