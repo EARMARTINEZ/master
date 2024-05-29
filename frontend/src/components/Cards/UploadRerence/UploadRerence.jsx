@@ -51,7 +51,7 @@ const  UploadRerence = () => {
             const formData = new FormData();
             formData.append("files.pantones", fileList[0]);     
             formData.append("data", "{\"name\":\"Spring-Summer 2022\"}");        
-            const res = await fetch("http://localhost:1381/api/collections/"+Nreferencia, {
+            const res = await fetch("https://devmaster.epkweb.com/api/collections/"+Nreferencia, {
                 method: "PUT",
                 body: formData,
             }).then((res) =>  console.log(res.json()));           

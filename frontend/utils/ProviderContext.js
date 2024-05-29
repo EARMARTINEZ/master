@@ -1908,7 +1908,7 @@ const UserProvider = ({ children }) => {
 
   async function GetGenders() {
     try {
-      const response = await fetch('http://localhost:1381/api/genders/');       //cambiar por el url del servidor
+      const response = await fetch('https://devmaster.epkweb.com/api/genders/');       //cambiar por el url del servidor
       const responseData  = response.json();
       return responseData;
     } catch (error) {
@@ -1918,7 +1918,7 @@ const UserProvider = ({ children }) => {
   }
   async function GetThemes() {
     try {
-      const response = await fetch('http://localhost:1381/api/themes/');       //cambiar por el url del servidor
+      const response = await fetch('https://devmaster.epkweb.com/api/themes/');       //cambiar por el url del servidor
       const responseData  = response.json();
       return responseData;
     } catch (error) {
