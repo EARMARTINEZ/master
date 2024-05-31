@@ -26,8 +26,7 @@ module.exports = [
     config: {
       enabled: true,      
         threshold: 1024, // Comprime solo las respuestas mayores a 1 KB
-        gzip:true,
-        br: false // Brotli no está habilitado por defecto
+        br: true // Brotli no está habilitado por defecto
       },
     },
   
