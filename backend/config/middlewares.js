@@ -20,14 +20,14 @@ module.exports = [
   'strapi::session',
   'strapi::favicon',
   'strapi::public',
-  
+
   {
     name: 'strapi::compression',
     config: {
       enabled: true,
       options: {
         filter: (content_type) => /text|application\/json/.test(content_type),
-        threshold: 2048, // Comprime solo las respuestas mayores a 2 KB
+        threshold: 1024, // Comprime solo las respuestas mayores a 1 KB
         gzip: {
           flush: require('zlib').constants.Z_SYNC_FLUSH,
         },
