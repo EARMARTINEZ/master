@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 
 import  'flowbite'
-import {useEffect } from "react";
+import {useEffect  } from "react";
 import {getStrapiURL} from "utils/api";
 import { BasicTasks } from "utils/Provider/BasicProvider";
 import { useTasks } from "utils/ProviderContext";
@@ -11,7 +11,7 @@ import {CardReference} from '@/components/Cards/DetailReference/CardReference'
 import {CardStamp} from '@/components/DetailStamp/CardStamp'
 import FiltersTable from '@/components/Cards/DetailReference/FiltersTable'
 import {SessionUser} from '@/components/Cards/DetailReference/SessionUser'
-
+import useFetchCollection from '@/components/Cards/useFetchCollection'
 
 export function CardTableSearchReferences({ children }) {
     return (
@@ -28,17 +28,13 @@ export default function CardTableSearchReference() {
 
     const {
       IdCollection,
-      NameCollection,
-      dogetCollectionReference,
+      NameCollection,      
       dofetchIDCollection,
       dogetSystemColor,
       onClose,
       open,
       StampsOpen,
-      onCloseStamps,
-      checkUser,
-      SessionUser,
-      doGetLastCollection,
+      onCloseStamps,      
     } = useTasks()
 
     const {
@@ -57,26 +53,7 @@ export default function CardTableSearchReference() {
   //   }
   // }, [IdCollection]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      let idCollectionInLocalStorage = localStorage.getItem('IdCollection')
-      if (idCollectionInLocalStorage === null) {
-        const lastCol = await doGetLastCollection()
-        if (lastCol === null) {
-          dogetCollectionReference('29')
-        } else if (lastCol.length > 0) {
-          dogetCollectionReference(lastCol[0].id)
-        } else {
-          dogetCollectionReference('29')
-        }
-      } else {
-        dogetCollectionReference(idCollectionInLocalStorage)
-      }
-    }
-
-    fetchData()
-  }, [IdCollection])
-
+    useFetchCollection(IdCollection);
 
     useEffect(() => {
       dogetSystemColor();

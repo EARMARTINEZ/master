@@ -1970,7 +1970,7 @@ const UserProvider = ({ children }) => {
   const [silhouetteMap, setSilhouetteMap] = useState([])
   const [combinationsMap, setCombinationsMap] = useState([])
 
-  const [IdCollection, setIdCollection] = useState();
+  const [IdCollection, setIdCollection] = useState(null);
   const [NameCollection, setNameCollection] = useState('');
   const [IdPrefixCollection, setIdPrefixCollection] = useState();
   const [IdMaster, setIdMaster] = useState();

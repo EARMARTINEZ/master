@@ -915,7 +915,7 @@ export async function getCollectionReference({ NCollection, start }) {
     },
     body: JSON.stringify({
       query: `
-      query GetCollection(
+      query GetCollectionReference(
         $NCollection: ID!
         $Start: Int!, $Limite: Int!){
           masters(
@@ -1072,7 +1072,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
     body: JSON.stringify({
       query: `
 
-      query GetCollection(
+      query GetSilhouetteByCollection(
         $NCollection: ID!
         $Start: Int!, $Limite: Int!
         $Status1: String, $Status2: String,
@@ -1724,7 +1724,7 @@ export async function getCollectionNavigation({ NCollection }) {
     },
     body: JSON.stringify({
       query: `
-      query GetCollection(
+      query GetCollectionNavigation(
         $NCollection: ID!){
           masters(
             publicationState: PREVIEW
