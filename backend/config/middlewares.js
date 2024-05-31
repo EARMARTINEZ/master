@@ -24,18 +24,11 @@ module.exports = [
   {
     name: 'strapi::compression',
     config: {
-      enabled: true,
-      options: {
-        filter: (content_type) => /text|application\/json/.test(content_type),
+      enabled: true,      
         threshold: 1024, // Comprime solo las respuestas mayores a 1 KB
-        gzip: {
-          flush: require('zlib').constants.Z_SYNC_FLUSH,
-        },
-        deflate: {
-          flush: require('zlib').constants.Z_SYNC_FLUSH,
-        },
+        gzip:true,
         br: false // Brotli no está habilitado por defecto
       },
     },
-  },
+  
 ];
