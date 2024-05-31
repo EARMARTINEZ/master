@@ -21,4 +21,21 @@ module.exports = [
   'strapi::favicon',
   'strapi::public',
   
+  {
+    name: 'strapi::compression',
+    config: {
+      enabled: true,
+      options: {
+        filter: (content_type) => /text|application\/json/.test(content_type),
+        threshold: 2048, // Comprime solo las respuestas mayores a 2 KB
+        gzip: {
+          flush: require('zlib').constants.Z_SYNC_FLUSH,
+        },
+        deflate: {
+          flush: require('zlib').constants.Z_SYNC_FLUSH,
+        },
+        br: false // Brotli no está habilitado por defecto
+      },
+    },
+  },
 ];
