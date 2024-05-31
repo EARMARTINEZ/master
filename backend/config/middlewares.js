@@ -24,8 +24,6 @@ module.exports = [
   {
     name: 'strapi::compression',
     config: {
-      enabled: true,      
-        threshold: 1024, // Comprime solo las respuestas mayores a 1 KB
         br: true // Brotli no está habilitado por defecto
       },
     },
