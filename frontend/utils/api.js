@@ -2033,7 +2033,7 @@ export async function getThemesCollection({ NCollection }) {
     },
     body: JSON.stringify({
       query: `
-      query GetCollection(
+      query GetThemesCollection(
         $NCollection: ID!){
           themes(
             sort:"id:asc"
@@ -2077,7 +2077,7 @@ export async function getCollectionStamps({ NCollection }) {
     },
     body: JSON.stringify({
       query: `
-      query GetStampsCollection(
+      query GetCollectionStamps(
         $NCollection: ID!){
           stamps(
             sort:"id:asc"
@@ -2124,7 +2124,7 @@ export async function getColorPantoneCollection({ NCollection }) {
     },
     body: JSON.stringify({
       query: `
-      query GetCollection(
+      query GetColorPantoneCollection(
         $NCollection: ID!){
 
           mixcolors(
@@ -2171,7 +2171,7 @@ export async function getStampsCollection({ NCollection }) {
     },
     body: JSON.stringify({
       query: `
-      query GetCollection(
+      query GetStampsCollection(
         $NCollection: String!){
 
           stamps(
@@ -2262,7 +2262,7 @@ export async function getSizesCollection({ NGenders, NTypeproducts }) {
     },
     body: JSON.stringify({
       query: `
-      query GetCollection(
+      query GetSizesCollection(
         $NGenders: ID!
         $NTypeproducts: ID!){
 
@@ -2318,7 +2318,7 @@ export async function getSizesActives({ NGenders, NTypeproducts }) {
     },
     body: JSON.stringify({
       query: `
-      query GetCollection(
+      query GetSizesActives(
         $NGenders: ID!
         $NTypeproducts: ID!){
 
