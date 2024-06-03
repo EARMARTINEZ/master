@@ -901,13 +901,16 @@ export async function getReference({ NReference }) {
   return pagesData.data;
 }
 
+
 export async function getCollectionReference({ NCollection, start }) {
-  // Find the pages that match this slug
+  // Medir el tiempo de inicio de la función
+  console.time('getCollectionReference');
+
   const gqlEndpoint = getStrapiURL("/graphql");
+  const Start = start ? start : 1;
+  const Limite = 10;
 
-  const Start = start ? start : 1
-  const Limite = 10
-
+  console.time('fetchData');
   const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
@@ -917,142 +920,167 @@ export async function getCollectionReference({ NCollection, start }) {
       query: `
       query GetCollectionReference(
         $NCollection: ID!
-        $Start: Int!, $Limite: Int!){
-          masters(
-            publicationState: PREVIEW
-            sort:"referencia:asc"
-            filters:{collection:{id:{eq:$NCollection}}}
-            pagination:{page: $Start ,pageSize: $Limite }
-          ){
-            data {
-              id
-              attributes {
-                referencia
-                description
-                genderName
-                status
-                collection {
-                  data {
-                    id
-                    attributes {
-                      name
-                      prefix_id
-                      collection_type{data{attributes{prefix_id}}}
-                      pantones {
-                        data {
-                          attributes {
-                            url
-                          }
+        $Start: Int!
+        $Limite: Int!
+      ) {
+        masters(
+          publicationState: PREVIEW
+          sort: "referencia:asc"
+          filters: { collection: { id: { eq: $NCollection } } }
+          pagination: { page: $Start, pageSize: $Limite }
+        ) {
+          data {
+            id
+            attributes {
+              referencia
+              description
+              genderName
+              status
+              collection {
+                data {
+                  id
+                  attributes {
+                    name
+                    prefix_id
+                    collection_type { data { attributes { prefix_id } } }
+                    pantones {
+                      data {
+                        attributes {
+                          url
                         }
                       }
                     }
                   }
                 }
-                color_pantone{data{id attributes{name}}}
-                similarRefs
-                theme {
-                  data {
-                    id
-                    attributes {
-                      name
-                    }
-                  }
-                }
-                Composition {
-                  gender{
-                    data{
-                      id
-                      attributes{
-                        name
-                        order_show
-                      }
-                    }
-                  }
-                  typeproduct {
-                    data {
-                      id
-                      attributes {
-                        name
-                        id_part{data{id attributes{name}}}
-                        order_show
-                      }
-                    }
-                  }
-                  fabric {
-                    data {
-                      id
-                      attributes {
-                        name
-                      }
-                    }
-                  }
-                  color {
-                    data {
-                      id
-                      attributes {
-                        name
-                        codigo
-                      }
-                    }
-                  }
-                }
-                sizes(sort:"id:asc") {
-                  data {
-                    id
-                    attributes {
-                      name
-                    }
-                  }
-                }
-                provider {
-                  data {
-                    id
-                    attributes {
-                      name
-                    }
-                  }
-                }
-                stamp{data{id attributes{
-                  name
-                  masters( publicationState: PREVIEW){data{attributes{ referencia}}}
-                  status
-                  picture{data{id attributes{url formats}}}
-                  commentstamp(sort: ["id:desc"] ){id comment date user status type{data{id attributes{name}}}}
-                  pendingstamp(sort: ["status:asc", "id:desc"] ){id comment date user status type{data{id attributes{name}}}}
-                }}}
-                drawings(sort: ["id:asc", "url:desc"]) {
-                  data {id attributes{ext url hash mime name caption alternativeText formats}}
-                }
-                drawingsPDF{ data {id attributes {url } } }
-                comments(sort: ["id:desc"] ){id comment date user status type{data{id attributes{name}}}}
-                pendings(sort: ["status:asc", "id:desc"] ){id comment date user status type{data{id attributes{name}}}}
               }
-            }
-            meta {
-              pagination {
-                page
-                pageSize
-                total
-                pageCount
+              color_pantone { data { id attributes { name } } }
+              similarRefs
+              theme {
+                data {
+                  id
+                  attributes {
+                    name
+                  }
+                }
               }
+              Composition {
+                gender {
+                  data {
+                    id
+                    attributes {
+                      name
+                      order_show
+                    }
+                  }
+                }
+                typeproduct {
+                  data {
+                    id
+                    attributes {
+                      name
+                      id_part { data { id attributes { name } } }
+                      order_show
+                    }
+                  }
+                }
+                fabric {
+                  data {
+                    id
+                    attributes {
+                      name
+                    }
+                  }
+                }
+                color {
+                  data {
+                    id
+                    attributes {
+                      name
+                      codigo
+                    }
+                  }
+                }
+              }
+              sizes(sort: "id:asc") {
+                data {
+                  id
+                  attributes {
+                    name
+                  }
+                }
+              }
+              provider {
+                data {
+                  id
+                  attributes {
+                    name
+                  }
+                }
+              }
+              stamp {
+                data {
+                  id
+                  attributes {
+                    name
+                    masters(publicationState: PREVIEW) { data { attributes { referencia } } }
+                    status
+                    picture { data { id attributes { url formats } } }
+                    commentstamp(sort: ["id:desc"]) { id comment date user status type { data { id attributes { name } } } }
+                    pendingstamp(sort: ["status:asc", "id:desc"]) { id comment date user status type { data { id attributes { name } } } }
+                  }
+                }
+              }
+              drawings(sort: ["id:asc", "url:desc"]) {
+                data {
+                  id
+                  attributes {
+                    ext
+                    url
+                    hash
+                    mime
+                    name
+                    caption
+                    alternativeText
+                    formats
+                  }
+                }
+              }
+              drawingsPDF { data { id attributes { url } } }
+              comments(sort: ["id:desc"]) { id comment date user status type { data { id attributes { name } } } }
+              pendings(sort: ["status:asc", "id:desc"]) { id comment date user status type { data { id attributes { name } } } }
             }
           }
-       }
-      `, variables: {
-         NCollection,
-         Start,
-         Limite,
+          meta {
+            pagination {
+              page
+              pageSize
+              total
+              pageCount
+            }
+          }
+        }
+      }
+      `,
+      variables: {
+        NCollection,
+        Start,
+        Limite,
       },
     }),
   });
+  console.timeEnd('fetchData');
 
   const pagesData = await pagesRes.json();
-  // Make sure we found something, otherwise return null
+
+ 
   if (pagesData.data?.masters == null || pagesData.data.masters.length === 0) {
+   
     return null;
   }
-  //console.log(pagesData.data.masters.data)
-  // Return the first item since there should only be one result per slug
+
+  
+  console.timeEnd('getCollectionReference');
+
   return pagesData.data;
 }
 
@@ -2350,7 +2378,7 @@ export async function getCollectionFilters({FILTERS} ) {
     },
     body: JSON.stringify({
       query: `
-      query {
+      query GetCollectionFilters(){
           masters(
             publicationState: PREVIEW
             sort:"id:desc"
