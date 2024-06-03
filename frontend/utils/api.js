@@ -2378,7 +2378,7 @@ export async function getCollectionFilters({FILTERS} ) {
     },
     body: JSON.stringify({
       query: `
-      query GetCollectionFilters(){
+      query {
           masters(
             publicationState: PREVIEW
             sort:"id:desc"
