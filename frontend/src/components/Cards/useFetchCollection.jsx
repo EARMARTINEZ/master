@@ -6,6 +6,7 @@ const useFetchCollection = (IdCollection) => {
     const {
         dogetCollectionReference,      
         doGetLastCollection,
+        dofetchIDCollection,
       } = useTasks()
 
       const [controlFetchData, setControlfetchData] = useState(true);
@@ -23,9 +24,11 @@ const useFetchCollection = (IdCollection) => {
             // Determinar la referencia de la colección a obtener
             const collectionId = (lastCol && lastCol.length > 0) ? lastCol[0].id : '29';
             dogetCollectionReference(collectionId);
+            dofetchIDCollection(collectionId)
         } else {
             // Usar el ID de colección del localStorage
             dogetCollectionReference(idCollectionInLocalStorage);
+            dofetchIDCollection(idCollectionInLocalStorage);
         }
         } catch (error) {
         console.error('Error al obtener datos de la colección:', error);

@@ -1758,107 +1758,20 @@ export async function getCollectionNavigation({ NCollection }) {
             publicationState: PREVIEW
             sort:"referencia:asc"
             filters:{collection:{id:{eq:$NCollection}}}
-            pagination:{limit:30 }
+            pagination:{limit:10 }
           ){
             data {
               id
               attributes {
-                referencia
-                description
-                genderName
-                status
-                collection {
-                  data {
-                    id
-                    attributes {
-                      name
-                      prefix_id
-                      collection_type{data{attributes{prefix_id}}}
-                      pantones {
-                        data {
-                          attributes {
-                            url
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-                color_pantone{data{id attributes{name}}}
-                similarRefs
-                theme {
-                  data {
-                    id
-                    attributes {
-                      name
-                    }
-                  }
-                }
-                Composition {
-                  gender{
-                    data{
-                      id
-                      attributes{
-                        name
-                      }
-                    }
-                  }
-                  typeproduct {
-                    data {
-                      id
-                      attributes {
-                        name
-                        id_part{data{id attributes{name}}}
-                        order_show
-                      }
-                    }
-                  }
-                  fabric {
-                    data {
-                      id
-                      attributes {
-                        name
-                      }
-                    }
-                  }
-                  color {
-                    data {
-                      id
-                      attributes {
-                        name
-                        codigo
-                      }
-                    }
-                  }
-                }
-                sizes {
-                  data {
-                    id
-                    attributes {
-                      name
-                    }
-                  }
-                }
-                provider {
-                  data {
-                    id
-                    attributes {
-                      name
-                    }
-                  }
-                }
-                stamp {
-                  data {id attributes {name picture {
-                        data {id attributes {url} }
-                 }}}}
+                referencia                
+              
                 drawings(sort: ["id:asc", "url:desc"]) {
                   data {id attributes{ext url hash mime name caption alternativeText formats}}
                 }
                 drawingsPDF{
                   data {id attributes {url name} }
                 }
-                comments(sort: ["id:desc"] ){id comment date user status type{data{id attributes{name}}}}
-                pendings(sort: ["status:asc", "id:desc"] ){id comment date user status type{data{id attributes{name}}}}
+               
               }
             }
           }

@@ -70,81 +70,107 @@ const FiltersTable = () => {
         setfiltersStatusMap([...ItemStatusMap])
         }, [ReferenceMap])
 
-        useEffect( () => {
-            // console.log( valueRef.current)
-            const fetchData = async () => {
-
-                function MapReference(MapValues) {
-                    let FilterRefMap = [];
-                    let CodigoSizes=[];
-                    let ItemMap = [];
-                        MapValues.data?.map((dataRef, index) => {
-                            const {
-                              referencia,
-                              description = description ? description : '',
-                              genderName,
-                              status,
-                              collection,
-                              theme,
-                              Composition,
-                              sizes,
-                              stamp } = dataRef ? dataRef.attributes : '0';
-                              sizes.data?.map((Sizes, index) => {
-                                const IdSizes = Sizes.attributes ? Sizes.attributes.name : 'null'
-                                CodigoSizes.push(IdSizes);
-                              });
-                               //Filtro referencia en FiltersTable
-                               let FiltersTableReferences = {
-                                value: referencia,
-                                text: referencia
-                              };
-                              ItemMap.push(FiltersTableReferences,);
-                              let TableDataSource = {
-                                  'key': dataRef ? dataRef.id : '0',
-                                  'references': referencia,
-                                  'reference':<Button type="link"
-                                                      onClick={() => {
-                                                      doshowDrawer( dataRef.attributes.referencia),
-                                                      dogetSystemColor()
-                                                      }}
-                                              >{referencia}</Button>,
-                                  'collection': collection.data.attributes.name,
-                                  'gender': genderName,
-                                  'typeproduct': Composition.typeproduct.data.attributes.name,
-                                  'theme': theme.data ? theme.data.attributes.name : '',
-                                  'sizeref':CodigoSizes.join(' '),
-                                  'drawings':<div className="flex mb-5 -space-x-4">
-                                              {dataRef.attributes.drawings.data?.map((_ImgRef) => (
-                                                _ImgRef.attributes.name===referencia+'.jpg' &&  <ImgReference  key={ _ImgRef.attributes.url} url={ _ImgRef.attributes.formats.thumbnail.url} UrlId={_ImgRef.attributes.id} compact={true} />
-                                              ))}
-                                            </div>,
-                                  'status': status,
-                                  'stamps':stamp.data ? stamp.data.attributes.name :'',
-                                  'stamp':<Button type="link"
-                                                  onClick={() => {
-                                                  doShowStampsDrawer(true, dataRef.attributes.referencia )
-                                                  }}
-                                          >{stamp.data ? stamp.data.attributes.name :''}
-                                          </Button>,
-                              };
-                              CodigoSizes=[''];
-                              FilterRefMap.push(TableDataSource,);
-                      });
-                    setMetaReferenceMap(MapValues.meta);
-                    setFiltersReferenceMap([...FilterRefMap]);
-                };
-                try {
-                await dofindCollectionFilters(valueRef.current)
-                .then(  keys => {
-                    if(keys.data.length>= 1){
-                     MapReference(keys);
-                    }
+        const fetchData = useCallback(async (ValueREF) => {
+            try {
+              console.log("valueRef", ValueREF);
+        
+              function MapReference(MapValues) {
+                let FilterRefMap = [];
+                let ItemMap = [];
+        
+                MapValues.data?.forEach((dataRef) => {
+                  const {
+                    referencia,
+                    description = '',
+                    genderName,
+                    status,
+                    collection,
+                    theme,
+                    Composition,
+                    sizes,
+                    stamp,
+                  } = dataRef.attributes || {};
+        
+                  const CodigoSizes = sizes.data?.map((size) => size.attributes?.name || 'null').join(' ');
+        
+                  const FiltersTableReferences = {
+                    value: referencia,
+                    text: referencia,
+                  };
+                  ItemMap.push(FiltersTableReferences);
+        
+                  const TableDataSource = {
+                    key: dataRef.id || '0',
+                    references: referencia,
+                    reference: (
+                      <Button
+                        type="link"
+                        onClick={() => {
+                          doshowDrawer(dataRef.attributes.referencia);
+                          dogetSystemColor();
+                        }}
+                      >
+                        {referencia}
+                      </Button>
+                    ),
+                    collection: collection.data.attributes.name,
+                    gender: genderName,
+                    typeproduct: Composition.typeproduct.data.attributes.name,
+                    theme: theme.data?.attributes.name || '',
+                    sizeref: CodigoSizes,
+                    drawings: (
+                      <div className="flex mb-5 -space-x-4">
+                        {dataRef.attributes.drawings.data?.map((_ImgRef) =>
+                          _ImgRef.attributes.name === `${referencia}.jpg` ? (
+                            <ImgReference
+                              key={_ImgRef.attributes.url}
+                              url={_ImgRef.attributes.formats.thumbnail.url}
+                              UrlId={_ImgRef.attributes.id}
+                              compact
+                            />
+                          ) : null
+                        )}
+                      </div>
+                    ),
+                    status: status,
+                    stamps: stamp.data ? stamp.data.attributes.name : '',
+                    stamp: (
+                      <Button
+                        type="link"
+                        onClick={() => {
+                          doShowStampsDrawer(true, dataRef.attributes.referencia);
+                        }}
+                      >
+                        {stamp.data ? stamp.data.attributes.name : ''}
+                      </Button>
+                    ),
+                  };
+        
+                  FilterRefMap.push(TableDataSource);
                 });
-                } catch (error) {
-                    console.error('Error fetching collection filters:', error);
+        
+                setMetaReferenceMap(MapValues.meta);
+                setFiltersReferenceMap([...FilterRefMap]);
+              }
+        
+              try {
+                const keys = await dofindCollectionFilters(ValueREF);
+                if (keys.data.length >= 1) {
+                  MapReference(keys);
                 }
-            };
-            fetchData();
+              } catch (error) {
+                console.error('Error fetching collection filters:', error);
+              }
+            } catch (error) {
+              console.error('Error al obtener datos de la colección:', error);
+            }
+          }, []);
+
+        useEffect( () => {  
+            if(valueRef.current){
+                fetchData(valueRef.current);
+            }              
+           
             }, [valueRef.current]);
 
         const handleSearch = (selectedKeys, confirm, dataIndex) => {
