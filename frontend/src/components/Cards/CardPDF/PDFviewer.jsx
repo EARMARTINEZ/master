@@ -69,7 +69,7 @@ const  PDFviewer =  ({url, UrlId}) => {
                         }}
                     >
                          <Button className='bg-white'  type="text" shape="circle" onClick={() => showConfirm( UrlId) } ><DeleteTwoTone twoToneColor='#eb2f96' /></Button>
-                        <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.5.207/build/pdf.worker.js">
+                        <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.16.105/build/pdf.worker.js">
                             <div
                             style={{
                                 border: '1px solid rgba(0, 0, 0, 0.3)',
