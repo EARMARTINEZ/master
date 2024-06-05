@@ -111,7 +111,7 @@ const Comenta = () => {
                   comment, 
                   user, 
                   { "Newcommenttype": undefined, "pendingtype":typeid  }, 
-                  status === "Receive" ? "Pending" : "Receive"
+                  status === "Received" ? "Pending" : "Received"
               );
            
          

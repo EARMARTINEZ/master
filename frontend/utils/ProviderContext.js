@@ -449,7 +449,7 @@ const UserProvider = ({ children }) => {
       const pageData = await  getIDReference({
         IDReference: values, //1240001 2230003
         }).then( keys => {
-          const Map = MapReference(keys.data);
+          const Map = MapReference(keys.masters);
           return Map;
       });
 
@@ -1523,7 +1523,7 @@ const UserProvider = ({ children }) => {
         let options = {};
 
         try {
-
+         
             let { Newcommenttype, pendingtype  } = CommentType;
 
                 if (Newcommenttype){
@@ -1570,10 +1570,12 @@ const UserProvider = ({ children }) => {
                         body: raw,
                       };
                   }
+         
           await fetchAPI("/mastercontrol/UpdatePendingsComment/"+IdMaster, '', options,{
           }).then( keys => {
-                doIDReference(keys ? keys.IdMastar : '0')
-                onCloseFormDrawerEdit();
+            
+                // doIDReference(keys ? keys.IdMastar : '0')
+                // onCloseFormDrawerEdit();
             return keys;
             });
           } catch (error) {
