@@ -1574,8 +1574,8 @@ const UserProvider = ({ children }) => {
           await fetchAPI("/mastercontrol/UpdatePendingsComment/"+IdMaster, '', options,{
           }).then( keys => {
             
-                // doIDReference(keys ? keys.IdMastar : '0')
-                // onCloseFormDrawerEdit();
+                 doIDReference(keys ? keys.IdMastar : '0')
+                 onCloseFormDrawerEdit();
             return keys;
             });
           } catch (error) {
