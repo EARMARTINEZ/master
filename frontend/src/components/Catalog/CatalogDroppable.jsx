@@ -5,7 +5,7 @@ import  React, {useEffect, useState, useCallback  } from "react";
 import { useTasks } from "utils/ProviderContext";
 import { BasicTasks } from "utils/Provider/BasicProvider";
 import { getStrapiURL, fetchAPI } from "utils/api";
-import {ConfigProvider, Button, Modal, Row, Col } from 'antd';
+import {ConfigProvider, Button, Modal, Row, Col, Spin } from 'antd';
 import {  ExclamationCircleFilled, DeleteTwoTone } from '@ant-design/icons'
 import ImgReference from '@/components/Cards/DetailReference/ImgReference'
 
@@ -78,6 +78,8 @@ export function CatalogDroppable({ catalogType="reference" }) {
     combinationsMap,
     doshowDrawer,
     NameCollection,
+    filtersGenderMap,
+    doReferenceMapFilters,
   } = useTasks();
 
   const {
@@ -92,6 +94,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
   const [StopState, setStopState] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
+  const [loading, setLoading] = useState(false);
 
   const showModal = (item) => {
     setSelectedItem(item)
@@ -161,7 +164,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
           let FiltersTableReferences = {
             id: dataDrawings.id,
             content: dataDrawings.attributes.name,
-            url: dataDrawings.attributes.formats.thumbnail.url,
+            url: dataDrawings.attributes.url,
             reference: dataDrawings.reference,
             order_Part: dataDrawings.order_Part,
             orderShowProduct: dataDrawings.orderShowProduct,
@@ -182,7 +185,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                 let FiltersTableReferences = {
                   id: ItemBaseMap[random].id,
                   content: ItemBaseMap[random].attributes.name,
-                  url: ItemBaseMap[random].attributes.formats.thumbnail.url,
+                  url: ItemBaseMap[random].attributes.url,
                   reference: ItemBaseMap[random].reference,
                 }
                 ItemMap.push(FiltersTableReferences)
@@ -200,7 +203,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                 let FiltersTableReferences = {
                   id: ItemBaseMap[index].id,
                   content: ItemBaseMap[index].attributes.name,
-                  url: ItemBaseMap[index].attributes.formats.thumbnail.url,
+                  url: ItemBaseMap[index].attributes.url,
                   reference: ItemBaseMap[index].reference,
                 }
 
@@ -291,7 +294,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                                   let FiltersTableReferences = {
                                       id: ItemBaseMap[random].id,
                                       content: ItemBaseMap[random].attributes.name,
-                                      url: ItemBaseMap[random].attributes.formats.thumbnail.url,
+                                      url: ItemBaseMap[random].attributes.url,
                                       reference: ItemBaseMap[random].reference,
                                   };
                                   ItemMap.push(FiltersTableReferences);
@@ -309,7 +312,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                                     let FiltersTableReferences = {
                                         id: ItemBaseMap[index].id,
                                         content: ItemBaseMap[index].attributes.name,
-                                        url: ItemBaseMap[index].attributes.formats.thumbnail.url,
+                                        url: ItemBaseMap[index].attributes.url,
                                         reference: ItemBaseMap[index].reference,
                                         };
                                         ItemRestMap.push(FiltersTableReferences);
@@ -368,8 +371,15 @@ export function CatalogDroppable({ catalogType="reference" }) {
       setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (ReferenceMap.length > 0) {
+      setLoading(true);
+    }
+  }, [ReferenceMap]);
+
   return (
     <>
+    
       <Row justify="start">
         <Col className="gutter-row">
           <div className="grid grid-cols-1 gap-1 ">
@@ -385,149 +395,156 @@ export function CatalogDroppable({ catalogType="reference" }) {
           </div>
         </Col>
       </Row>
-      <div style={{ display: 'flex', justifyContent: 'start', height: '100%' }}>
-        {isMounted ? (
-          <div>
-            {/* <button
-        type="button"
-        onClick={() => {
-          setState([...state, []]);
-        }}
-      >
-        Add new group
-      </button>*/}
-            {/* <button
-        type="button"
-        onClick={() => {
-          setState([...state, getItems(1)]);
-        }}
-      >
-        Add new item
-      </button>  */}
-            <Row justify="start" gutter={[16, 24]}>
-              <Col className="gutter-row" span={18}>
-                <div style={{ display: 'flex' }}>
-                  <DragDropContext onDragEnd={onDragEnd}>
-                    {state.length == 0 ? (
-                      <div style={{ width: 'max-content' }}>No data found</div>
-                    ) : (
-                      state.map((el, ind) => (
-                        <Droppable key={uuid()} droppableId={`${ind}`}>
-                          {(provided, snapshot) => (
-                            <div
-                              className="overflow-hidden dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]"
-                              ref={provided.innerRef}
-                              // style={getListStyle(snapshot.isDraggingOver)}
-                              {...provided.droppableProps}
-                            >
-                              {el.map((item, index) => (
-                                <div
-                                  key={item.id}
-                                  className="flex items-center"
-                                >
-                                  <Draggable
+      {loading && ReferenceMap.length > 0 ? (
+
+        <div style={{ display: 'flex', justifyContent: 'start', height: '100%' }}>
+          {isMounted ? (
+            <div>
+              {/* <button
+          type="button"
+          onClick={() => {
+            setState([...state, []]);
+          }}
+        >
+          Add new group
+        </button>*/}
+              {/* <button
+          type="button"
+          onClick={() => {
+            setState([...state, getItems(1)]);
+          }}
+        >
+          Add new item
+        </button>  */}
+              <Row justify="start" gutter={[16, 24]}>
+                <Col className="gutter-row" span={18}>
+                  <div style={{ display: 'flex' }}>
+                    <DragDropContext onDragEnd={onDragEnd}>
+                      {state.length == 0 ? (
+                        <div style={{ width: 'max-content' }}>No data found</div>
+                      ) : (
+                        state.map((el, ind) => (
+                          <Droppable key={uuid()} droppableId={`${ind}`}>
+                            {(provided, snapshot) => (
+                              <div
+                                className="overflow-hidden dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]"
+                                ref={provided.innerRef}
+                                // style={getListStyle(snapshot.isDraggingOver)}
+                                {...provided.droppableProps}
+                              >
+                                {el.map((item, index) => (
+                                  <div
                                     key={item.id}
-                                    draggableId={item.id}
-                                    index={index}
+                                    className="flex items-center"
                                   >
-                                    {(provided, snapshot) => (
-                                      //  <div className="col-span-6 sm:col-span-1  ">
-                                      <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        style={getItemStyle(
-                                          snapshot.isDragging,
-                                          provided.draggableProps.style
-                                        )}
-                                      >
-                                        {PrintMode && (
-                                          <Button
-                                            className="bg-white"
-                                            type="text"
-                                            shape="circle"
-                                            onClick={() => {
-                                              const newState = [...state]
-                                              newState[ind].splice(index, 1)
-                                              setState(
-                                                newState.filter(
-                                                  (group) => group.length
-                                                )
-                                              )
-                                            }}
-                                          >
-                                            <DeleteTwoTone twoToneColor="#eb2f96" />
-                                          </Button>
-                                        )}
+                                    <Draggable
+                                      key={item.id}
+                                      draggableId={item.id}
+                                      index={index}
+                                    >
+                                      {(provided, snapshot) => (
+                                        //  <div className="col-span-6 sm:col-span-1  ">
                                         <div
-                                          style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-around',
-                                          }}
-                                        >
-                                          {/* {item.url} */}
-                                          {item.url && (
-                                            <ImgReference
-                                              key={item.url}
-                                              url={item.url}
-                                              UrlId={item.id}
-                                              compact={true}
-                                            />
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          style={getItemStyle(
+                                            snapshot.isDragging,
+                                            provided.draggableProps.style
                                           )}
-                                        </div>
-                                        {PrintMode &&
-                                          catalogType === 'reference' && (
+                                        >
+                                          {PrintMode && (
                                             <Button
-                                              type="link"
+                                              className="bg-white"
+                                              type="text"
+                                              shape="circle"
                                               onClick={() => {
-                                                doshowDrawer(item.reference),
-                                                  dogetSystemColor()
+                                                const newState = [...state]
+                                                newState[ind].splice(index, 1)
+                                                setState(
+                                                  newState.filter(
+                                                    (group) => group.length
+                                                  )
+                                                )
                                               }}
                                             >
-                                              {item.reference}
+                                              <DeleteTwoTone twoToneColor="#eb2f96" />
                                             </Button>
                                           )}
-                                        {PrintMode &&
-                                          catalogType === 'combination' && (
-                                            <>
+                                          <div
+                                            style={{
+                                              display: 'flex',
+                                              justifyContent: 'space-around',
+                                            }}
+                                          >
+                                            {/* {item.url} */}
+                                            {item.url && (
+                                              <ImgReference
+                                                key={item.url}
+                                                url={item.url}
+                                                UrlId={item.id}
+                                                compact={true}
+                                              />
+                                            )}
+                                          </div>
+                                          {PrintMode &&
+                                            catalogType === 'reference' && (
                                               <Button
                                                 type="link"
-                                                onClick={ () => showModal(item) }
+                                                onClick={() => {
+                                                  doshowDrawer(item.reference),
+                                                    dogetSystemColor()
+                                                }}
                                               >
                                                 {item.reference}
                                               </Button>
-                                              {selectedItem === item && (
-                                                <CombinationModal
-                                                handleCancel={handleCancel}
-                                                handleOk={handleOk}
-                                                isModalVisible={isModalVisible}
-                                                url={item.url}
-                                                referencia={item.reference}
-                                                id={item.id}
-                                                />
-                                              )}
-                                            </>
-                                          )}
-                                      </div>
-                                      // </div>
-                                    )}
-                                  </Draggable>
-                                </div>
-                              ))}
+                                            )}
+                                          {PrintMode &&
+                                            catalogType === 'combination' && (
+                                              <>
+                                                <Button
+                                                  type="link"
+                                                  onClick={ () => showModal(item) }
+                                                >
+                                                  {item.reference}
+                                                </Button>
+                                                {selectedItem === item && (
+                                                  <CombinationModal
+                                                  handleCancel={handleCancel}
+                                                  handleOk={handleOk}
+                                                  isModalVisible={isModalVisible}
+                                                  url={item.url}
+                                                  referencia={item.reference}
+                                                  id={item.id}
+                                                  />
+                                                )}
+                                              </>
+                                            )}
+                                        </div>
+                                        // </div>
+                                      )}
+                                    </Draggable>
+                                  </div>
+                                ))}
 
-                              {provided.placeholder}
-                            </div>
-                          )}
-                        </Droppable>
-                      ))
-                    )}
-                  </DragDropContext>
-                </div>
-              </Col>
-            </Row>
-          </div>
-        ) : null}
-      </div>
+                                {provided.placeholder}
+                              </div>
+                            )}
+                          </Droppable>
+                        ))
+                      )}
+                    </DragDropContext>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+          ) : null}
+        </div>
+      ): (
+        <div className='mt-32 flex flex-col justify-center items-center'>
+          <Spin size="large" className='scale-200'/>
+        </div>
+      ) }
     </>
   )
 }

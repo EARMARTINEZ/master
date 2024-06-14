@@ -20,6 +20,7 @@ import  Login  from '@/pages/auth/login'
 import  ForgotpasswordLogin  from '@/pages/auth/forgotpassword'
 import  Resetpassword  from '@/pages/auth/resetpassword'
 import {SessionUser} from '@/components/Cards/DetailReference/SessionUser'
+import {Spin  } from 'antd';
 
 const navigation = [
   {
@@ -206,63 +207,68 @@ function useTableOfContents(tableOfContents) {
 }
 
 const Layout = ({ children, title, tableOfContents }) => {
+  const { NameCollection, setSessionUser, setSessiontoMaker, setSessionUserCity } = useTasks();
+  const { checkUser, PrintMode, setPrintMode } = BasicTasks();
 
-  const {
-    NameCollection,
-    setSessionUser,
-    setSessiontoMaker,
-    setSessionUserCity
-   } = useTasks();
+  const { data: session } = useSession();
+  const [TypeUser, setTypeUser] = useState("Reader");
+  const [loading, setLoading] = useState(true);
+  
 
-  const {
-    checkUser,
-    PrintMode,
-    setPrintMode,
-   } = BasicTasks();
+  const router = useRouter();
+  const isHomePage = router.pathname === '/';
+  const isPageForgotpasswordLogin = router.pathname === '/auth/forgotpassword';
+  const isPageResetpasswordn = router.pathname === '/auth/resetpassword';
 
-   const { data: session } = useSession();
-   const [TypeUser, setTypeUser] = useState("Reader");
-
-
-  let router = useRouter()
-  let isHomePage = router.pathname === '/'
-  let isPageForgotpasswordLogin = router.pathname === '/auth/forgotpassword'
-  let isPageResetpasswordn = router.pathname === '/auth/resetpassword'
-
-  let allLinks = navigation.flatMap((section) => section.links)
-  let linkIndex = allLinks.findIndex((link) => link.href === router.pathname)
-  let previousPage = allLinks[linkIndex - 1]
-  let nextPage = allLinks[linkIndex + 1]
-  let section = navigation.find((section) =>
+  const allLinks = navigation.flatMap((section) => section.links);
+  const linkIndex = allLinks.findIndex((link) => link.href === router.pathname);
+  const previousPage = allLinks[linkIndex - 1];
+  const nextPage = allLinks[linkIndex + 1];
+  const section = navigation.find((section) =>
     section.links.find((link) => link.href === router.pathname)
-  )
-  let currentSection = useTableOfContents(tableOfContents)
+  );
+  const currentSection = useTableOfContents(tableOfContents);
 
-  function isActive(section) {
+  const isActive = (section) => {
     if (section.id === currentSection) {
-      return true
+      return true;
     }
     if (!section.children) {
-      return false
+      return false;
     }
-    return section.children.findIndex(isActive) > -1
-  }
+    return section.children.findIndex(isActive) > -1;
+  };
+  
 
-
-   useEffect(() => {
-    checkUser(  session ? session.user.email : '').then( ResMap => {
-        if(ResMap.length===1){
-          ResMap[0].Type ? setTypeUser( ResMap[0].Type) :setTypeUser("Reader")
-          ResMap[0].username ? setSessionUser( ResMap[0].username) : setSessionUser( ResMap[0].username)
-          ResMap[0].toMaker ? setSessiontoMaker( ResMap[0].toMaker) : setSessiontoMaker( ResMap[0].toMaker)
-          ResMap[0].city ? setSessionUserCity( ResMap[0].city) : setSessionUserCity( ResMap[0].city)
-
+  useEffect(() => {
+    if (session) {
+      checkUser(session.user.email).then((ResMap) => {
+        if (ResMap.length === 1) {
+          setTypeUser(ResMap[0].Type || "Reader");
+          setSessionUser(ResMap[0].username || '');
+          setSessiontoMaker(ResMap[0].toMaker || '');
+          setSessionUserCity(ResMap[0].city || '');
         }
+        setLoading(false);
       });
-      }, [session]);
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000); // Agrega una demora de 1 segundo (1000 ms) antes de establecer loading en false
+    }
+  }, [session]);
 
-  let isTypeUser = TypeUser === 'Editor'
+  
 
+  const isTypeUser = TypeUser === 'Editor';
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        {/* <Spin size="large" /> */}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -270,37 +276,29 @@ const Layout = ({ children, title, tableOfContents }) => {
 
       {session && <Hero />}
 
-
       {session ? (
-
         <div className="relative mx-auto flex max-w-8x2 justify-center sm:px-2 lg:px-8 xl:px-50">
           <div className="hidden lg:relative lg:block lg:flex-none">
             <div className="absolute inset-y-0 right-0 w-[50vw] bg-slate-50 dark:hidden" />
             <div className="absolute bottom-0 right-0 top-16 hidden h-12 w-px bg-gradient-to-t from-slate-800 dark:block" />
             <div className="absolute bottom-0 right-0 top-28 hidden w-px bg-slate-800 dark:block" />
 
-            <div className="sticky top-[4.5rem] -ml-0.5 h-[calc(100vh-4.5rem)] overflow-y-auto overflow-x-hidden py2 pl-0.5">
-
-            {PrintMode && session && <SessionUser />}
-
-              {isHomePage &&  <SearchCollection />}
-
-              {isHomePage && isTypeUser && <FormCreateReferenceDrawer />   }
-
-
-
-              {PrintMode && <Navigation
-                navigation={navigation}
-                className="w-64 pr-8 xl:w-40 xl:pr-16 m-5"
-              />}
-
+            <div className="sticky top-[4.5rem] -ml-0.5 h-[calc(100vh-4.5rem)] overflow-y-auto overflow-x-hidden py-2 pl-0.5">
+              {PrintMode && session && <SessionUser />}
+              {isHomePage && <SearchCollection />}
+              {isHomePage && isTypeUser && <FormCreateReferenceDrawer />}
+              {PrintMode && (
+                <Navigation
+                  navigation={navigation}
+                  className="w-64 pr-8 xl:w-40 xl:pr-16 m-5"
+                />
+              )}
             </div>
           </div>
-          <div className="min-w-0 max-w-2xl flex-auto px-4  lg:max-w-none lg:pl-8 lg:pr-0 xl:px-16 ">
+          <div className="min-w-0 max-w-2xl flex-auto px-4 lg:max-w-none lg:pl-8 lg:pr-0 xl:px-16">
             <article>
               {(title || section) && (
                 <header className="mb-9 space-y-1">
-
                   {title && (
                     <h1 className="font-display text-2xl tracking-tight text-slate-900 dark:text-white">
                       {title}
@@ -313,108 +311,22 @@ const Layout = ({ children, title, tableOfContents }) => {
                   )}
                 </header>
               )}
-            <Prose>{children}</Prose>
-
+              <Prose>{children}</Prose>
             </article>
-            {/* <dl className="mt-12 flex border-t border-slate-200 pt-6 dark:border-slate-800"> */}
-            {/* <dl className="mt-12 flex ">
-              {isHomePage && previousPage && (
-                <div>
-                  <dt className="font-display text-sm font-medium text-slate-900 dark:text-white">
-                    Previous
-                  </dt>
-                  <dd className="mt-1">
-                    <Link
-                      href={previousPage.href}
-                      className="text-base font-semibold text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
-                    >
-                      <span aria-hidden="true">&larr;</span> {previousPage.title}
-                    </Link>
-                  </dd>
-                </div>
-              )}
-              {isHomePage && nextPage && (
-                <div className="ml-auto text-right">
-                  <dt className="font-display text-sm font-medium text-slate-900 dark:text-white">
-                    Next
-                  </dt>
-                  <dd className="mt-1">
-                    <Link
-                      href={nextPage.href}
-                      className="text-base font-semibold text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
-                    >
-                      {nextPage.title} <span aria-hidden="true">&rarr;</span>
-                    </Link>
-                  </dd>
-                </div>
-              )}
-            </dl> */}
           </div>
-          <div className="hidden xl:sticky xl:top-[4.5rem] xl:-mr-6 xl:block xl:h-[calc(100vh-4.5rem)] xl:flex-none xl:overflow-y-auto xl:py-16 xl:pr-6 ">
-            {/* <nav aria-labelledby="on-this-page-title" className="w-56">
-              {tableOfContents.length > 0 && (
-                <>
-                  <h2
-                    id="on-this-page-title"
-                    className="font-display text-sm font-medium text-slate-900 dark:text-white"
-                  >
-                    On this page
-                  </h2>
-                  <ol role="list" className="mt-4 space-y-3 text-sm">
-                    {tableOfContents.map((section) => (
-                      <li key={section.id}>
-                        <h3>
-                          <Link
-                            href={`#${section.id}`}
-                            className={clsx(
-                              isActive(section)
-                                ? 'text-sky-500'
-                                : 'font-normal text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'
-                            )}
-                          >
-                            {section.title}
-                          </Link>
-                        </h3>
-                        {section.children.length > 0 && (
-                          <ol
-                            role="list"
-                            className="mt-2 space-y-3 pl-5 text-slate-500 dark:text-slate-400"
-                          >
-                            {section.children.map((subSection) => (
-                              <li key={subSection.id}>
-                                <Link
-                                  href={`#${subSection.id}`}
-                                  className={
-                                    isActive(subSection)
-                                      ? 'text-sky-500'
-                                      : 'hover:text-slate-600 dark:hover:text-slate-300'
-                                  }
-                                >
-                                  {subSection.title}
-                                </Link>
-                              </li>
-                            ))}
-                          </ol>
-                        )}
-                      </li>
-                    ))}
-                  </ol>
-                </>
-              )}
-            </nav> */}
+          <div className="hidden xl:sticky xl:top-[4.5rem] xl:-mr-6 xl:block xl:h-[calc(100vh-4.5rem)] xl:flex-none xl:overflow-y-auto xl:py-16 xl:pr-6">
+            {/* Additional content can go here */}
           </div>
         </div>
-      ) :  (
-
-        <div className="relative mx-auto max-w-8x2 justify-center sm:px-2 lg:px-8 xl:px-50 ">
-          {isHomePage  &&  <Login />}
-          {isPageForgotpasswordLogin  &&  <ForgotpasswordLogin />}
-          {isPageResetpasswordn  &&  <Resetpassword />}
+      ) : (
+        <div className="relative mx-auto max-w-8x2 justify-center sm:px-2 lg:px-8 xl:px-50">
+          {isHomePage && <Login />}
+          {isPageForgotpasswordLogin && <ForgotpasswordLogin />}
+          {isPageResetpasswordn && <Resetpassword />}
         </div>
       )}
     </>
-  )
-}
-
+  );
+};
 
 export default Layout;
