@@ -3,6 +3,7 @@ import { FabricJSCanvas } from 'fabricjs-react'
 import toast from 'react-hot-toast';
 import { useTasks } from 'utils/ProviderContext';
 import Image from 'next/image';
+import { Spin } from 'antd';
 
 import logoEpkOld from '@/images/logoEpkOld.png';
 
@@ -29,6 +30,8 @@ export const CreateCombination = ({
   fetchLastCombinationId,
 }) => {
   const { IdCollection, doCreateCombination, NameCollection } = useTasks()
+  const [loading, setLoading] = useState(false);
+
 
   function saveCombination({
     refId,
@@ -154,8 +157,9 @@ export const CreateCombination = ({
       var newArrayValueFilters = []
       if (genderType !== '') {
         newArrayValueFilters = allReferences.filter(
-          (reference) => reference.genderType === genderType
+          (reference) => reference.genderType === genderType          
         )
+        console.log(genderType)
       }
       if (themeType !== '') {
         if (newArrayValueFilters.length !== 0) {
@@ -211,13 +215,18 @@ export const CreateCombination = ({
       setThemeType('')
     }
   }
+  useEffect(() => {
+    if (availableImages.length > 0) {
+      setLoading(true);
+    }
+  }, [availableImages]);
 
   function renderImages() {
     if (vacio) {
       return <h2>No images found with the selected filters</h2>
     } else {
       return (
-        <>
+        <>            
           {availableImages.map((image, index) => (
             <div
               key={image.id}
@@ -234,7 +243,7 @@ export const CreateCombination = ({
                 />
               </article>
             </div>
-          ))}
+          ))}        
         </>
       )
     }
@@ -305,9 +314,15 @@ export const CreateCombination = ({
         <div className="flex w-[50%] flex-col items-center justify-center overflow-clip border">
           <FabricJSCanvas className="sample-canvas" onReady={onReady} />
         </div>
-        <div className="flex h-[600px] w-[50%] flex-wrap items-center justify-center gap-2 overflow-scroll overflow-x-hidden border">
-          {renderImages()}
-        </div>
+        {loading && availableImages.length > 1 ? (            
+            <div className="flex h-[600px] w-[50%] flex-wrap items-center justify-center gap-2 overflow-scroll overflow-x-hidden border">
+              {renderImages()}
+            </div>
+         ): (
+            <div className="flex h-[600px] w-[50%] flex-wrap items-center justify-center gap-2 overflow-scroll overflow-x-hidden border">
+            <Spin size="large" className='scale-200'/>
+            </div>         
+        ) }
       </section>
       <div className="my-10 flex flex-col items-center justify-end">
         <button

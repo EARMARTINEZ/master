@@ -3,6 +3,7 @@ import { FabricJSCanvas, useFabricJSEditor } from 'fabricjs-react'
 import { useTasks } from 'utils/ProviderContext';
 import toast from 'react-hot-toast';
 import logoEpkOld from '@/images/logoEpkOld.png'
+import { Spin } from 'antd';
 
 export const UpdateCombination = ({ editor, onReady, allReferences, availableImages, setAvailableImages, selectedImages, setSelectedImages, onAddImage, obtenerValorOption, obtenerValorTheme, obtenerValorGender, idReferencesInCombination, setIdReferencesInCombination, themes, genders, parts, formatCombinationImage, canvaToImage, revertCombinationImage, nameCol, refToEdit  }) => {
   const {
@@ -17,6 +18,7 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
   const [refIdSelectedCombination, setRefIdSelectedCombination] = useState('');
   const [imagesLoading, setImagesLoading] = useState(true);
   const firstUpdate = useRef(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (availableImages.length > 0) {
@@ -349,6 +351,12 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
       setThemeType('');
     }
   }
+  
+  useEffect(() => {
+    if (availableImages.length > 0) {
+      setLoading(true);
+    }
+  }, [availableImages]);
 
   function renderImages(){
     if(vacio){
@@ -488,9 +496,15 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
         <div className="flex w-[50%] flex-col items-center justify-center overflow-clip border">
           <FabricJSCanvas className="sample-canvas" onReady={onReady} />
         </div>
-        <div className="flex h-[600px] w-[50%] flex-wrap items-center justify-center gap-2 overflow-scroll overflow-x-hidden border">
-          {renderImages()}
-        </div>
+        {loading && availableImages.length > 1 ? (            
+            <div className="flex h-[600px] w-[50%] flex-wrap items-center justify-center gap-2 overflow-scroll overflow-x-hidden border">
+              {renderImages()}
+            </div>
+         ): (
+            <div className="flex h-[600px] w-[50%] flex-wrap items-center justify-center gap-2 overflow-scroll overflow-x-hidden border">
+            <Spin size="large" className='scale-200'/>
+            </div>         
+        ) }
       </section>
       <div className="my-10 flex flex-row items-center justify-end gap-6">
         {/* save combination */}

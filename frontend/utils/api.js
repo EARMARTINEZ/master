@@ -1090,7 +1090,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
   const gqlEndpoint = getStrapiURL("/graphql");
 
   const Start = start ? start : 1
-  const Limite = 50
+  const Limite = 200
 
   const pagesRes = await fetch(gqlEndpoint, {
     method: 'POST',
