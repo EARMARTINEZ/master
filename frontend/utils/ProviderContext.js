@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/react';
-import { useState, createContext, useContext } from "react";
+import { useState, useCallback, createContext, useContext } from "react";
 import {
   getCollectionReference,
   getIDReference,
@@ -1801,8 +1801,8 @@ const UserProvider = ({ children }) => {
       if(!values){
         const value = IdCollection ? IdCollection :"0"
         const fixCollection = IdPrefixCollection ? IdPrefixCollection :"0"
-        // dogetCollectionReference(value);
-        // dofetchIDCollection(fixCollection);
+         dogetCollectionReference(value);
+         dofetchIDCollection(value);
         setOpen(false);
       }
 
@@ -1938,6 +1938,31 @@ const UserProvider = ({ children }) => {
 
     return [year, month, day].join('-');
   }
+
+  const fetchData = useCallback(async () => {
+    try {
+    // Obtener el ID de la colección del localStorage
+    let idCollectionInLocalStorage = localStorage.getItem('IdCollection');
+
+    // Si no hay ID de colección en el localStorage
+    if (idCollectionInLocalStorage === null) {
+        // Obtener la última colección
+        const lastCol = await doGetLastCollection();
+
+        // Determinar la referencia de la colección a obtener
+        const collectionId = (lastCol && lastCol.length > 0) ? lastCol[0].id : '29';
+        dogetCollectionReference(collectionId);
+        dofetchIDCollection(collectionId)
+    } else {
+        // Usar el ID de colección del localStorage
+        dogetCollectionReference(idCollectionInLocalStorage);
+        dofetchIDCollection(idCollectionInLocalStorage);
+    }
+    
+    } catch (error) {
+    console.error('Error al obtener datos de la colección:', error);
+    }
+}, [dogetCollectionReference, doGetLastCollection]);
 
   const { data: session } = useSession();
   const [loading, setLoading] = useState(true);
@@ -2236,6 +2261,8 @@ setIsModalOpen(false);
 
     GetGenders: GetGenders,
     GetThemes: GetThemes,
+
+    fetchData:fetchData,
   }
   return (
     <UserContext.Provider value={useract}>{children}</UserContext.Provider>

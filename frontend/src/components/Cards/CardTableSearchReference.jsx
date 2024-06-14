@@ -1,11 +1,11 @@
 import { useSession } from 'next-auth/react';
 
 import  'flowbite'
-import {useEffect  } from "react";
+import {useEffect, useState  } from "react";
 import {getStrapiURL} from "utils/api";
 import { BasicTasks } from "utils/Provider/BasicProvider";
 import { useTasks } from "utils/ProviderContext";
-import { Drawer, Card } from 'antd';
+import { Drawer, Card, Spin } from 'antd';
 import SearchReference from '@/components/Cards/DetailReference/SearchReference'
 import {CardReference} from '@/components/Cards/DetailReference/CardReference'
 import {CardStamp} from '@/components/DetailStamp/CardStamp'
@@ -31,16 +31,19 @@ export default function CardTableSearchReference() {
       NameCollection,      
       dofetchIDCollection,
       dogetSystemColor,
-      onClose,
+      setOpen,
       open,
       StampsOpen,
-      onCloseStamps,      
+      onCloseStamps, 
+      FiltersReferenceMap, 
+      fetchData,    
     } = useTasks()
 
     const {
     dofindGender,
     } = BasicTasks();
 
+    const [loading, setLoading] = useState(false);
 
   //   useEffect(() => {
   //   //OBTENEMOS EL ID DE LA COLLECION QUE SE ENCUENTRA EN EL LOCALSTORAGE
@@ -55,11 +58,26 @@ export default function CardTableSearchReference() {
 
     useFetchCollection(IdCollection);
 
+   
     useEffect(() => {
       dogetSystemColor();
     }, []);
 
+    useEffect(() => {
+      if (FiltersReferenceMap.length > 0) {
+        setLoading(true);
+      }
+    }, [FiltersReferenceMap]);
+
+    const onClose = () => {
+      setLoading(true);
+        fetchData();
+      setOpen(false);
+    };
+
     return (
+
+     
     <>
        {/* Tabla COLLECTION REFERENCE  */}
         <div className="grid grid-cols-4 gap-1 m-0">
@@ -78,7 +96,15 @@ export default function CardTableSearchReference() {
 
                 </div>
           </div>                     */}
-          <FiltersTable />
+           {loading && FiltersReferenceMap.length > 1
+          ? (
+            
+            <FiltersTable />
+          ): (
+            <div className='mt-32 flex flex-col justify-center items-center'>
+              <Spin size="large" className='scale-200'/>
+            </div>
+          ) }
           <Drawer
               title="Close"
               placement="right"
@@ -102,5 +128,6 @@ export default function CardTableSearchReference() {
                 <CardStamp  />
             </Drawer>
     </>
+
   )
 }
