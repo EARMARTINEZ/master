@@ -1,24 +1,26 @@
 import  'flowbite'
 import {useState } from "react"; 
 import { useTasks } from "utils/ProviderContext";
-import { Button, Drawer } from 'antd';
+import { Button, Drawer, Spin } from 'antd';
 import {CardTableSearchCollection} from '@/components/Cards/SearchCollection/CardTableSearchCollection'
 
 
 const SearchCollection = ({data}) => {
+
+  const [loading, setLoading] = useState(false);
     
-    const { dofetchCollection } = useTasks();
+    const { dofetchCollection, CollectionMap } = useTasks();
+    const [open, setOpen] = useState(false);
 
-       const [open, setOpen] = useState(false);
-
-        const showDrawer = () => { 
-          
+        const showDrawer = () => {           
               dofetchCollection();
               setOpen(true);
+              setLoading(true);
         };
      
-       const onClose = () => {       
+       const onClose = () => {
          setOpen(false);
+       
        };
 
 
@@ -50,9 +52,15 @@ const SearchCollection = ({data}) => {
                     className="bg-gray-900"                     
                     
                     > 
+                     {loading &&  CollectionMap.length > 1 ? (
 
-                    <CardTableSearchCollection onClose={() => onClose() } />
-                
+                        <CardTableSearchCollection onClose={() => onClose() } />
+                  ): (
+                    <div className='mt-32 flex flex-col justify-center items-center'>
+                      <Spin size="large" className='scale-200'/>
+                    </div>
+                  ) }
+
                 </Drawer>                 
                   
                 </div>             
