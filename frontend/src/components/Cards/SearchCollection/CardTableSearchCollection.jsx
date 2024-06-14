@@ -10,6 +10,8 @@ export function CardTableSearchCollection({onClose}) {
         setIdCollection,
         setIdPrefixCollection,
         setNameCollection,
+        setFiltersReferenceMap,
+        fetchData,
        } = useTasks();
 
     return (
@@ -42,11 +44,11 @@ export function CardTableSearchCollection({onClose}) {
                         <button
                         type="primary"
                         onClick={() => {
-                          //setIdCollection(_datos.id),
-                          dogetCollectionReference(_datos.id),
-                          dofetchIDCollection(_datos.id),
-                          setIdPrefixCollection( `${_datos.attributes.collection_type.data.attributes.prefix_id}${_datos.attributes.prefix_id}`),
-                          setNameCollection(_datos.attributes.name),
+                          localStorage.setItem('IdCollection', _datos.id);
+                          setFiltersReferenceMap([]);
+                          fetchData();                         
+                           setIdPrefixCollection( `${_datos.attributes.collection_type.data.attributes.prefix_id}${_datos.attributes.prefix_id}`),
+                           setNameCollection(_datos.attributes.name),
                           onClose();
                         }}
                         className=" text-blue-600 ">{_datos.attributes.collection_type.data.attributes.prefix_id}{_datos.attributes.prefix_id}
