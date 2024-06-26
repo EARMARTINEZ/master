@@ -902,13 +902,13 @@ export async function getReference({ NReference }) {
 }
 
 
-export async function getCollectionReference({ NCollection, start }) {
+export async function getCollectionReference({ NCollection, start, pageSize }) {
   // Medir el tiempo de inicio de la función
   console.time('getCollectionReference');
 
   const gqlEndpoint = getStrapiURL("/graphql");
   const Start = start ? start : 1;
-  const Limite = 10;
+  const Limite = pageSize ? pageSize : 10;
 
   console.time('fetchData');
   const pagesRes = await fetch(gqlEndpoint, {

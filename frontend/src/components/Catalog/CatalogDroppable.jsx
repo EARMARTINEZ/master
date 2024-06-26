@@ -336,8 +336,8 @@ export function CatalogDroppable({ catalogType="reference" }) {
 
     }, [ReferenceMap, combinationsMap]);
 
-    useEffect(() => {
-      console.log(state)
+    useEffect(() => {    
+        console.log(state)
         setState(state)
         setCaptureReport(state)
       }, [state]);
@@ -377,6 +377,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
     }
   }, [ReferenceMap]);
 
+ 
   return (
     <>
     
@@ -394,8 +395,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
             </div>
           </div>
         </Col>
-      </Row>
-      {loading && ReferenceMap.length > 0 ? (
+      </Row>     
 
         <div style={{ display: 'flex', justifyContent: 'start', height: '100%' }}>
           {isMounted ? (
@@ -540,11 +540,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
             </div>
           ) : null}
         </div>
-      ): (
-        <div className='mt-32 flex flex-col justify-center items-center'>
-          <Spin size="large" className='scale-200'/>
-        </div>
-      ) }
+      
     </>
   )
 }

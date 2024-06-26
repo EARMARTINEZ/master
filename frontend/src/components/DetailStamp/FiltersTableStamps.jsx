@@ -3,19 +3,24 @@ import {useEffect, useState, useRef} from "react";
 import Highlighter from 'react-highlight-words';
 import { useTasks } from "utils/ProviderContext";
 import { SearchOutlined } from '@ant-design/icons';
-import {ConfigProvider,  Input, Space, Table, Button  } from 'antd';
+import {ConfigProvider,  Input, Space, Table, Button, Spin  } from 'antd';
 import ImgReference from '@/components/Cards/DetailReference/ImgReference'
 
 const FiltersTableStamps = () => {
     
     const { 
+        setLoading,
+        loading,
         dogetCollectionReference,
         dofetchReference,             
         IdCollection,      
         ReferenceMap, 
         doshowDrawer,
         doShowStampsDrawer,
-        dogetSystemColor,  
+        dogetSystemColor,
+        MetaReferenceMap,  
+        setMetaReferenceMap,
+        fetchData,
             } = useTasks();
 
            
@@ -32,6 +37,7 @@ const FiltersTableStamps = () => {
             const [filtersStampsNameMap, setfiltersStampsNameMap] = useState([]);
             const [filtersThemesMap, setfiltersThemesMap] = useState([]);
             const [filtersStatusMap, setfiltersStatusMap] = useState([]);
+           
                       
             
             useEffect(() => {            
@@ -126,9 +132,12 @@ const FiltersTableStamps = () => {
                 setfiltersStatusMap([...ItemStatusMap])                                
                 setTableStampsMap([...FilterTableStampsMap]);
 
-                }, [IdCollection]);
+                 console.log(ReferenceMap) 
+                 console.log(MetaReferenceMap) 
+
+                }, [ReferenceMap]);
                 
-             
+          
                 
         const data = TableStampsMap;    
         
@@ -138,7 +147,7 @@ const FiltersTableStamps = () => {
         const [searchedColumn, setSearchedColumn] = useState('');
         const searchInput = useRef(null);
 
-        const [loading, setLoading] = useState(false); 
+      
         const tableProps = {       
          loading,        
        };
@@ -361,7 +370,20 @@ const FiltersTableStamps = () => {
         ];
 
         const onChange = (pagination, filters, sorter, extra) => {
-            //console.log('params', pagination, filters, sorter, extra);
+            console.log('params', pagination, filters, sorter, extra);
+
+
+             const Start= pagination.current;  
+            const PageSize= 60 //pagination.pageSize;  
+            fetchData(Start, PageSize);           
+            setLoading(true);
+            
+            // let idCollectionInLocalStorage = localStorage.getItem('IdCollection');
+            // const current = pagination ? pagination.current : 1
+            // setLoading(true);
+            // idCollectionInLocalStorage ?
+            // dogetCollectionReference(idCollectionInLocalStorage,current) :
+            // dogetCollectionReference('29', current);
           };
 
      
@@ -376,24 +398,34 @@ theme={{
     },
   }}
       
-      >    
+      >  
 
-     <Table 
+        {data.length > 1
+          ? (
+            
+            <Table 
         {...tableProps}
         bordered
         columns={columns} 
         dataSource={data}
         onChange={onChange}
         pagination={{
-            pageSize: 10,
-          }}
+            pageSize:MetaReferenceMap ? MetaReferenceMap.pagination.pageSize : 0,
+            total: MetaReferenceMap ? MetaReferenceMap.pagination.total : 0
+        }}
         scroll={{
             x: 1000,
             
           }}
           className=" font-medium text-gray-900 whitespace-nowrap dark:text-white"
         
-         />         
+         />   
+          ): (
+            <div className='mt-32 flex flex-col justify-center items-center'>
+              <Spin size="large" className='scale-200'/>
+            </div>
+          ) }  
+       
     </ConfigProvider>    
 
     </>

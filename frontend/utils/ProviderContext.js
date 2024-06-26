@@ -588,7 +588,7 @@ const UserProvider = ({ children }) => {
       }
     }
 
-      async function dogetCollectionReference(values, Start ) {
+      async function dogetCollectionReference(values, Start, PageSize, ) {
         try {
             setIdCollection(values);
             //VAMOS A GUARDAR EL ID DE LA COLLECTION EN EL LOCALSTORAGE
@@ -597,6 +597,7 @@ const UserProvider = ({ children }) => {
             const pageData = await  getCollectionReference({
               NCollection: values ? values : '0' , //28 29
               start: Start ? Start : 1,
+              pageSize : PageSize ? PageSize : 10,
             }).then( keys => {
               MapReference(keys.masters);
               MapStaticReference(keys.masters);
@@ -1940,7 +1941,7 @@ const UserProvider = ({ children }) => {
     return [year, month, day].join('-');
   }
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (Start, PageSize) => {
     try {
     // Obtener el ID de la colección del localStorage
     let idCollectionInLocalStorage = localStorage.getItem('IdCollection');
@@ -1952,12 +1953,14 @@ const UserProvider = ({ children }) => {
 
         // Determinar la referencia de la colección a obtener
         const collectionId = (lastCol && lastCol.length > 0) ? lastCol[0].id : '29';
-        dogetCollectionReference(collectionId);
+        dogetCollectionReference(collectionId, Start, PageSize);
         dofetchIDCollection(collectionId)
+        dogetSystemColor();
     } else {
         // Usar el ID de colección del localStorage
-        dogetCollectionReference(idCollectionInLocalStorage);
+        dogetCollectionReference(idCollectionInLocalStorage, Start, PageSize);
         dofetchIDCollection(idCollectionInLocalStorage);
+        dogetSystemColor();
     }
     
     } catch (error) {

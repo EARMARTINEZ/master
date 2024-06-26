@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 
 import  'flowbite'
-import {useEffect } from "react"; 
+import {useEffect ,useState  } from "react"; 
 import {getStrapiURL} from "utils/api";
 import { Card  } from 'antd';
 
@@ -11,7 +11,7 @@ import { Drawer } from 'antd';
 import {CardReference} from '@/components/Cards/DetailReference/CardReference'
 import {CardStamp} from '@/components/DetailStamp/CardStamp'
 import FiltersTableStamps from '@/components/DetailStamp/FiltersTableStamps'
-
+import useFetchCollection from '@/components/Cards/useFetchCollection'
 
 
 export default function TableSearchStamp() {  
@@ -20,25 +20,26 @@ export default function TableSearchStamp() {
     
     const {
         IdCollection, 
-        NameCollection,        
-        dogetCollectionReference, 
-        dofetchIDCollection,
-        dogetSystemColor,       
+        NameCollection,             
         onClose,
         open,
         StampsOpen, 
-        onCloseStamps,           
+        onCloseStamps,
+        fetchData           
        } = useTasks();  
           
-       const { 
-        dofindGender,     
-       } = BasicTasks();        
       
-          
-      useEffect(() => {            
-            IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('31');    
-              
-      }, [IdCollection]); 
+      const [controlFetchData, setControlfetchData] = useState(true);    
+
+  useEffect(() => {
+     if (controlFetchData){ 
+        const Start= 1;  
+        const PageSize= 60;     
+        fetchData(Start, PageSize);
+        setControlfetchData(false);
+    }
+    
+  }, [IdCollection, fetchData, controlFetchData]);
       
      
        

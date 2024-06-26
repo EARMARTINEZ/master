@@ -28,8 +28,7 @@ export default function CardTableSearchReference() {
 
     const {
       IdCollection,
-      NameCollection,      
-      dogetSystemColor,
+      NameCollection,     
       setOpen,
       open,
       StampsOpen,
@@ -57,10 +56,7 @@ export default function CardTableSearchReference() {
 
     useFetchCollection(IdCollection);
    
-    useEffect(() => {
-      dogetSystemColor();
-    }, []);
-
+   
     useEffect(() => {
       if (FiltersReferenceMap.length > 0) {
         setLoading(true);
