@@ -90,7 +90,7 @@ export default function CardTableSearchReference() {
 
                 </div>
           </div>                     */}
-           {loading && FiltersReferenceMap.length > 1
+           {loading && FiltersReferenceMap.length >= 1
           ? (
             
             <FiltersTable />

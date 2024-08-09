@@ -38,7 +38,7 @@ const FiltersTable = () => {
         dogenerateFilters,
         } = useTasks();
 
-        // console.log(MetaReferenceMap)
+         console.log(MetaReferenceMap)
 
         let ItemStatusMap = [];
         const [filtersStatusMap, setfiltersStatusMap] = useState([]);
@@ -51,7 +51,7 @@ const FiltersTable = () => {
 
         const tableProps = {
             loading,
-        };
+        };      
 
        let newStatusMap = [];
 
@@ -341,9 +341,11 @@ const FiltersTable = () => {
             //console.log('params', pagination, filters, sorter, extra);
             //console.log( pagination);
             const current = pagination ? pagination.current : 1
+            const pageSize = pagination ? pagination.pageSize : 10
+            
             setLoading(true);
             IdCollection ?
-            dogetCollectionReference(IdCollection,current) :
+            dogetCollectionReference(IdCollection,current, pageSize) :
             dogetCollectionReference('29', current);
         };
 
@@ -463,6 +465,8 @@ const FiltersTable = () => {
         <Table
             {...tableProps}
             bordered
+         
+            loading={loading}
             columns={columns.map(column => ({
                 ...column,
                 onFilter: (value, record) => {
@@ -480,6 +484,7 @@ const FiltersTable = () => {
             scroll={{
                 x: 1000,
             }}
+            footer={() => `Total records: ${MetaReferenceMap.pagination.total}`} 
             className=" font-medium text-gray-900 whitespace-nowrap dark:text-white"
             />
          )}

@@ -23,7 +23,7 @@ const LoadingModal =({ data }) => {
               <div className="absolute top-0 mt-1 w-3 h-3 rounded-full bg-blue-500" />
             </div>
             <div className="text-gray-500 text-xs font-medium mt-2 text-center">
-             Looking for Reference...
+            Executing action, this might take a moment...
             </div>
           </div>
         </div>
