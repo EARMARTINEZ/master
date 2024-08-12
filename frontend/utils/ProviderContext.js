@@ -1195,6 +1195,8 @@ const UserProvider = ({ children }) => {
           "referencia": RefenceSequence,
           "description": description ? description : '',
           "similarRefs": similarRefs ? similarRefs : '',
+          "genderName": ItemGenderName ? ItemGenderName : '',
+          "productname": ItemProductName ? ItemProductName : '',
           "collection": {
             "id": Idcollection ? Idcollection : '29'
           },
@@ -2043,7 +2045,8 @@ const UserProvider = ({ children }) => {
   const [RefeCommentstamp, setRefeCommentstamp] = useState([]);
   const [RefePendingstamp, setRefePendingstamp] = useState([]);
 
-
+  const [ItemProductName, setItemProductName] = useState();
+  const [ItemGenderName, setItemGenderName] = useState();
 
   //modal
 const [isModalOpen, setIsModalOpen] = useState(false);
@@ -2267,6 +2270,11 @@ setIsModalOpen(false);
     GetThemes: GetThemes,
 
     fetchData:fetchData,
+
+    setItemGenderName:setItemGenderName,
+    ItemGenderName:ItemGenderName,
+    setItemProductName:setItemProductName,
+    ItemProductName:ItemProductName
   }
   return (
     <UserContext.Provider value={useract}>{children}</UserContext.Provider>

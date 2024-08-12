@@ -27,7 +27,9 @@ export function FormReference() {
       IdPrefixCollection, 
       doSaveReference,
       setShowModalLoading,
-      IdCollection,     
+      IdCollection,
+      ItemGenderName, 
+      ItemProductName    
      } = useTasks();    
      const { 
         StartSequence,
@@ -58,7 +60,7 @@ export function FormReference() {
 
         onOk() {      
         
-            console.log('OK', values);
+            console.log('OK', ItemGenderName, ItemProductName);
             setShowModalLoading(true);
             doSaveReference(values, IdCollection);
             onformReset();

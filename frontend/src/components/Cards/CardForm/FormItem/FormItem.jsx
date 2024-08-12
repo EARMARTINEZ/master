@@ -234,7 +234,8 @@ export function FormItemProduct() {
    
      } = BasicTasks(); 
    
-    
+     const { setItemProductName } = useTasks();
+     
       const { TextArea } = Input;
 
     const { Option } = Select;
@@ -244,7 +245,7 @@ export function FormItemProduct() {
   
     
     const [form] = Form.useForm();    
-     const handleChange = (value) => {
+     const handleChange = (value, label) => {
       setItemProduct(value)
 
           // console.log(`selected ${value}`);
@@ -252,6 +253,7 @@ export function FormItemProduct() {
           !StartSize ? setStartSize(true) : setStartSize(false);
           dofindSizes(ItemGender, value);
           setSizesSelecMap();
+          setItemProductName(label.label);
 
       form.setFieldsValue({
         Newproduct: [],
@@ -442,16 +444,18 @@ export function FormItemGender() {
          setItemGender,
           } = BasicTasks(); 
 
-        const { IdPrefixCollection  } = useTasks();      
+        const { IdPrefixCollection, setItemGenderName  } = useTasks();      
 
         const { Option } = Select;
         const gender = filtersGenderMap;      
 
-        const handleChange = (value) => {
+        const handleChange = (value, label) => {
 
+          // console.log('OK', label.label);
           const next_sequence = `${IdPrefixCollection}${value}`
           dogetNextSequence(next_sequence);
           setItemGender(value)
+          setItemGenderName(label.label)
                
           !StartSize ? setStartSize(true) : setStartSize(false);
           dofindSizes(value, ItemProduct);
