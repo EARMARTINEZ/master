@@ -519,7 +519,7 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
                 DataSizes.push(dataSize);     
               });     
                 
-              console.log('DataSizes');
+              
               if(DataSizes.length > 1){
                   console.log('FindExamineSizes');
                   const DataEntrySize = await strapi.service('api::master.master').FindExamineSizes(Nreferencia, DataSizes, MasterEntry);      
