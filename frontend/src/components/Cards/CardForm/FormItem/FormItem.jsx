@@ -33,7 +33,7 @@ export function FormItemStatus() {
 
     const handleChange = (value) => {
           
-      console.log(value);
+      // console.log(value);
      };
 
   return (
@@ -588,10 +588,10 @@ export function FormItemFabric() {
                           optionFilterProp="children"
                           filterOption={(input, option) => option?.label.toString().toLowerCase().includes(input.toLowerCase())}
                           //filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                          filterSort={(optionA, optionB) =>
-                              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                            
-                          }
+                          
+                          // filterSort={(optionA, optionB) =>
+                          //     (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())                            
+                          // }
                           
                           />
                       </Form.Item> 

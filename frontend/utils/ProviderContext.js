@@ -279,7 +279,7 @@ const UserProvider = ({ children }) => {
               }
               silMap.push(ParsedDataSource)
             })
-            console.log(silMap)
+            // console.log(silMap)
           setSilhouetteMap(silMap)
           return silMap
         }
@@ -479,7 +479,7 @@ const UserProvider = ({ children }) => {
     // hacer tantas peticiones como pageCount hayan
     async function dofetchReferenceForSilhouettes(values) {
       try {
-        console.log(values)
+        // console.log(values)
         await fetchCollectionName(values);
         const pageData = await  getSilhouetteByCollection({
           NCollection: values | '0'
@@ -633,7 +633,7 @@ const UserProvider = ({ children }) => {
               FILTERS: Filters ? Filters : ' ',
             }).then( keys => {
               //MapReference(keys.masters);
-              console.log(keys)
+              // console.log(keys)
               return keys?.combinations;
           });
           return pageData;
@@ -699,7 +699,7 @@ const UserProvider = ({ children }) => {
                 selectedColumnKey = combinationColumnKeys[columnKey] || defaultColumnKey;
               }
 
-              console.log(selectedColumnKey)
+              // console.log(selectedColumnKey)
 
                   if (newStatusArr.length > 0) {
                       switch (selectedColumnKey) {
@@ -918,7 +918,7 @@ const UserProvider = ({ children }) => {
                     };
                     ItemGenderMap.push(ItemGender,);
                 });
-                console.log(ItemGenderMap)
+                // console.log(ItemGenderMap)
                   setfiltersGenderMap(ItemGenderMap);
                   return MapGender;
               });
@@ -934,7 +934,7 @@ const UserProvider = ({ children }) => {
               // setfiltersPartMap([]);
               const pageData = await fetchAPI("/parts", {
               }).then( MapPart => {
-                console.log(MapPart)
+                // console.log(MapPart)
                   MapPart.data?.map((dataRef, index) => {
                     let ItemPart = {
                       value: dataRef.attributes.name ? dataRef.attributes.name: '',
@@ -1257,7 +1257,7 @@ const UserProvider = ({ children }) => {
 
     async function doUpdateReference(values, Idcollection) {
       try {
-        console.log(values)
+        // console.log(values)
 
     let {
           Newcolor,
@@ -1357,9 +1357,9 @@ const UserProvider = ({ children }) => {
 
         await fetchAPI("/mastercontrol/updatereferencia/"+IdMaster, '', options,{
         }).then( keys => {
-            console.log(keys);
+            // console.log(keys);
               if (size){
-                console.log('keys');
+                // console.log('keys');
                 doUpdateSize(keys, size, true);
               }
               doIDReference(keys ? keys.id : '0')

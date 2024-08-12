@@ -55,7 +55,7 @@ const BasicProvider = ({ children }) => {
             };
             ItemGenderMap.push(ItemGender,);
          });
-         console.log(ItemGenderMap)
+         
           setfiltersGenderMap(ItemGenderMap);
           return MapGender;
       });
@@ -125,7 +125,7 @@ const BasicProvider = ({ children }) => {
       let ItemMap = [];
       setfiltersFabricsMap([]);
 
-      const pageData = await fetchAPI("/fabrics?pagination[limit]=-1", {
+      const pageData = await fetchAPI("/fabrics?pagination[limit]=-1&sort=id:desc", {
       }).then( ResMap => {
 
         ResMap.data?.map((dataRef, index) => {
@@ -136,6 +136,7 @@ const BasicProvider = ({ children }) => {
             ItemMap.push(Item,);
 
          });
+          console.log(ItemMap)
          setfiltersFabricsMap(ItemMap);
           return ResMap;
       });
