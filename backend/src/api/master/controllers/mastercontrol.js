@@ -168,7 +168,7 @@ module.exports = {
             // const Nreferencia = await strapi.service('api::master.master').GenerateSequence(Identry);
 
             const ReferenciaSequence = Identry ? Identry.referencia : null
-            console.log('REF',ReferenciaSequence);
+            console.log('REF',Identry);
             if (ReferenciaSequence){
 
               await strapi.service('api::master.master').FinOneImagesReferencia(ReferenciaSequence);
