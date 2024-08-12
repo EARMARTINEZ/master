@@ -1235,18 +1235,21 @@ const UserProvider = ({ children }) => {
 
       await fetchAPI("/mastercontrol/createreferencia/", '', options,{
       }).then( keys => {
+        const NumerReference = keys ? keys.referencia : null;
 
-            //console.log(keys);
+            // console.log(keys);
             if (size){
               doUpdateSize(keys, size);
             }
-
+            
+            // setTimeout(() => {
+            //   dogetCollectionReference(Idcollection ? Idcollection : '0')
+            //  },5000);
             setTimeout(() => {
-              dogetCollectionReference(Idcollection ? Idcollection : '0')
-             },5000);
-            setTimeout(() => {
+              dofetchReference(NumerReference ); 
+              setShowModalLoading(false);
               onCloseFormDrawer();
-             },10000);
+             },1000);
         return keys;
         });
       } catch (error) {
