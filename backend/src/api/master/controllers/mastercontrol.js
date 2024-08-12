@@ -165,9 +165,9 @@ module.exports = {
          console.log(ctx.request.body);
 
             const Identry = ctx.request.body.entry.id
-            const Nreferencia = await strapi.service('api::master.master').GenerateSequence(Identry);
+            // const Nreferencia = await strapi.service('api::master.master').GenerateSequence(Identry);
 
-            const ReferenciaSequence = Nreferencia.CountSequence ? Nreferencia.CountSequence : null
+            const ReferenciaSequence = Identry ? Identry.referencia : null
 
             if (ReferenciaSequence){
 
