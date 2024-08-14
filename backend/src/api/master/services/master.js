@@ -392,7 +392,7 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
         // Buscar imágenes que coincidan exactamente con el patrón
         const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({
           where: {
-            name: { $regex: pattern },  // Utilizar expresión regular para la coincidencia
+            name: { $contains: pattern },  // Utilizar expresión regular para la coincidencia
           },
           orderBy: { id: 'DESC' },
         });

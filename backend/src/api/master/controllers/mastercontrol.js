@@ -204,10 +204,13 @@ module.exports = {
             const Nreferencia = Nmedia.toString().padEnd(7, '0');
             const Stampmedia = ctx.request.body.media.name.substring(0, 8)
             const StampReferencia = Stampmedia.toString().padEnd(8, '0');
+
+            const pattern = `${Nreferencia}.*\\.jpg`;
+
             const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({
               where: {
                 name: {
-                  $contains: Nreferencia,
+                  $contains: pattern,
                 },
             },
             orderBy: { id: 'DESC' },
