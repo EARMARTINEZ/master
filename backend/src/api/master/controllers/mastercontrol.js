@@ -172,10 +172,10 @@ module.exports = {
             
             if (ReferenciaSequence){
 
-              // await strapi.service('api::master.master').FinOneImagesReferencia(ReferenciaSequence);
-              // await strapi.service('api::master.master').FinOneImagesSilhouetteReferencia(ReferenciaSequence);
-              // await strapi.service('api::master.master').FinOnePDFReferencia(ReferenciaSequence);
-              // await strapi.service('api::master.master').FinOneSizeReferencia(ctx.request.body.event, ReferenciaSequence);
+              await strapi.service('api::master.master').FinOneImagesReferencia(ReferenciaSequence);
+              await strapi.service('api::master.master').FinOneImagesSilhouetteReferencia(ReferenciaSequence);
+              await strapi.service('api::master.master').FinOnePDFReferencia(ReferenciaSequence);
+              await strapi.service('api::master.master').FinOneSizeReferencia(ctx.request.body.event, ReferenciaSequence);
           }
 
           setTimeout(async () => {
@@ -270,9 +270,8 @@ module.exports = {
 
   async createreferencia(ctx){
       console.log('createreferencia:');
-       const CreateRegistro = await CreateRegistroMaster(ctx.request.body);
-       console.log(CreateRegistro)
-        return CreateRegistro;
+       const CreateRegistro = await CreateRegistroMaster(ctx.request.body);       
+    return CreateRegistro;
   },
 
   async updatereferencia(ctx){
