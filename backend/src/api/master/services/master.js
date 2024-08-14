@@ -384,45 +384,43 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
     return MasterEntry
     }, 
     
-      async FinOneImagesReferencia(Nreferencia) {       
-
-        try { 
-              
-                const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({        
-                        where: {      
-                          name: {
-                            $contains: Nreferencia,
-                          },
-                          ext: {
-                            $contains: '.jpg',
-                          },      
-                      },
-                      orderBy: { id: 'DESC' }, 
-                  }); 
-
-                  console.log(Imgentry);  
-
-            if (ImgentryCount){
-                  const MasterEntry = await strapi.service('api::master.master').FinOneReferencia(Nreferencia);             
-                  
-                        MasterEntry.drawings = Imgentry ? Imgentry : []
-                  
-                  //const NReferencia = Nreferencia.substring(0, 7);       
-                  const Dataentry = await strapi.db.query('api::master.master').update({
-                    where: { referencia: Nreferencia },    
-                    data: MasterEntry
-                  });
-
-              return Dataentry;
-              } 
-
-              return null;
-
-          } catch (error) {
-            console.log("error", error);
+    async FinOneImagesReferencia(Nreferencia) {
+      try {
+        // Crear un patrón que coincida con cualquier archivo que comience con el número de referencia y tenga la extensión .jpg
+        const pattern = `${Nreferencia}.*\\.jpg`;
+    
+        // Buscar imágenes que coincidan exactamente con el patrón
+        const [Imgentry, ImgentryCount] = await strapi.db.query('plugin::upload.file').findWithCount({
+          where: {
+            name: { $regex: pattern },  // Utilizar expresión regular para la coincidencia
+          },
+          orderBy: { id: 'DESC' },
+        });
+    
+        // Verificar si hay imágenes encontradas
+        if (ImgentryCount > 0) {
+          // Buscar la entrada en la colección 'master' que coincida con la referencia
+          const MasterEntry = await strapi.service('api::master.master').FinOneReferencia(Nreferencia);
+          
+          // Actualizar la entrada con las imágenes encontradas
+          MasterEntry.drawings = Imgentry || [];
+    
+          // Actualizar la entrada en la base de datos
+          const Dataentry = await strapi.db.query('api::master.master').update({
+            where: { referencia: Nreferencia },
+            data: MasterEntry,
+          });
+    
+          return Dataentry;
         }
-
-      },      
+    
+        return null;
+      } catch (error) {
+        console.error("Error:", error);
+        return null; // Devolver null en caso de error
+      }
+    },
+          
 
         async FinOnePDFReferencia(Nreferencia) {       
 
