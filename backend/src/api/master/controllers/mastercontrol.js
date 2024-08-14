@@ -32,7 +32,7 @@ async function CreateRegistroMaster(data) {
 
 
     //const NumeroReferencia = await strapi.service('api::master.master').GenerateSequence(CreateRegistro.id);
-    //console.log(data);
+    console.log(data);
 
     return CreateRegistro;
 
@@ -494,7 +494,7 @@ module.exports = {
           });
 
           if (SizeEntryCount){
-            const MasterEntry = await strapi.service('api::master.master').FinOneIDMaster(IDMaster);
+            let MasterEntry = await strapi.service('api::master.master').FinOneIDMaster(IDMaster);
             MasterEntry.sizes = SizeEntry ? SizeEntry : []
 
             const Dataentry = await strapi.db.query('api::master.master').update({

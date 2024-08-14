@@ -694,7 +694,7 @@ async FindIDMasterExamineSizes(IDMaster, dataSize) {
         }); 
 
         if (SizeEntryCount){
-          const MasterEntry = await strapi.service('api::master.master').FinOneIDMaster(IDMaster);
+          let MasterEntry = await strapi.service('api::master.master').FinOneIDMaster(IDMaster);
           MasterEntry.sizes = SizeEntry ? SizeEntry : []
 
           const Dataentry = await strapi.db.query('api::master.master').update({
