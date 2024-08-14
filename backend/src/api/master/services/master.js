@@ -399,7 +399,7 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
     
         // Verificar si hay imágenes encontradas
         if (ImgentryCount > 0) {
-          console.log(Imgentry)
+          console.log('Imgentry', ImgentryCount)
           // Buscar la entrada en la colección 'master' que coincida con la referencia
           const MasterEntry = await strapi.service('api::master.master').FinOneReferencia(Nreferencia);
           
@@ -641,7 +641,7 @@ module.exports = createCoreService('api::master.master', ({ strapi }) =>  ({
               data: MasterEntry
             });
 
-            console.log('Dataentry: '+Dataentry)
+          
 
           return Dataentry;
       }     
