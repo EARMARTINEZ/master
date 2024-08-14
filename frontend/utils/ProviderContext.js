@@ -1239,7 +1239,7 @@ const UserProvider = ({ children }) => {
 
             // console.log(keys);
             if (size){
-              doUpdateSize(keys, size);
+              // doUpdateSize(keys, size);
             }
             
             // setTimeout(() => {
