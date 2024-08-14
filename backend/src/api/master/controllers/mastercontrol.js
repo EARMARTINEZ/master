@@ -32,7 +32,7 @@ async function CreateRegistroMaster(data) {
 
 
     //const NumeroReferencia = await strapi.service('api::master.master').GenerateSequence(CreateRegistro.id);
-    console.log(CreateRegistro);
+    console.log(CreateRegistro.drawings);
 
     return CreateRegistro;
 
