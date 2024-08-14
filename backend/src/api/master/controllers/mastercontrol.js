@@ -162,7 +162,7 @@ module.exports = {
 
 
       if (ctx.request.body.uid==='api::master.master'){
-         console.log(ctx.request.body);
+        //  console.log(ctx.request.body);
 
             const Identry = ctx.request.body.entry.id
             const ReferenciaSequence = Identry ? ctx.request.body.entry.referencia : null
