@@ -484,7 +484,7 @@ const FiltersTable = () => {
             scroll={{
                 x: 1000,
             }}
-            footer={() => `Total records: ${MetaReferenceMap.pagination.total}`} 
+            footer={() => `Total records: ${MetaReferenceMap ? MetaReferenceMap.pagination.total: '0'}`} 
             className=" font-medium text-gray-900 whitespace-nowrap dark:text-white"
             />
          )}
