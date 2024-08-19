@@ -908,6 +908,7 @@ const UserProvider = ({ children }) => {
                   });
                   setfiltersStampsMap([...ItemMap]);
                   setTotalStampsMap(stamps);
+                  setLoading(false);
                   return ResMap;
               });
 

@@ -415,8 +415,8 @@ theme={{
           ? (
             
             <Table 
-            // {...tableProps}
-            // loading={loading}
+            {...tableProps}
+            loading={loading}
             bordered
             columns={columns} 
             dataSource={dataStamp}
