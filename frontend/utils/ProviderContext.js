@@ -588,7 +588,7 @@ const UserProvider = ({ children }) => {
       }
     }
 
-      async function dogetCollectionReference(values, Start, PageSize, ) {
+      async function dogetCollectionReference(values, Start, PageSize, FILTERS) {
         try {
             setIdCollection(values);
             //VAMOS A GUARDAR EL ID DE LA COLLECTION EN EL LOCALSTORAGE
@@ -598,6 +598,7 @@ const UserProvider = ({ children }) => {
               NCollection: values ? values : '0' , //28 29
               start: Start ? Start : 1,
               pageSize : PageSize ? PageSize : 10,
+              FILTERS: FILTERS, 
             }).then( keys => {
               MapReference(keys.masters);
               MapStaticReference(keys.masters);
@@ -877,11 +878,18 @@ const UserProvider = ({ children }) => {
           async function dofindStamps(values) {
             try {
                 let ItemMap = [];
-                setfiltersStampsMap([]);
+                let TotalItemMap = [];
+
+                let idCollectionInLocalStorage = localStorage.getItem('IdCollection');
+
+                setfiltersStampsMap([]);                
                 const pageData = await  getCollectionStamps({
-                  NCollection: values ? values :"0" , //28 29
+                  NCollection: idCollectionInLocalStorage ? idCollectionInLocalStorage :"0" , //28 29
                 }).then( ResMap => {
-                    ResMap.stamps.data?.map((dataRef, index) => {
+
+                  const { stamps } = ResMap
+
+                    stamps.data?.map((dataRef, index) => {
                       let Item = {
                         text: dataRef.attributes ? dataRef.attributes.name: '',
                         value:dataRef.attributes ? dataRef.attributes.name: '',
@@ -894,8 +902,10 @@ const UserProvider = ({ children }) => {
                            }),
                       };
                       ItemMap.push(Item,);
+                      TotalItemMap.push(dataRef);
                   });
                   setfiltersStampsMap([...ItemMap]);
+                  setTotalStampsMap(stamps);
                   return ResMap;
               });
 
@@ -1239,14 +1249,14 @@ const UserProvider = ({ children }) => {
 
             // console.log(keys);
             if (size){
-              // doUpdateSize(keys, size);
+               doUpdateSize(keys, size);
             }
             
             // setTimeout(() => {
             //   dogetCollectionReference(Idcollection ? Idcollection : '0')
             //  },5000);
             setTimeout(() => {
-              dofetchReference(NumerReference ); 
+              dofetchReference(NumerReference); 
               setShowModalLoading(false);
               onCloseFormDrawer();
              },1000);
@@ -1849,13 +1859,16 @@ const UserProvider = ({ children }) => {
 
    const onCloseStamps = ( ) => {
 
-      if(StatusOnCloseStamps===true){
-          const value = IdCollection ? IdCollection :"0"
-          const fixCollection = IdPrefixCollection ? IdPrefixCollection :"0"
-          dogetCollectionReference(value);
-          dofetchIDCollection(fixCollection);
+   
+
+      if(StatusOnCloseStamps==true){
+
+        const Start= 1;  
+        const PageSize= 1;     
+        fetchData(Start, PageSize);
+       
       }
-      if(StatusOnCloseStamps===false){
+      if(StatusOnCloseStamps==false){
           dofetchReference( Referencia ? Referencia : '0');
           setOpen(true)
       }
@@ -1946,7 +1959,7 @@ const UserProvider = ({ children }) => {
     return [year, month, day].join('-');
   }
 
-  const fetchData = useCallback(async (Start, PageSize) => {
+  const fetchData = useCallback(async (Start, PageSize, FILTERS) => {
     try {
     // Obtener el ID de la colección del localStorage
     let idCollectionInLocalStorage = localStorage.getItem('IdCollection');
@@ -1958,12 +1971,12 @@ const UserProvider = ({ children }) => {
 
         // Determinar la referencia de la colección a obtener
         const collectionId = (lastCol && lastCol.length > 0) ? lastCol[0].id : '29';
-        dogetCollectionReference(collectionId, Start, PageSize);
+        dogetCollectionReference(collectionId, Start, PageSize, FILTERS);
         dofetchIDCollection(collectionId)
         dogetSystemColor();
     } else {
         // Usar el ID de colección del localStorage
-        dogetCollectionReference(idCollectionInLocalStorage, Start, PageSize);
+        dogetCollectionReference(idCollectionInLocalStorage, Start, PageSize, FILTERS);
         dofetchIDCollection(idCollectionInLocalStorage);
         dogetSystemColor();
     }
@@ -2000,6 +2013,7 @@ const UserProvider = ({ children }) => {
   const [SizesEditMap, setSizesEditMap] = useState();
   const [filtersThemesMap, setfiltersThemesMap] = useState([]);
   const [filtersStampsMap, setfiltersStampsMap] = useState([]);
+  const [TotalStampsMap, setTotalStampsMap] = useState([]);
 
   const [staticCombinationMap, setStaticCombinationMap] = useState([])
 
@@ -2231,6 +2245,8 @@ setIsModalOpen(false);
     filtersThemesMap: filtersThemesMap,
     setfiltersStampsMap: setfiltersStampsMap,
     filtersStampsMap: filtersStampsMap,
+    setTotalStampsMap:setTotalStampsMap,
+    TotalStampsMap:TotalStampsMap,
 
     showImgModalReference: showImgModalReference,
     setShowImgModalReference: setShowImgModalReference,

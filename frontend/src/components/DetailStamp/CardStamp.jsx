@@ -13,7 +13,8 @@ import {FormComenta} from '@/components/Cards/DetailReference/FormComenta'
 import {StampFormPending} from '@/components/DetailStamp/StampFormPending'
 import {StampFormComenta} from '@/components/DetailStamp/StampFormComenta'
 import NextPageStamp from '@/components/DetailStamp/NextPageStamp'
-
+import { LoadingOutlined } from '@ant-design/icons';
+import {Spin  } from 'antd';
 
 
 export  function CardStamp({ data }) {   
@@ -30,7 +31,7 @@ export  function CardStamp({ data }) {
         SimilarRefs,
         Stamp,
         filtersStampsMap,
-        dofindStamps,
+        dofindStamps,        
        } = useTasks();   
 
        const { 
@@ -39,13 +40,13 @@ export  function CardStamp({ data }) {
 
     const [StampPicture, setStampPicture] = useState([]);
 
-       
+    
     useEffect(() => {
         dofindTypecomments(); 
     }, []);    
        
         useEffect(() => { 
-            dofindStamps(IdCollection);
+            dofindStamps(IdCollection);            
         }, [Referencia]); 
 
         useEffect(() => {   
@@ -65,6 +66,8 @@ export  function CardStamp({ data }) {
         {/* Pending  */}
         <StampFormPending />                 
         
+        {filtersStampsMap.length >= 1
+          ? (
         <DetailStamp 
             data={Referencia} 
             Composition={Composition} 
@@ -77,7 +80,12 @@ export  function CardStamp({ data }) {
             RefStampMap={filtersStampsMap}       
         />
 
-        
+    ): (
+        <div className='mt-32 flex flex-col justify-center items-center'>
+        <Spin indicator={<LoadingOutlined spin />} size="large" className='scale-200'/>
+        </div>
+    ) }   
+
         {/* IMG Ref*/}
         <div id='ImgStampPicture' className="grid grid-cols-4 gap-1">
 

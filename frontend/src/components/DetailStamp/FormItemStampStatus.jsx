@@ -25,7 +25,7 @@ export function FormItemStampStatus() {
    
 });
 
-console.log(status)
+// console.log(status)
 
     const [disabled, setdisabled] = useState(true);
 

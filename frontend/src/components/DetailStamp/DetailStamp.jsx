@@ -93,7 +93,7 @@ const DetailStamp = ({ data, Composition, Size, Themes, Provider, ColorPantone, 
                                             <Button type="link" 
                                             onClick={() => { dofetchReference( _datos ? _datos : '0'), 
                                                             doshowDrawer(  _datos ? _datos : '0'), 
-                                                            setStampsOpen(false);  }} 
+                                                            setStampsOpen(true);  }} 
                                             >{_datos ? _datos :''} </Button> 
                                        
                                         ))} 

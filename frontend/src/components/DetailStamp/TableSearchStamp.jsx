@@ -25,7 +25,10 @@ export default function TableSearchStamp() {
         open,
         StampsOpen, 
         onCloseStamps,
-        fetchData           
+        fetchData,
+        dofindStamps, 
+        MetaReferenceMap,
+        dogetCollectionReference           
        } = useTasks();  
           
       
@@ -34,8 +37,11 @@ export default function TableSearchStamp() {
   useEffect(() => {
      if (controlFetchData){ 
         const Start= 1;  
-        const PageSize= 60;     
-        fetchData(Start, PageSize);
+        const PageSize= 1;  
+        const Filters =`stamp:{id: { ne: null }}`
+        
+        fetchData(Start, PageSize, Filters);
+        dofindStamps();             
         setControlfetchData(false);
     }
     
@@ -66,7 +72,7 @@ export default function TableSearchStamp() {
           <Drawer 
               title="Close" 
               placement="right" 
-              onClose={() => onClose( ) } 
+              onClose={() => onClose(true) } 
               open={open} 
               size={'large'} 
               width={2000}
@@ -78,7 +84,7 @@ export default function TableSearchStamp() {
             <Drawer 
                 title="Close" 
                 placement="right" 
-                onClose={() => onCloseStamps( ) } 
+                onClose={() => onCloseStamps( true) } 
                 open={StampsOpen} 
                 size={'large'} 
                 width={2000}

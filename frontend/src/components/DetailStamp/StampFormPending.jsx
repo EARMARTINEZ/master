@@ -111,7 +111,7 @@ const Comenta = () => {
                   comment, 
                   user, 
                   { "Newcommenttype": undefined, "pendingtype":typeid  }, 
-                  status === "Receive" ? "Pending" : "Receive"
+                  status === "Received" ? "Pending" : "Received"
               );
            
          
@@ -146,7 +146,7 @@ const Comenta = () => {
                             className={classNames(                              
                               "text-red-400 ",                     
                               {
-                                "text-yellow-300": Comments.status == "Receive",
+                                "text-yellow-300": Comments.status == "Received",
                               },)}                    
                           
                             >Status: {Comments.status}

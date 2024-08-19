@@ -902,14 +902,18 @@ export async function getReference({ NReference }) {
 }
 
 
-export async function getCollectionReference({ NCollection, start, pageSize }) {
+export async function getCollectionReference({ NCollection, start, pageSize, FILTERS}) {
   // Medir el tiempo de inicio de la función
   console.time('getCollectionReference');
 
   const gqlEndpoint = getStrapiURL("/graphql");
   const Start = start ? start : 1;
   const Limite = pageSize ? pageSize : 10;
+  
+  const Filters = FILTERS ? `collection: { id: { eq: $NCollection } }, ${FILTERS}`
+                          :`collection: { id: { eq: $NCollection } }`
 
+                    
   console.time('fetchData');
   const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
@@ -926,7 +930,7 @@ export async function getCollectionReference({ NCollection, start, pageSize }) {
         masters(
           publicationState: PREVIEW
           sort: "referencia:asc"
-          filters: { collection: { id: { eq: $NCollection } } }
+          filters: { ${Filters}}          
           pagination: { page: $Start, pageSize: $Limite }
         ) {
           data {
@@ -2000,12 +2004,41 @@ export async function getCollectionStamps({ NCollection }) {
               id
               attributes{
                 name
-                masters( publicationState: PREVIEW) {data{attributes{referencia}}}
+                status
+                masters( publicationState: PREVIEW) {
+                  data{
+                    attributes{
+                      referencia
+                          theme {data { id attributes {name } } }
+                          stamp {
+                                data {
+                                  id
+                                  attributes {
+                                    name
+                                    masters(publicationState: PREVIEW) { data { attributes { referencia } } }
+                                    status
+                                    picture { data { id attributes { url formats } } }
+                                    commentstamp(sort: ["id:desc"]) { id comment date user status type { data { id attributes { name } } } }
+                                    pendingstamp(sort: ["status:asc", "id:desc"]) { id comment date user status type { data { id attributes { name } } } }
+                                  }
+                                }
+                              }
+                    }
+                     }
+                }
                 picture{
                   data {id attributes{ext url hash mime name caption alternativeText formats}}
                 }
               }
             }
+            meta {
+              pagination {
+                page
+                pageSize
+                total
+                pageCount
+            }
+          }  
           }
        }
       `, variables: {
@@ -2099,6 +2132,14 @@ export async function getStampsCollection({ NCollection }) {
 
               }
             }
+               meta {
+            pagination {
+              page
+              pageSize
+              total
+              pageCount
+            }
+          }
           }
        }
       `, variables: {
