@@ -875,7 +875,7 @@ const UserProvider = ({ children }) => {
             }
         }
 
-          async function dofindStamps(values) {
+          async function dofindStamps(Start, PageSize) {
             try {
                 let ItemMap = [];
                 let TotalItemMap = [];
@@ -885,6 +885,8 @@ const UserProvider = ({ children }) => {
                 setfiltersStampsMap([]);                
                 const pageData = await  getCollectionStamps({
                   NCollection: idCollectionInLocalStorage ? idCollectionInLocalStorage :"0" , //28 29
+                  start: Start ? Start : 1,
+                  pageSize : PageSize ? PageSize : 10,
                 }).then( ResMap => {
 
                   const { stamps } = ResMap

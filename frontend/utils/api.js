@@ -1984,9 +1984,12 @@ export async function getThemesCollection({ NCollection }) {
   return pagesData.data;
 }
 
-export async function getCollectionStamps({ NCollection }) {
+export async function getCollectionStamps({ NCollection, start, pageSize, }) {
   // Find the pages that match this slug
   const gqlEndpoint = getStrapiURL("/graphql");
+  const Start = start ? start : 1;
+  const Limite = pageSize ? pageSize : 10;
+
   const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
@@ -1995,10 +1998,14 @@ export async function getCollectionStamps({ NCollection }) {
     body: JSON.stringify({
       query: `
       query GetCollectionStamps(
-        $NCollection: ID!){
+        $NCollection: ID!
+         $Start: Int!
+        $Limite: Int!
+        ){
           stamps(
             sort:"id:asc"
             filters:{masters:{collection:{id:{eq:$NCollection}}} }
+            pagination: { page: $Start, pageSize: $Limite }
           ){
             data{
               id
@@ -2042,7 +2049,9 @@ export async function getCollectionStamps({ NCollection }) {
           }
        }
       `, variables: {
-         NCollection
+         NCollection,
+         Start,
+         Limite,
       },
 
     }),

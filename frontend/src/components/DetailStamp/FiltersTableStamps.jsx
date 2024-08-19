@@ -21,6 +21,7 @@ const FiltersTableStamps = () => {
         MetaReferenceMap,  
         setMetaReferenceMap,
         fetchData,
+        dofindStamps,
         TotalStampsMap,
             } = useTasks();
 
@@ -379,12 +380,13 @@ const FiltersTableStamps = () => {
         ];
 
         const onChange = (pagination, filters, sorter, extra) => {
-            console.log('params', pagination, filters, sorter, extra);
+            // console.log('params', pagination, filters, sorter, extra);
 
 
-             const Start= pagination.current;  
-            const PageSize= 60 //pagination.pageSize;  
-            fetchData(Start, PageSize);           
+            const Start= pagination.current;  
+            const PageSize= pagination.pageSize;  
+            // fetchData(Start, PageSize); 
+            dofindStamps(Start, PageSize)          
             setLoading(true);
             
             // let idCollectionInLocalStorage = localStorage.getItem('IdCollection');
@@ -409,19 +411,20 @@ theme={{
       
       >  
 
-        {dataStamp.length > 1
+        {dataStamp.length >= 1
           ? (
             
             <Table 
-      
-        bordered
-        columns={columns} 
-        dataSource={dataStamp}
-        onChange={onChange}
-        pagination={{
-             pageSize:TotalStampsMap ? TotalStampsMap.meta.pagination.pageSize : 0,
-             total: TotalStampsMap ? TotalStampsMap.meta.pagination.total : 0
-        }}
+            // {...tableProps}
+            // loading={loading}
+            bordered
+            columns={columns} 
+            dataSource={dataStamp}
+            onChange={onChange}
+            pagination={{
+                pageSize:TotalStampsMap ? TotalStampsMap.meta.pagination.pageSize : 0,
+                total: TotalStampsMap ? TotalStampsMap.meta.pagination.total : 0
+            }}
         scroll={{
             x: 1000,
             
