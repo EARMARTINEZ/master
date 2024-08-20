@@ -63,14 +63,14 @@ async function MasterStamp(Entry) {
             Mastertheme.push(EntryMaster); 
 
 
-            console.log('StampObjet');
-            console.log(StampObjet);
+            // console.log('StampObjet');
+            // console.log(StampObjet);
 
 
         const EntryStamp = await strapi.db.query('api::stamp.stamp').findOne({ 
               
           where: { 
-            name: StampObjet.Mastertheme[0].stamp.name,
+            name: StampObjet.name_stamp,
         },
         
         populate: {
@@ -81,8 +81,8 @@ async function MasterStamp(Entry) {
           orderBy: { id: 'ASC' }, 
         });
 
-        // console.log('EntryStamp');
-        // console.log(EntryStamp);
+        console.log('EntryStamp');
+        console.log(EntryStamp);
 
 
         if(EntryStamp){
