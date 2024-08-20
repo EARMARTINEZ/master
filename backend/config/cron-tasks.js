@@ -187,7 +187,7 @@ module.exports = {
            
       },
           options: {
-              rule: '*/10 * * * * *',
+              rule: '*/2 * * * * *',
               VE: 'America/Caracas',
           },
       },
