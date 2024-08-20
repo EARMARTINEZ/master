@@ -2003,7 +2003,7 @@ export async function getCollectionStamps({ NCollection, start, pageSize, }) {
         $Limite: Int!
         ){
           stamps(
-            sort:"id:asc"
+            sort:"name:asc"
             filters:{masters:{collection:{id:{eq:$NCollection}}} }
             pagination: { page: $Start, pageSize: $Limite }
           ){
