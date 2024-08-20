@@ -41,126 +41,120 @@ const FiltersTableStamps = () => {
             const [filtersStatusMap, setfiltersStatusMap] = useState([]);
            
             // console.log(TotalStampsMap.meta);        
-            
-            useEffect(() => {            
-                
-                TotalStampsMap.data?.map((dataStamps, index) => {
-
-                    const { data } = dataStamps ? dataStamps.attributes.masters : '0'; 
-
-                    data?.map((dataRef, index) => {  
-                            const { referencia, theme, stamp } = dataRef ? dataRef.attributes : '0'; 
-            
-                            if (stamp.data){
-                                let StampPicture = stamp.data.attributes.picture.data 
-
-                                const { masters } = stamp.data.attributes
-
-                                // masters.data?.map((ref, index) => {      
-                                // const IdStampReference = ref.attributes ? ref.attributes.referencia : 'null'
-                                // StampReference.push(IdStampReference);     
-                                // });
-
-                                    let stampsTableDataSource = {                   
-                                        
-                                        'key': dataRef ? dataRef.id : '0',
-                                        'references': referencia,
-                                        'reference':<Button key={dataRef.attributes.referencia}
-                                                            type="link" 
-                                                            onClick={() => { 
-                                                            doshowDrawer( dataRef.attributes.referencia), 
-                                                            dogetSystemColor() 
-                                                            }}  
-                                                    >{referencia}</Button>,
-                                    
-                                        'theme': theme.data.attributes.name,
-                                        'stamps':stamp.data ? stamp.data.attributes.name :'',
-                                        'stampsStatus':stamp.data ? stamp.data.attributes.status :'',
-                                        'stampDrawings':<div className="flex mb-5 -space-x-4 text-center">  
-                                            {StampPicture?.map((picture_url) => (          
-                                                <ImgReference  key={ picture_url.attributes.url} url={picture_url.attributes.formats.thumbnail.url} UrlId={picture_url.id} compact={true} />                             
-                                        ))}
-                                        </div>,
-                                        'stamp':<Button key={dataRef.attributes.referencia}
-                                                        type="link" 
-                                                        onClick={() => {                             
-                                                        doShowStampsDrawer(true, dataRef.attributes.referencia ) 
-                                                        }} 
-                                                      
-                                                >{stamp.data ? stamp.data.attributes.name :''} 
-                                                </Button>,
-                                        
-                                        
-                                    
-                                    };
-
-                                    //Agrupa Stamps
-                                    if (!FilterTableStampsMap.find((stamps) => stamps.stamps === stamp.data.attributes.name) ){                                                
-                                        FilterTableStampsMap.push( stampsTableDataSource );
-                                    } 
-
-                            //Filtros columns Table
-                            if (!ItemReferenceMap.find((type) => type.value ===  referencia) ){
-                                let FiltersTable = {
-                                    value: referencia,
-                                    text:  referencia
-                                };             
-                                ItemReferenceMap.push(FiltersTable,); 
-                            }       
-
-                            if (!ItemStampNameMap.find((type) => type.value ===  stamp.data.attributes.name) ){
-                                let FiltersTable = {
-                                    value: stamp.data.attributes.name,
-                                    text:  stamp.data.attributes.name
-                                };             
-                                ItemStampNameMap.push(FiltersTable,); 
-                            }                      
-                            if (!ItemMap.find((type) => type.value === theme.data.attributes.name) ){
-                                    let FiltersTable = {
-                                        value: theme.data.attributes.name,
-                                        text: theme.data.attributes.name
-                                    };             
-                                    ItemMap.push(FiltersTable,); 
-                                }
-                                if (!ItemStatusMap.find((type) => type.value ===  stamp.data.attributes.status) ){
-                                    let FiltersTable = {
-                                        value: stamp.data.attributes.status,
-                                        text:  stamp.data.attributes.status
-                                    };             
-                                    ItemStatusMap.push(FiltersTable,); 
-                                } 
-
-                        
-                            }
-                            
-                        
-                        }); 
-                }); 
-                setfiltersReferenceMap([...ItemReferenceMap])
-                setfiltersStampsNameMap([...ItemStampNameMap])
-                setfiltersThemesMap([...ItemMap]);
-                setfiltersStatusMap([...ItemStatusMap])                                
-                setTableStampsMap([...FilterTableStampsMap]);
-
-                //  console.log(ReferenceMap) 
-                //  console.log(MetaReferenceMap) 
-
-                }, [TotalStampsMap]);
-                
-                
-                
-        const dataStamp = TableStampsMap;   
-        
-         
-       
+                       
+        const dataStamp = TableStampsMap;    
         const [searchText, setSearchText] = useState('');
         const [searchedColumn, setSearchedColumn] = useState('');
-        const searchInput = useRef(null);
-
-      
+        const searchInput = useRef(null);      
         const tableProps = {       
          loading,        
        };
+
+
+       useEffect(() => {            
+                
+        TotalStampsMap.data?.map((dataStamps, index) => {
+
+            const { data } = dataStamps ? dataStamps.attributes.masters : '0'; 
+
+            data?.map((dataRef, index) => {  
+                    const { referencia, theme, stamp } = dataRef ? dataRef.attributes : '0'; 
+    
+                    if (stamp.data){
+                        let StampPicture = stamp.data.attributes.picture.data 
+
+                        const { masters } = stamp.data.attributes
+
+                        // masters.data?.map((ref, index) => {      
+                        // const IdStampReference = ref.attributes ? ref.attributes.referencia : 'null'
+                        // StampReference.push(IdStampReference);     
+                        // });
+
+                            let stampsTableDataSource = {                   
+                                
+                                'key': dataRef ? dataRef.id : '0',
+                                'references': referencia,
+                                'reference':<Button key={dataRef.attributes.referencia}
+                                                    type="link" 
+                                                    onClick={() => { 
+                                                    doshowDrawer( dataRef.attributes.referencia), 
+                                                    dogetSystemColor() 
+                                                    }}  
+                                            >{referencia}</Button>,
+                            
+                                'theme': theme.data.attributes.name,
+                                'stamps':stamp.data ? stamp.data.attributes.name :'',
+                                'stampsStatus':stamp.data ? stamp.data.attributes.status :'',
+                                'stampDrawings':<div className="flex mb-5 -space-x-4 text-center">  
+                                    {StampPicture?.map((picture_url) => (          
+                                        <ImgReference  key={ picture_url.attributes.url} url={picture_url.attributes.formats.thumbnail.url} UrlId={picture_url.id} compact={true} />                             
+                                ))}
+                                </div>,
+                                'stamp':<Button key={dataRef.attributes.referencia}
+                                                type="link" 
+                                                onClick={() => {                             
+                                                doShowStampsDrawer(true, dataRef.attributes.referencia ) 
+                                                }} 
+                                              
+                                        >{stamp.data ? stamp.data.attributes.name :''} 
+                                        </Button>,
+                                
+                                
+                            
+                            };
+
+                            //Agrupa Stamps
+                            if (!FilterTableStampsMap.find((stamps) => stamps.stamps === stamp.data.attributes.name) ){                                                
+                                FilterTableStampsMap.push( stampsTableDataSource );
+                            } 
+
+                    //Filtros columns Table
+                    if (!ItemReferenceMap.find((type) => type.value ===  referencia) ){
+                        let FiltersTable = {
+                            value: referencia,
+                            text:  referencia
+                        };             
+                        ItemReferenceMap.push(FiltersTable,); 
+                    }       
+
+                    if (!ItemStampNameMap.find((type) => type.value ===  stamp.data.attributes.name) ){
+                        let FiltersTable = {
+                            value: stamp.data.attributes.name,
+                            text:  stamp.data.attributes.name
+                        };             
+                        ItemStampNameMap.push(FiltersTable,); 
+                    }                      
+                    if (!ItemMap.find((type) => type.value === theme.data.attributes.name) ){
+                            let FiltersTable = {
+                                value: theme.data.attributes.name,
+                                text: theme.data.attributes.name
+                            };             
+                            ItemMap.push(FiltersTable,); 
+                        }
+                        if (!ItemStatusMap.find((type) => type.value ===  stamp.data.attributes.status) ){
+                            let FiltersTable = {
+                                value: stamp.data.attributes.status,
+                                text:  stamp.data.attributes.status
+                            };             
+                            ItemStatusMap.push(FiltersTable,); 
+                        } 
+
+                
+                    }
+                    
+                
+                }); 
+        }); 
+        setfiltersReferenceMap([...ItemReferenceMap])
+        setfiltersStampsNameMap([...ItemStampNameMap])
+        setfiltersThemesMap([...ItemMap]);
+        setfiltersStatusMap([...ItemStatusMap])                                
+        setTableStampsMap([...FilterTableStampsMap]);
+
+        //  console.log(ReferenceMap) 
+        //  console.log(MetaReferenceMap) 
+
+        }, [TotalStampsMap]);
       
       
 
@@ -415,21 +409,26 @@ theme={{
           ? (
             
             <Table 
-            {...tableProps}
-            loading={loading}
+            {...tableProps}            
             bordered
+            loading={loading}
             columns={columns} 
             dataSource={dataStamp}
             onChange={onChange}
+            defaultPageSize={20}
             pagination={{
-                pageSize:TotalStampsMap ? TotalStampsMap.meta.pagination.pageSize : 0,
-                total: TotalStampsMap ? TotalStampsMap.meta.pagination.total : 0
+                pageSize: TotalStampsMap?.meta?.pagination?.pageSize || 10,
+                total: TotalStampsMap?.meta?.pagination?.total || 0,
+                showSizeChanger: true, // Permite al usuario cambiar el tamaño de página
+                pageSizeOptions: ['10', '20', '50', '100'], // Opciones de tamaños de página
             }}
         scroll={{
             x: 1000,
             
           }}
+          footer={() => `Total records: ${TotalStampsMap ? TotalStampsMap.meta.pagination.total: '0'}`} 
           className=" font-medium text-gray-900 whitespace-nowrap dark:text-white"
+         
         
          />   
           ): (
