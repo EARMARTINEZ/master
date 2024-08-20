@@ -105,7 +105,7 @@ async function MasterStamp(Entry) {
     if(ArrayMasterData){
       
 
-        let StampObjet = ArrayStamp.find((element) => element.id_color == ArrayMasterData.id_stamp_add )
+        let StampObjet = ArrayStamp.find((element) => element.id_color == ArrayMasterData.id_color )
 
 
         if(StampObjet){
