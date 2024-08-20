@@ -44,7 +44,7 @@ async function MasterStamp(Entry) {
     if(ArrayMasterData){
       
 
-        let StampObjet = ArrayStamp.find((element) => element.id_collection == ArrayMasterData.id_collection )
+        let StampObjet = ArrayStamp.find((element) => element.id_color == ArrayMasterData.id_stamp_add )
 
 
 
@@ -63,14 +63,14 @@ async function MasterStamp(Entry) {
             Mastertheme.push(EntryMaster); 
 
 
-            console.log('Mastertheme');
-            console.log(Mastertheme);
+            console.log('StampObjet');
+            console.log(StampObjet);
 
 
         const EntryStamp = await strapi.db.query('api::stamp.stamp').findOne({ 
               
           where: { 
-            name: StampObjet.name_stamp,
+            name: StampObjet.Mastertheme[0].stamp.name,
         },
         
         populate: {
