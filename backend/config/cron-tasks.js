@@ -151,7 +151,7 @@ async function MasterStamp(Entry) {
       }
 
 
-        if(EntryStamp){
+        // if(EntryStamp){
 
             //   EntryStamp.masters?.map((Sizes, index) => {      
             //     const IdSizes = Sizes.id ? Sizes.id : '0'        
@@ -162,7 +162,7 @@ async function MasterStamp(Entry) {
               // console.log(Response);
 
 
-              if(StampObjet){         
+              // if(StampObjet){         
              
         
                       // const result = {
@@ -181,8 +181,8 @@ async function MasterStamp(Entry) {
 
                     
                 
-              }
-        }
+              // }
+        // }
 
         
        
