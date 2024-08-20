@@ -38,10 +38,10 @@ export default function TableSearchStamp() {
      if (controlFetchData){ 
         const Start= 1;  
         const PageSize= 10;  
-        const Filters =`stamp:{id: { ne: null }}`
+        const Filters =`stamp:{id: { ne: null }}`        
         
         fetchData(Start, PageSize, Filters);
-        dofindStamps(Start, PageSize);             
+        dofindStamps();             
         setControlfetchData(false);
     }
     

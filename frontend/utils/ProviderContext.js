@@ -1872,11 +1872,12 @@ const UserProvider = ({ children }) => {
 
         const Start= 1;  
         const PageSize= 1;     
-        fetchData(Start, PageSize);
+        // fetchData(Start, PageSize);
        
       }
       if(StatusOnCloseStamps==false){
           dofetchReference( Referencia ? Referencia : '0');
+          // dofindStamps();
           setOpen(true)
       }
 

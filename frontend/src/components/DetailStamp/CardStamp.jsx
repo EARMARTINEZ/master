@@ -46,7 +46,7 @@ export  function CardStamp({ data }) {
     }, []);    
        
         useEffect(() => { 
-            dofindStamps();            
+            // dofindStamps();            
         }, [Referencia]); 
 
         useEffect(() => {   
