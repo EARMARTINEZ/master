@@ -37,11 +37,11 @@ export default function TableSearchStamp() {
   useEffect(() => {
      if (controlFetchData){ 
         const Start= 1;  
-        const PageSize= 1;  
+        const PageSize= 10;  
         const Filters =`stamp:{id: { ne: null }}`
         
         fetchData(Start, PageSize, Filters);
-        dofindStamps();             
+        dofindStamps(Start, PageSize);             
         setControlfetchData(false);
     }
     

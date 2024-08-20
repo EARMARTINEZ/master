@@ -1989,7 +1989,7 @@ export async function getCollectionStamps({ NCollection, start, pageSize, }) {
   const gqlEndpoint = getStrapiURL("/graphql");
   const Start = start ? start : 1;
   const Limite = pageSize ? pageSize : 10;
-
+  try {
   const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
@@ -2058,6 +2058,7 @@ export async function getCollectionStamps({ NCollection, start, pageSize, }) {
   });
 
   const pagesData = await pagesRes.json();
+ 
 
   // Make sure we found something, otherwise return null
   if (pagesData.data?.stamps == null || pagesData.data.stamps.length === 0) {
@@ -2066,6 +2067,10 @@ export async function getCollectionStamps({ NCollection, start, pageSize, }) {
   //console.log(pagesData.data.stamps.data)
   // Return the first item since there should only be one result per slug
   return pagesData.data;
+
+  } catch (error) {
+    console.log("error", error)
+  }
 }
 
 export async function getColorPantoneCollection({ NCollection }) {

@@ -404,7 +404,7 @@ const UserProvider = ({ children }) => {
             dogetProducReference(`${collectiontype}${prefixid}`);
             getGroupSize(dataRef.id),
             dofindThemes(dataRef.id),
-            dofindStamps(dataRef.id),
+            dofindStamps(),
 
             RefMap.push(dataRef );
           });
@@ -884,13 +884,15 @@ const UserProvider = ({ children }) => {
 
                 setfiltersStampsMap([]);                
                 const pageData = await  getCollectionStamps({
-                  NCollection: idCollectionInLocalStorage ? idCollectionInLocalStorage :"0" , //28 29
+                  NCollection: idCollectionInLocalStorage ? idCollectionInLocalStorage :"29" , //28 29
                   start: Start ? Start : 1,
                   pageSize : PageSize ? PageSize : 10,
                 }).then( ResMap => {
 
-                  const { stamps } = ResMap
+                  
+                  const { stamps } = ResMap ? ResMap : [];
 
+                  if(stamps){
                     stamps.data?.map((dataRef, index) => {
                       let Item = {
                         text: dataRef.attributes ? dataRef.attributes.name: '',
@@ -910,6 +912,7 @@ const UserProvider = ({ children }) => {
                   setTotalStampsMap(stamps);
                   setLoading(false);
                   return ResMap;
+                }
               });
 
               return pageData;
@@ -1856,6 +1859,7 @@ const UserProvider = ({ children }) => {
   const doShowStampsDrawer = (value, nfer) => {
     value==true ? setStatusOnCloseStamps(true) : setStatusOnCloseStamps(false)
     setShowModalLoading(true);
+    console.log(nfer)
     dofetchReference( nfer ? nfer : '0');
     setStampsOpen(true);
    };
