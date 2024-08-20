@@ -220,7 +220,7 @@ module.exports = {
 
                 // slug: { $ne: 'send' },
                 slug: { $eq: 'send' },
-                slug: { $null: true },  
+                // slug: { $null: true },  
                 
                        
                   collection: {         
