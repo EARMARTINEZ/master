@@ -173,9 +173,11 @@ module.exports = {
         
   
         if (Entry){ 
+
+          console.log('taskMaster: ' + new Date());
   
           if(entries.EnableMailingSISOC.sendEmail){
-            console.log('taskMaster: ' + new Date());
+            
               await MasterStamp(Entry);
   
           }
