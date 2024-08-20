@@ -52,6 +52,11 @@ async function MasterStamp(Entry) {
           where: { 
                 referencia: ArrayMasterData.ref,
         },
+        populate: {        
+          stamp:{
+            fields: ['name'],  
+            },       
+        },
           orderBy: { id: 'ASC' }, 
         });
 
