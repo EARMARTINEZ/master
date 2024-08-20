@@ -24,6 +24,67 @@ const ArrayStamp = require('./ArrayData/ArrayStamp.js');
 const ArrayTheme = require('./ArrayData/ArrayTheme.js');
 
 
+async function FinOneReferencia(Nreferencia) {
+
+  // const NReferencia = Nreferencia.substring(0, 7);
+
+   
+
+     try { 
+
+       const MasterEntry = await strapi.db.query('api::master.master').findOne({
+           select: ['id','referencia', 'genderName', 'status'],    
+           where: { 
+             $and: [
+               { referencia: Nreferencia },             
+             ],          
+           },
+           populate: {
+             collection: {         
+               populate: {
+                 collection_type:{
+                   fields: ['id'],  
+                   },
+               },             
+             }, 
+             theme:{
+               fields: ['name'],  
+               }, 
+               stamp:{
+                fields: ['name'],  
+                },            
+             Composition: {
+                 populate: {
+               gender:{
+                 fields: ['id', 'startSequence'],  
+                 },
+                 fabric:{
+                   fields: ['id'],  
+                   },
+                   color:{
+                     fields: ['id'],  
+                     },                 
+                       typeproduct:{
+                         fields: ['id'],  
+                         }                           
+               }
+             },
+             drawings:[{
+               fields: ['id'],
+             }],
+             sizes: {
+               fields: ['id'],
+             },              
+           },
+             
+         }); 
+
+       return MasterEntry
+
+       } catch (error) {
+         console.log("error", error);
+     }
+ };
 
 async function MasterStamp(Entry) {
 
@@ -46,6 +107,8 @@ async function MasterStamp(Entry) {
 
         let StampObjet = ArrayStamp.find((element) => element.id_color == ArrayMasterData.id_stamp_add )
 
+
+        const MasterEntry = await FinOneReferencia(ArrayMasterData.ref);
 
 
         const EntryMaster = await strapi.db.query('api::master.master').findOne({        
@@ -81,47 +144,47 @@ async function MasterStamp(Entry) {
           orderBy: { id: 'ASC' }, 
         });
 
-        console.log('EntryStamp');
-        console.log(EntryStamp);
+        console.log('MasterEntry');
+        console.log(MasterEntry);
 
 
         if(EntryStamp){
 
-            //   EntryStamp.masters?.map((Sizes, index) => {      
-            //     const IdSizes = Sizes.id ? Sizes.id : '0'        
-            //     Response.push(IdSizes );     
-            // });
+              EntryStamp.masters?.map((Sizes, index) => {      
+                const IdSizes = Sizes.id ? Sizes.id : '0'        
+                Response.push(IdSizes );     
+            });
   
-            //    Response.push(Mastertheme[0].id );  
-            //   console.log(Response);
+               Response.push(Mastertheme[0].id );  
+              console.log(Response);
 
 
-              // if(StampObjet){         
+              if(StampObjet){         
              
         
-              //         const result = {
-              //           "id": StampObjet.id_theme,
-              //           "name": StampObjet.name_theme,
-              //           "collection": StampObjet.id_collection,
-              //           "masters": Response,
-              //         }
+                      // const result = {
+                      //   "id": StampObjet.id_theme,
+                      //   "name": StampObjet.name_theme,
+                      //   "collection": StampObjet.id_collection,
+                      //   "masters": Response,
+                      // }
         
-              //         ThemeData.push(result);         
+                      // ThemeData.push(result);         
         
         
-              //       let UpdateRegistro = await strapi.entityService.update('api::theme.theme', StampObjet.id_theme, {      
-              //         data: result,
-              //       });  
+                    // let UpdateRegistro = await strapi.entityService.update('api::theme.theme', StampObjet.id_theme, {      
+                    //   data: result,
+                    // });  
 
-              //       const entry = await strapi.db.query('api::master.master').update({
-              //         where: { referencia: Mastertheme[0].referencia },
+                    // const entry = await strapi.db.query('api::master.master').update({
+                    //   where: { referencia: Mastertheme[0].referencia },
                       
-              //         data: {
-              //           slug: 'send',
-              //         },
-              //       });
+                    //   data: {
+                    //     slug: 'send',
+                    //   },
+                    // });
                 
-              // }
+              }
         }
 
         
