@@ -108,71 +108,58 @@ async function MasterStamp(Entry) {
         let StampObjet = ArrayStamp.find((element) => element.id_color == ArrayMasterData.id_stamp_add )
 
 
-        const MasterEntry = await FinOneReferencia(ArrayMasterData.ref);
+        if(StampObjet){
+              const MasterEntry = await FinOneReferencia(ArrayMasterData.ref);
 
 
-        const EntryStamp = await strapi.db.query('api::stamp.stamp').findOne({ 
+              const EntryStamp = await strapi.db.query('api::stamp.stamp').findOne({ 
+                    
+                where: { 
+                  name: StampObjet.name_stamp,
+              },
               
-          where: { 
-            name: StampObjet.name_stamp,
-        },
-        
-        populate: {
-            masters:{
-            fields: ['referencia'],  
-            },   
-        },
-          orderBy: { id: 'ASC' }, 
-        });
+              populate: {
+                  masters:{
+                  fields: ['referencia'],  
+                  },   
+              },
+                orderBy: { id: 'ASC' }, 
+              });
 
-        // Actualizar la entrada con las imágenes encontradas
-        MasterEntry.stamp.id =  EntryStamp.id || {};
+              if(EntryStamp){
+                   MasterEntry.stamp.id =  EntryStamp.id || {};
 
-        console.log('MasterEntry');
-        console.log(MasterEntry);
-    
-        // Actualizar la entrada en la base de datos
-        const Dataentry = await strapi.db.query('api::master.master').update({
-          where: { referencia: ArrayMasterData.ref },
-          data: MasterEntry,
-        });
-        
-        
-        
-        const EntryMaster = await strapi.db.query('api::master.master').findOne({        
-          where: { 
-                referencia: ArrayMasterData.ref,
-        },
-        populate: {        
-          stamp:{
-            fields: ['name'],  
-            },       
-        },
-          orderBy: { id: 'ASC' }, 
-        });
+                  
+                            
+                    const Dataentry = await strapi.db.query('api::master.master').update({
+                      where: { referencia: ArrayMasterData.ref },
+                      data: MasterEntry,
+                    });
 
-            Mastertheme.push(EntryMaster); 
+                    const entry = await strapi.db.query('api::master.master').update({
+                      where: { referencia: ArrayMasterData.ref },
+                      
+                      data: {
+                        slug: 'send',
+                      },
+                    });
 
-
-            // console.log('StampObjet');
-            // console.log(StampObjet);
-
-
-       
-
-        console.log('Dataentry');
-        console.log(Dataentry);
+                      console.log('MasterEntry');
+                      console.log(entry);
+                
+            }
+      }
 
 
         if(EntryStamp){
 
-              EntryStamp.masters?.map((Sizes, index) => {      
-                const IdSizes = Sizes.id ? Sizes.id : '0'        
-                Response.push(IdSizes );     
-            });
+            //   EntryStamp.masters?.map((Sizes, index) => {      
+            //     const IdSizes = Sizes.id ? Sizes.id : '0'        
+            //     Response.push(IdSizes );     
+            // });
   
-               Response.push(Mastertheme[0].id );  
-              console.log(Response);
+              //  Response.push(Mastertheme[0].id );  
+              // console.log(Response);
 
 
               if(StampObjet){         
@@ -192,13 +179,7 @@ async function MasterStamp(Entry) {
                     //   data: result,
                     // });  
 
-                    // const entry = await strapi.db.query('api::master.master').update({
-                    //   where: { referencia: Mastertheme[0].referencia },
-                      
-                    //   data: {
-                    //     slug: 'send',
-                    //   },
-                    // });
+                    
                 
               }
         }
