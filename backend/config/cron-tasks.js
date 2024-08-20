@@ -58,8 +58,8 @@ async function MasterStamp(Entry) {
             Mastertheme.push(EntryMaster); 
 
 
-            console.log('StampObjet');
-            console.log(StampObjet);
+            console.log('Mastertheme');
+            console.log(Mastertheme);
 
 
         const EntryStamp = await strapi.db.query('api::stamp.stamp').findOne({ 
