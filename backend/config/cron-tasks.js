@@ -44,7 +44,7 @@ async function MasterStamp(Entry) {
     if(ArrayMasterData){
       
 
-        let StampObjet = ArrayTheme.find((element) => element.id_theme == ArrayMasterData.id_theme )
+        let StampObjet = ArrayStamp.find((element) => element.id_collection == ArrayMasterData.id_collection )
 
 
 
@@ -58,11 +58,14 @@ async function MasterStamp(Entry) {
             Mastertheme.push(EntryMaster); 
 
 
+            console.log('Mastertheme');
+            console.log(Mastertheme);
 
-        const EntryyMaster = await strapi.db.query('api::theme.theme').findOne({ 
+
+        const EntryStamp = await strapi.db.query('api::stamp.stamp').findOne({ 
               
           where: { 
-            id: StampObjet.id_theme,
+            name: StampObjet.name_stamp,
         },
         
         populate: {
@@ -73,45 +76,47 @@ async function MasterStamp(Entry) {
           orderBy: { id: 'ASC' }, 
         });
 
-        if(EntryyMaster){
+        console.log('EntryStamp');
+        console.log(EntryStamp);
 
-              EntryyMaster.masters?.map((Sizes, index) => {      
-                const IdSizes = Sizes.id ? Sizes.id : '0'        
-                Response.push(IdSizes );     
-            });
+
+        if(EntryStamp){
+
+            //   EntryStamp.masters?.map((Sizes, index) => {      
+            //     const IdSizes = Sizes.id ? Sizes.id : '0'        
+            //     Response.push(IdSizes );     
+            // });
   
-               Response.push(Mastertheme[0].id );  
-              console.log(Response);
+            //    Response.push(Mastertheme[0].id );  
+            //   console.log(Response);
 
 
-              if(StampObjet){         
+              // if(StampObjet){         
              
         
-                      const result = {
-                        "id": StampObjet.id_theme,
-                        "name": StampObjet.name_theme,
-                        "collection": StampObjet.id_collection,
-                        "masters": Response,
-                      }
+              //         const result = {
+              //           "id": StampObjet.id_theme,
+              //           "name": StampObjet.name_theme,
+              //           "collection": StampObjet.id_collection,
+              //           "masters": Response,
+              //         }
         
-                      ThemeData.push(result);         
+              //         ThemeData.push(result);         
         
         
-                    let UpdateRegistro = await strapi.entityService.update('api::theme.theme', StampObjet.id_theme, {      
-                      data: result,
-                    });  
+              //       let UpdateRegistro = await strapi.entityService.update('api::theme.theme', StampObjet.id_theme, {      
+              //         data: result,
+              //       });  
 
-
-
-                    const entry = await strapi.db.query('api::master.master').update({
-                      where: { referencia: Mastertheme[0].referencia },
+              //       const entry = await strapi.db.query('api::master.master').update({
+              //         where: { referencia: Mastertheme[0].referencia },
                       
-                      data: {
-                        slug: 'send',
-                      },
-                    });
+              //         data: {
+              //           slug: 'send',
+              //         },
+              //       });
                 
-              }
+              // }
         }
 
         
@@ -153,7 +158,7 @@ module.exports = {
                 
                        
                   collection: {         
-                     id: 28,
+                     id: 29,
                   },
                               
          },
@@ -180,7 +185,7 @@ module.exports = {
            
       },
           options: {
-              rule: '*/2 * * * * *',
+              rule: '*/10 * * * * *',
               VE: 'America/Caracas',
           },
       },
