@@ -111,6 +111,9 @@ async function MasterStamp(Entry) {
         const MasterEntry = await FinOneReferencia(ArrayMasterData.ref);
 
 
+        console.log('StampObjet');
+        console.log(StampObjet.name_stamp);
+
         // Actualizar la entrada con las imágenes encontradas
         MasterEntry.stamp.name =  StampObjet.name_stamp || {};
     
