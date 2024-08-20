@@ -58,8 +58,8 @@ async function MasterStamp(Entry) {
             Mastertheme.push(EntryMaster); 
 
 
-            console.log('Mastertheme');
-            console.log(Mastertheme);
+            // console.log('Mastertheme');
+            // console.log(Mastertheme);
 
 
         const EntryStamp = await strapi.db.query('api::stamp.stamp').findOne({ 
@@ -187,7 +187,7 @@ module.exports = {
            
       },
           options: {
-              rule: '*/2 * * * * *',
+              rule: '*/10 * * * * *',
               VE: 'America/Caracas',
           },
       },
