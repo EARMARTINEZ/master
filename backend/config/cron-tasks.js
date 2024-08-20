@@ -111,11 +111,13 @@ async function MasterStamp(Entry) {
         const MasterEntry = await FinOneReferencia(ArrayMasterData.ref);
 
 
-        console.log('StampObjet');
-        console.log(StampObjet.name_stamp);
+       
 
         // Actualizar la entrada con las imágenes encontradas
         MasterEntry.stamp.name =  StampObjet.name_stamp || {};
+
+        console.log('MasterEntry');
+        console.log(MasterEntry);
     
         // Actualizar la entrada en la base de datos
         const Dataentry = await strapi.db.query('api::master.master').update({
