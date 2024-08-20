@@ -148,6 +148,18 @@ async function MasterStamp(Entry) {
                       console.log(entry);
                 
             }
+      }else{
+
+              const entry = await strapi.db.query('api::master.master').update({
+                where: { referencia: ArrayMasterData.ref },
+                
+                data: {
+                  slug: 'End',
+                },
+              });
+
+                console.log('End-MasterEntry');
+                console.log(entry);
       }
 
 
