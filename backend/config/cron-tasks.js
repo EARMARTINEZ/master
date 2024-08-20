@@ -140,7 +140,7 @@ async function MasterStamp(Entry) {
                       where: { referencia: ArrayMasterData.ref },
                       
                       data: {
-                        slug: 'send',
+                        slug: 'End',
                       },
                     });
 
@@ -218,7 +218,8 @@ module.exports = {
            // referencia: '2240001',
            // id_collection: 30,
 
-                slug: { $ne: 'send' },
+                // slug: { $ne: 'send' },
+                slug: { $eq: 'send' },
                 slug: { $null: true },  
                 
                        
