@@ -111,10 +111,22 @@ async function MasterStamp(Entry) {
         const MasterEntry = await FinOneReferencia(ArrayMasterData.ref);
 
 
-       
+        const EntryStamp = await strapi.db.query('api::stamp.stamp').findOne({ 
+              
+          where: { 
+            name: StampObjet.name_stamp,
+        },
+        
+        populate: {
+            masters:{
+            fields: ['referencia'],  
+            },   
+        },
+          orderBy: { id: 'ASC' }, 
+        });
 
         // Actualizar la entrada con las imágenes encontradas
-        MasterEntry.stamp.name =  StampObjet.name_stamp || {};
+        MasterEntry.stamp.id =  EntryStamp.id || {};
 
         console.log('MasterEntry');
         console.log(MasterEntry);
@@ -146,19 +158,7 @@ async function MasterStamp(Entry) {
             // console.log(StampObjet);
 
 
-        const EntryStamp = await strapi.db.query('api::stamp.stamp').findOne({ 
-              
-          where: { 
-            name: StampObjet.name_stamp,
-        },
-        
-        populate: {
-            masters:{
-            fields: ['referencia'],  
-            },   
-        },
-          orderBy: { id: 'ASC' }, 
-        });
+       
 
         console.log('Dataentry');
         console.log(Dataentry);
