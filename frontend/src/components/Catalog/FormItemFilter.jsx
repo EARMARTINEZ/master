@@ -21,6 +21,7 @@ export function FormItemGender({form, ItemFilter, SelectGender, catalogType }) {
     doCombinationMapFilters,
     setStaticCombinationMap,
     setCombinationsMap,
+    setLoading,
   } = useTasks()
 
   const {
@@ -89,6 +90,7 @@ export function FormItemGender({form, ItemFilter, SelectGender, catalogType }) {
     const handleChange = async (value, label) => {
       try {
         console.log(`selected ${value}`);
+        setLoading(true);
         setItemGender(value)
         SelectGender(label.value)
         form.setFieldsValue({theme: 'Search to Select'});

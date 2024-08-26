@@ -41,6 +41,8 @@ export function CatalogView() {
     dofetchCombinationByCollection,
     combinationsMap,
     fetchData,
+    filtersGenderMap,
+    loading
   } = useTasks()
 
    const {
@@ -54,7 +56,7 @@ export function CatalogView() {
    const [ ItemSelectTheme, setItemSelectTheme] = useState();
    const [ ItemSelectProduct, setItemSelectProduct] = useState();
    const [formCatalogView] = Form.useForm();
-   const [loading, setLoading] = useState(true);
+  //  const [loading, setLoading] = useState(true);
 
    const [openCatalog, setOpenCatalog] = useState(false);
 
@@ -147,9 +149,18 @@ export function CatalogView() {
                   </Button>
                 )}
               </div>
-              <div className="col-span-6 sm:col-span-1  ">
+              {loading
+
+              ? (            
+                <div className='mt-32 flex flex-col justify-center items-center'>
+                  <Spin size="large" className='scale-200'/>
+                </div>
+              ): ( 
+                <div className="col-span-6 sm:col-span-1  ">
                 <CatalogDroppable catalogType={catalogType} />
-              </div>
+                </div>
+              ) }
+             
             </div>
           </div>
         </div>

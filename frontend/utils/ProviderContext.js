@@ -135,8 +135,7 @@ const UserProvider = ({ children }) => {
                   // setStamp({});//{}
                   // setRefeComments([]);//[]
                   // setRefePendings([]);//[]
-                  // setFiltersReferenceMap([]);
-                  // setReferenceMap([]);
+                 
           MapValues.data?.map((dataRef, index) => {
                 setIdMaster(dataRef ? dataRef.id : '0');
 
@@ -655,6 +654,7 @@ const UserProvider = ({ children }) => {
         try {
           let data = {data: ArrayMap ? ArrayMap : [] };
               MapReference(data);
+              setLoading(false);
           } catch (error) {
               console.log("error", error)
           }

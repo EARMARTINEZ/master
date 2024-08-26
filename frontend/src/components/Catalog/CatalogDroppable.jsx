@@ -79,7 +79,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
     doshowDrawer,
     NameCollection,
     filtersGenderMap,
-    doReferenceMapFilters,
+    doReferenceMapFilters,    
   } = useTasks();
 
   const {
@@ -125,6 +125,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
       let ArryFilter;
       if (catalogType == "reference") {
 
+
         if (ReferenceMap.length < 1) {
           return;
         }
@@ -132,7 +133,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
         // ArryFilter = ItemGender ?
         //      ReferenceMap.filter(type => type.attributes.genderName == ItemGender )
         //     : ReferenceMap.filter(type => type.attributes.genderName == 'Baby Girl' )
-
+        
         ArryFilter = ReferenceMap;
         if (ItemGender && ItemGender != 'All Genders') {
           ArryFilter = ArryFilter.filter(type => type.attributes.genderName == ItemGender)
@@ -427,8 +428,8 @@ export function CatalogDroppable({ catalogType="reference" }) {
       </Row>
 
         <div style={{ display: 'flex', justifyContent: 'start', height: '100%' }}>
-          {!loading ? (
-            <div>
+         
+          <div>
               {/* <button
           type="button"
           onClick={() => {
@@ -567,11 +568,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                 </Col>
               </Row>
             </div>
-          ) : (
-            <div className="flex items-center justify-center">
-              <Spin />
-            </div>
-          )}
+         
         </div>
     </>
   )
