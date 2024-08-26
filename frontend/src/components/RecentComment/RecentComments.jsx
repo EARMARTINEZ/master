@@ -49,7 +49,7 @@ const RecentComments = () => {
                       'Idcomments': comments.id ? comments.id : '', 
                       "user": comments.user ? comments.user : 'null',           
                       "date": comments.date ?  moment(comments.date ).format('MM/DD/YYYY, h:mm:ss a') : 'null',
-                      "status": comments.status ? comments.status : 'null',
+                      "status": dataRef.attributes.status ? dataRef.attributes.status : 'null',
                       "comment": comments.comment ? comments.comment : 'null',
                       "typependings": comments.type.data.attributes ? comments.type.data.attributes.name : 'null'
                     }
