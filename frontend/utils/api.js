@@ -1094,7 +1094,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
   const gqlEndpoint = getStrapiURL("/graphql");
 
   const Start = start ? start : 1
-  const Limite = 200
+  const Limite = 400
 
   const pagesRes = await fetch(gqlEndpoint, {
     method: 'POST',
@@ -1107,14 +1107,14 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
       query GetSilhouetteByCollection(
         $NCollection: ID!
         $Start: Int!, $Limite: Int!
-        $Status1: String, $Status2: String,
+        $Status1: String, $Status2: String, $Status0: String,
         ){
           masters(
             publicationState: PREVIEW
             sort:"referencia:asc"
             filters:{
               collection:{id:{eq:$NCollection}}
-              status:{in:[$Status1, $Status2]}
+              status:{in:[$Status1, $Status2, $Status0]}
             }
             pagination:{page: $Start ,pageSize: $Limite }
           ){
@@ -1199,6 +1199,7 @@ export async function getSilhouetteByCollection({ NCollection, start }) {
         Limite,
         Status1: 'Approved',
         Status2: 'Pending',
+        Status0: 'Cancelled',
       },
     }),
   })
@@ -2353,7 +2354,7 @@ export async function getCollectionFilters({FILTERS} ) {
             filters:{
               ${FILTERS}
             }
-            pagination:{limit:10 }
+            pagination:{limit:600 }
           ){
             data {
               id
@@ -2504,7 +2505,7 @@ export async function getCollectionFiltersCombination({ FILTERS }) {
             filters:{
               ${FILTERS}
             }
-            pagination:{limit:400}
+            pagination:{limit:600}
           ){
             data {
               id

@@ -148,16 +148,17 @@ export const CreateCombination = ({
   const [themeType, setThemeType] = useState('')
   const [partType, setPartType] = useState('')
   const [vacio, setVacio] = useState(false)
+  const [check, setCheck] = useState(false)
 
   useEffect(() => {
-    if (genderType === '' && themeType === '' && partType === '') {
+    if (genderType === '' && themeType === '' && partType === '' && !check) {
       setVacio(false)
       setAvailableImages(allReferences)
     } else {
       var newArrayValueFilters = []
       if (genderType !== '') {
         newArrayValueFilters = allReferences.filter(
-          (reference) => reference.genderType === genderType          
+          (reference) => reference.genderType === genderType
         )
         console.log(genderType)
       }
@@ -183,6 +184,17 @@ export const CreateCombination = ({
           )
         }
       }
+      if (check) {
+        if (newArrayValueFilters.length !== 0) {
+          newArrayValueFilters = newArrayValueFilters.filter(
+            (reference) => reference.status === 'Cancelled'
+          )
+        } else {
+          newArrayValueFilters = allReferences.filter(
+            (reference) => reference.status === 'Cancelled'
+          )
+        }
+      }
       if (newArrayValueFilters.length === 0) {
         setVacio(true)
       } else {
@@ -190,7 +202,7 @@ export const CreateCombination = ({
         setAvailableImages(newArrayValueFilters)
       }
     }
-  }, [genderType, themeType, partType])
+  }, [genderType, themeType, partType, check ])
 
   function handleGenderChange(event) {
     if (event.target.value !== '0') {
@@ -216,37 +228,44 @@ export const CreateCombination = ({
     }
   }
   useEffect(() => {
-    if (availableImages.length > 0) {
+    if (availableImages?.length > 0) {
       setLoading(true);
     }
   }, [availableImages]);
 
-  function renderImages() {
-    if (vacio) {
-      return <h2>No images found with the selected filters</h2>
-    } else {
+
+  function renderImages(){
+    if(vacio){
       return (
-        <>            
-          {availableImages.map((image, index) => (
-            <div
-              key={image.id}
-              onClick={() =>
-                onAddImage(image.src, image.id, image.typeproduct, image.ref)
-              }
-            >
-              <article className="flex h-32 w-32 flex-col items-center justify-center border hover:border-black">
-                <img
-                  src={image.src}
-                  alt={`Available ${index + 1}`}
-                  className="h-full w-full object-contain"
-                  crossOrigin="anonymous"
-                />
-              </article>
-            </div>
-          ))}        
+        <h2>No images found with the selected filters</h2>
+      );
+    }else{
+      return(
+        <>
+          {availableImages.length !== 0 ? (
+            availableImages.map((image, index) => (
+              <div key={image.id} onClick={() => addImageAndUpdateAvailableImages(image.src, image.id, image.typeproduct, image.ref)}>
+                <article className="flex h-32 w-32 flex-col items-center justify-center border hover:border-black">
+                  <img
+                    src={image.src}
+                    alt={`Available ${index + 1}`}
+                    className="h-full w-full object-contain"
+                    crossOrigin="anonymous"
+                  />
+                </article>
+              </div>
+            ))
+          ) : (
+            <h2>No hay mas referencias</h2>
+          )}
         </>
       )
     }
+  }
+
+  function addImageAndUpdateAvailableImages(imageSrc, imageId, imageType, imageRef){
+    onAddImage(imageSrc, imageId, imageType, imageRef);
+    setAvailableImages(availableImages.filter(image => image.id !== imageId));
   }
 
   return (
@@ -282,6 +301,15 @@ export const CreateCombination = ({
               </option>
             ))}
           </select>
+          <div className='flex flex-row justify-center items-center space-x-2'>
+            <label>Items cancelados</label>
+            <input
+              type="checkbox"
+              id="myCheckbox"
+              checked={check}
+              onChange={() => setCheck((prev) => !prev)}
+            />
+          </div>
         </div>
       </div>
       <section className="mb-5 mt-2 flex flex-col items-start justify-center">
@@ -314,14 +342,14 @@ export const CreateCombination = ({
         <div className="flex w-[50%] flex-col items-center justify-center overflow-clip border">
           <FabricJSCanvas className="sample-canvas" onReady={onReady} />
         </div>
-        {loading && availableImages.length > 1 ? (            
+        {loading && availableImages.length > 0 ? (
             <div className="flex h-[600px] w-[50%] flex-wrap items-center justify-center gap-2 overflow-scroll overflow-x-hidden border">
               {renderImages()}
             </div>
          ): (
             <div className="flex h-[600px] w-[50%] flex-wrap items-center justify-center gap-2 overflow-scroll overflow-x-hidden border">
-            <Spin size="large" className='scale-200'/>
-            </div>         
+              <Spin size="large" className='scale-200'/>
+            </div>
         ) }
       </section>
       <div className="my-10 flex flex-col items-center justify-end">

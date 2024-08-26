@@ -6,13 +6,12 @@ import { Button, Checkbox, Form, Input, Select, Space, Radio, Card  } from 'antd
 import { MinusCircleOutlined, PlusOutlined, PlusCircleTwoTone } from '@ant-design/icons';
 
 export function FormItemGender({form, ItemFilter, SelectGender, catalogType }) {
-
   const {
     IdCollection,
     ReferenceMap,
     StaticReferenceMap,
     setReferenceMap,
-    doReferenceMapFilters,   
+    doReferenceMapFilters,
     dofindCollectionFilters,
     filtersGenderMap,
     dogenerateFilters,
@@ -24,145 +23,180 @@ export function FormItemGender({form, ItemFilter, SelectGender, catalogType }) {
   } = useTasks()
 
   const {
-      ItemGender,
-      ItemTheme,
-      ItemProduct,
-      setItemGender,
-      setItemTheme,
-      setItemProduct,
-      ReferenceMapStatus,
-      setReferenceMapStatus,
-  } = BasicTasks();
+    ItemGender,
+    ItemTheme,
+    ItemProduct,
+    setItemGender,
+    setItemTheme,
+    setItemProduct,
+    ReferenceMapStatus,
+    setReferenceMapStatus,
+  } = BasicTasks()
 
-    const [filtersStatusMap, setfiltersStatusMap] = useState([]);
-    const [ClonReferenceMap, setClonReferenceMap] = useState([]);
-    //const [initialValue, setInitialValue] = useState();
-    const initialValue = useRef();
-    const [formCatalogView] = Form.useForm();
+  const [filtersStatusMap, setfiltersStatusMap] = useState([])
+  const [ClonReferenceMap, setClonReferenceMap] = useState([])
+  //const [initialValue, setInitialValue] = useState();
+  const initialValue = useRef()
+  const [formCatalogView] = Form.useForm()
 
-    const groupGender = function(){
-      let ItemStatusMap = [];
-        if (filtersGenderMap.length > 0) {
-          initialValue.current = filtersGenderMap[0].value
-          setItemGender(filtersGenderMap[0].value)
-        }
-        // Actualizar ItemStatusMap
-        ItemStatusMap = filtersGenderMap;
-        setfiltersStatusMap([...ItemStatusMap])
+  const groupGender = function () {
+    let ItemStatusMap = []
+    if (filtersGenderMap.length > 0) {
+      // initialValue.current = filtersGenderMap[0].value
+      // setItemGender(filtersGenderMap[0].value)
+      initialValue.current = 'All Genders'
+      setItemGender('All Genders')
     }
+    // Actualizar ItemStatusMap
+    ItemStatusMap = filtersGenderMap
+    setfiltersStatusMap([...ItemStatusMap])
+  }
 
+// PROBLEMA DE RENDIMIENTO POR LA DEPENDENCIA DE filtersGenderMap
+// EN ESTE USEEFFECT !!!
 
-    useEffect(() => {
-      groupGender();
-      form.setFieldsValue({genders: initialValue.current});
-      form.setFieldsValue({theme: 'Search to Select'});
-      form.setFieldsValue({product: 'Search to Select'});
+  // Se buscan los items filtrados por genero
+  // Se ejecuta cuando se monta el componente.
+  useEffect(() => {
+    groupGender()
+    form.setFieldsValue({ genders: initialValue.current })
+    form.setFieldsValue({ theme: 'Search to Select' })
+    form.setFieldsValue({ product: 'Search to Select' })
 
-      if(filtersGenderMap.length>= 1){
+    if (filtersGenderMap.length >= 1) {
+      if (catalogType === 'reference') {
+        const FILTERS = dogenerateFilters(
+          IdCollection,
+          [initialValue.current],
+          'gender'
+        )
+        console.log("buscando referencias 1")
+        dofindCollectionFilters(FILTERS).then((keys) => {
+          if (keys.data.length >= 1) {
+            doReferenceMapFilters(keys.data)
+            setStaticReferenceMap(keys.data)
+          }
+        })
+      } else if (catalogType === 'combination') {
+        const FILTERS = dogenerateFilters(
+          IdCollection,
+          [initialValue.current],
+          'gender',
+          false
+        ) //
+        dofindCollectionFiltersCombination(FILTERS).then((keys) => {
+          if (keys?.data.length >= 1) {
+            doCombinationMapFilters(keys.data) //
+            setStaticCombinationMap(keys.data) //
+            // doReferenceMapFilters(keys.data);
+            // setStaticReferenceMap(keys.data);
+          }
+        })
+      }
+    }
+  }, [filtersGenderMap])
+  // }, [])
+
+  const allGenders = {
+    value: 'All Genders',
+    text: 'All Genders',
+    order_show: '0',
+  }
+  // const genders = filtersGenderMap;
+  const genders = [allGenders, ...filtersGenderMap]
+
+  // Se buscan los items filtrados por genero
+  // Se ejecuta cuando se selecciona un valor del filtro de gender
+  // Esta funcion hace lo mismo que la funcion de arriba, pero se ejecuta cuando se selecciona un valor del filtro
+  const handleChange = async (value, label) => {
+    try {
+      console.log(`selected ${value}`)
+      setItemGender(value)
+      SelectGender(label.value)
+      form.setFieldsValue({ theme: 'Search to Select' })
+      form.setFieldsValue({ product: 'Search to Select' })
+
+      if (ItemGender) {
         if (catalogType === 'reference') {
-          const FILTERS = dogenerateFilters(IdCollection, [initialValue.current], 'gender');
-          dofindCollectionFilters(FILTERS)
-          .then(  keys => {
-            if(keys.data.length>= 1){
-               doReferenceMapFilters(keys.data);
-               setStaticReferenceMap(keys.data);
+          console.log('buscando referencias 2')
+          const FILTERS = dogenerateFilters(IdCollection, [value], 'gender')
+          console.log(FILTERS)
+          const response = await dofindCollectionFilters(FILTERS).then(
+            (keys) => {
+              if (keys.data.length >= 1) {
+                setReferenceMapStatus(false)
+                doReferenceMapFilters(keys.data)
+                setStaticReferenceMap(keys.data)
+                //  setFilterCatalogSelect(keys.data);
+              }
             }
-          });
+          )
         } else if (catalogType === 'combination') {
-          const FILTERS = dogenerateFilters(IdCollection, [initialValue.current], 'gender', false);//
+          const FILTERS = dogenerateFilters(
+            IdCollection,
+            [value],
+            'gender',
+            false
+          )
           // console.log(FILTERS)
-          dofindCollectionFiltersCombination(FILTERS).
-          then(keys => {
-            if(keys?.data.length>= 1){
-                 doCombinationMapFilters(keys.data); //
-                 setStaticCombinationMap(keys.data); //
-              // doReferenceMapFilters(keys.data);
-              // setStaticReferenceMap(keys.data);
+          dofindCollectionFiltersCombination(FILTERS).then((keys) => {
+            if (keys.data.length >= 1) {
+              setReferenceMapStatus(false)
+              doCombinationMapFilters(keys.data)
+              setStaticCombinationMap(keys.data)
+            } else {
+              console.log('No data found')
+              setReferenceMapStatus(true)
+              setCombinationsMap([])
             }
-          });
+          })
         }
       }
-    }, [filtersGenderMap]);
-
-    const genders = filtersGenderMap;
-
-    const handleChange = async (value, label) => {
-      try {
-        console.log(`selected ${value}`);
-        setItemGender(value)
-        SelectGender(label.value)
-        form.setFieldsValue({theme: 'Search to Select'});
-        form.setFieldsValue({product: 'Search to Select'});
-
-        if(ItemGender){
-          if (catalogType === 'reference') {
-            const FILTERS = dogenerateFilters(IdCollection, [value], 'gender');
-            const response = await dofindCollectionFilters(FILTERS)
-            .then(  keys => {
-                if(keys.data.length>= 1){
-                setReferenceMapStatus(false)
-                doReferenceMapFilters(keys.data);
-                setStaticReferenceMap(keys.data);
-                //  setFilterCatalogSelect(keys.data);
-                }
-            });
-          } else if (catalogType === 'combination') {
-            const FILTERS = dogenerateFilters(IdCollection, [value], 'gender', false);
-            // console.log(FILTERS)
-            dofindCollectionFiltersCombination(FILTERS)
-            .then(  keys => {
-                if(keys.data.length>= 1){
-                  setReferenceMapStatus(false)
-                  doCombinationMapFilters(keys.data);
-                  setStaticCombinationMap(keys.data);
-                } else {
-                  console.log('No data found');
-                  setReferenceMapStatus(true)
-                  setCombinationsMap([]);
-                }
-            });
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching collection filters:', error);
-  }};
+    } catch (error) {
+      console.error('Error fetching collection filters:', error)
+    }
+  }
 
   return (
-  <>
-    <div className="grid grid-cols-1 gap-1 m-0">
-          <div className="col-span-6 sm:col-span-1  ">
+    <>
+      <div className="m-0 grid grid-cols-1 gap-1">
+        <div className="col-span-6 sm:col-span-1  ">
           {genders.length > 0 && (
-              <Form.Item
-                  name="genders"
-                  label="Gender"
-                  initialValue={initialValue.current}
-                  rules={[
-                  {
-                      required: false,
-                      message: 'Missing gender',
-                  },
-                  ]}
-              >
-                  <Select
-                  options={genders}
-                  showSearch
-                  onChange={handleChange}
-                  placeholder="Search to Select"
-                  optionFilterProp="children"
-                  filterOption={(input, option) => option?.label.toString().toLowerCase().includes(input.toLowerCase())}
-                  //filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                  // filterSort={(optionA, optionB) =>
-                  //     (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+            <Form.Item
+              name="genders"
+              label="Gender"
+              initialValue={initialValue.current}
+              rules={[
+                {
+                  required: false,
+                  message: 'Missing gender',
+                },
+              ]}
+            >
+              <Select
+                options={genders}
+                showSearch
+                onChange={handleChange}
+                placeholder="Search to Select"
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  option?.label
+                    .toString()
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                //filterOption={(input, option) => (option?.label ?? '').includes(input)}
+                // filterSort={(optionA, optionB) =>
+                //     (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
 
-                  // }
-                  />
-              </Form.Item>
-            )}
-          </div>
-    </div>
-  </>
-
-)
+                // }
+              />
+            </Form.Item>
+          )}
+        </div>
+      </div>
+    </>
+  )
 }
 
 export function FormItemTheme({ form, ItemFilter, SelectTheme, catalogType }) {
@@ -204,13 +238,21 @@ export function FormItemTheme({ form, ItemFilter, SelectTheme, catalogType }) {
     const newStatusMap = {}
     let ItemStatusMap = []
     if (catalogType === 'reference') {
-      const ArryFilterGender = ItemGender
-        ? StaticReferenceMap.filter(
-            (type) => type.attributes.genderName == ItemGender
-          )
-        : StaticReferenceMap.filter(
-            (type) => type.attributes.genderName == 'Baby Girl'
-          )
+
+      // const ArryFilterGender = ItemGender
+      //   ? StaticReferenceMap.filter(
+      //       (type) => type.attributes.genderName == ItemGender
+      //     )
+      //   : StaticReferenceMap.filter(
+      //       (type) => type.attributes.genderName == 'Baby Girl'
+      //     )
+
+      let ArryFilterGender = StaticReferenceMap
+      if (ItemGender != 'All Genders') {
+        ArryFilterGender = StaticReferenceMap.filter(
+          (type) => type.attributes.genderName == ItemGender
+        )
+      }
 
       ArryFilterGender?.forEach((dataRef) => {
         const { theme, Composition } = dataRef.attributes || {}
@@ -242,13 +284,21 @@ export function FormItemTheme({ form, ItemFilter, SelectTheme, catalogType }) {
       setfiltersStatusMap([...ItemStatusMap])
 
     } else if (catalogType === 'combination') {
-      const ArryFilterGender = ItemGender
-        ? staticCombinationMap.filter(
-            (type) => type.attributes.gender.data.attributes.name == ItemGender
-          )
-        : staticCombinationMap.filter(
-            (type) => type.attributes.gender.data.attributes.name == 'Baby Girl'
-          )
+
+      // const ArryFilterGender = ItemGender
+      //   ? staticCombinationMap.filter(
+      //       (type) => type.attributes.gender.data.attributes.name == ItemGender
+      //     )
+      //   : staticCombinationMap.filter(
+      //       (type) => type.attributes.gender.data.attributes.name == 'Baby Girl'
+      //     )
+
+      let ArryFilterGender = StaticReferenceMap
+      if (ItemGender != "All Genders") {
+        ArryFilterGender = staticCombinationMap.filter(
+          (type) => type.attributes.gender.data.attributes.name == ItemGender
+        )
+      }
 
       ArryFilterGender?.forEach((dataRef) => {
         const { theme } = dataRef.attributes || {}
@@ -442,14 +492,11 @@ export function FormItemProduct({ItemFilter, SelectProduct}) {
 
 
        const handleChange = (value, label) => {
-
              console.log(`selected ${value}`);
-
              setItemProduct(value);
              SelectProduct(label.label);
 
              if(ItemGender){
-
               let ArryFilter = StaticReferenceMap.filter(type => type.attributes.Composition.typeproduct.data.attributes.name === value)
               let ArryFilterGender = ArryFilter.filter(type => type.attributes.genderName === ItemGender)
 
@@ -457,13 +504,10 @@ export function FormItemProduct({ItemFilter, SelectProduct}) {
               doReferenceMapFilters(ArryFilterGender);
               setFilterCatalogSelect(ArryFilterGender);
              }
-
       };
-
 
     return (
     <>
-
       <div className="grid grid-cols-1 gap-1 m-0">
         <div className="grid grid-cols-2 gap-1 m-0">
 
@@ -492,7 +536,6 @@ export function FormItemProduct({ItemFilter, SelectProduct}) {
                             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
 
                         }
-
                         />
                     </Form.Item>
                 </div>
@@ -505,13 +548,17 @@ export function FormItemProduct({ItemFilter, SelectProduct}) {
 }
 
 
-
 export function FormSelectCatalog({CatalogSelec, SelectTheme, SelectProduct}) {
   const {
     IdCollection,
     doReferenceMapFilters,
     StaticReferenceMap,
-   } = useTasks();
+    dogenerateFilters,
+    dofindCollectionFiltersCombination,
+    setCombinationsMap,
+    doCombinationMapFilters,
+    setStaticCombinationMap,
+  } = useTasks()
 
    const {
         setReferenceMapStatus,
@@ -538,8 +585,31 @@ export function FormSelectCatalog({CatalogSelec, SelectTheme, SelectProduct}) {
           SelectTheme();
           SelectProduct();
 
-          setReferenceMapStatus(true);
-          doReferenceMapFilters(StaticReferenceMap);
+          if (value === 'Combination Catalog') {
+            console.log('buscando combinaciones en FormSelectCatalog')
+            const FILTERS = dogenerateFilters(
+              IdCollection,
+              ['All Genders'],
+              'gender',
+              false
+            )
+            // console.log(FILTERS)
+            dofindCollectionFiltersCombination(FILTERS).then((keys) => {
+              if (keys.data.length >= 1) {
+                setReferenceMapStatus(false)
+                doCombinationMapFilters(keys.data)
+                setStaticCombinationMap(keys.data)
+              } else {
+                console.log('No data found')
+                setReferenceMapStatus(true)
+                setCombinationsMap([])
+              }
+            })
+          }
+
+          setReferenceMapStatus(true)
+          doReferenceMapFilters(StaticReferenceMap)
+
         };
       return (
       <>

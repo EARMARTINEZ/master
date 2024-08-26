@@ -288,9 +288,10 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
   const [themeType, setThemeType] = useState('');
   const [partType, setPartType] = useState('');
   const [vacio, setVacio] = useState(false);
+  const [check, setCheck] = useState(false)
 
   useEffect(() => {
-    if(genderType === '' && themeType === '' && partType === ''){
+    if(genderType === '' && themeType === '' && partType === '' && !check){
       setVacio(false);
       setAvailableImages(allReferences);
     }else{
@@ -312,21 +313,37 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
           newArrayValueFilters = allReferences.filter(reference => reference.partType === partType);
         }
       }
+      if (check) {
+        if (newArrayValueFilters.length !== 0) {
+          newArrayValueFilters = newArrayValueFilters.filter(
+            (reference) => reference.status === 'Cancelled'
+          )
+        } else {
+          newArrayValueFilters = allReferences.filter(
+            (reference) => reference.status === 'Cancelled'
+          )
+        }
+      }
       if(newArrayValueFilters.length === 0){
         setVacio(true);
       }else{
-
-        const combinationSelected = combinationsMap.find(combination => parseInt(combination.id) === parseInt(idSelectedCombination));
-        const references = combinationSelected.references.map(reference => reference.id);
-        const newAvailableImages = allReferences.filter(image => references.includes(image.id));
-        const objetosFiltrados = newArrayValueFilters.filter(objeto => {
-          return !newAvailableImages.some(item => item.id === objeto.id);
-        });
-        setVacio(false);
-        setAvailableImages(objetosFiltrados)
+        if(idSelectedCombination !== ''){
+          const combinationSelected = combinationsMap.find(combination => parseInt(combination.id) === parseInt(idSelectedCombination));
+          const references = combinationSelected.references.map(reference => reference.id);
+          const newAvailableImages = allReferences.filter(image => references.includes(image.id));
+          const objetosFiltrados = newArrayValueFilters.filter(objeto => {
+            return !newAvailableImages.some(item => item.id === objeto.id);
+          });
+          setVacio(false);
+          setAvailableImages(objetosFiltrados)
+        }else {
+          const objetosFiltrados = newArrayValueFilters;
+          setVacio(false);
+          setAvailableImages(objetosFiltrados)
+        }
       }
     }
-  }, [genderType, themeType, partType])
+  }, [genderType, themeType, partType, check])
 
   function handleGenderChange(event) {
     if(event.target.value !== '0'){
@@ -351,7 +368,7 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
       setThemeType('');
     }
   }
-  
+
   useEffect(() => {
     if (availableImages.length > 0) {
       setLoading(true);
@@ -366,21 +383,30 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
     }else{
       return(
         <>
-          {availableImages.map((image, index) => (
-            <div key={image.id} onClick={() => onAddImage(image.src, image.id, image.typeproduct, image.ref)}>
-              <article className="flex h-32 w-32 flex-col items-center justify-center border hover:border-black">
-                <img
-                  src={image.src}
-                  alt={`Available ${index + 1}`}
-                  className="h-full w-full object-contain"
-                  crossOrigin="anonymous"
-                />
-              </article>
-            </div>
-          ))}
+          {availableImages.length !== 0 ? (
+            availableImages.map((image, index) => (
+              <div key={image.id} onClick={() => addImageAndUpdateAvailableImages(image.src, image.id, image.typeproduct, image.ref)}>
+                <article className="flex h-32 w-32 flex-col items-center justify-center border hover:border-black">
+                  <img
+                    src={image.src}
+                    alt={`Available ${index + 1}`}
+                    className="h-full w-full object-contain"
+                    crossOrigin="anonymous"
+                  />
+                </article>
+              </div>
+            ))
+          ) : (
+            <h2>No hay mas referencias</h2>
+          )}
         </>
       )
     }
+  }
+
+  function addImageAndUpdateAvailableImages(imageSrc, imageId, imageType, imageRef){
+    onAddImage(imageSrc, imageId, imageType, imageRef);
+    setAvailableImages(availableImages.filter(image => image.id !== imageId));
   }
 
   // if ref is not null, then we are in the edit tab and we need to select the combination with the ref, after the combinations are loaded
@@ -438,6 +464,15 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
               </option>
             ))}
           </select>
+          <div className='flex flex-row justify-center items-center space-x-2'>
+            <label>Items cancelados</label>
+            <input
+              type="checkbox"
+              id="myCheckbox"
+              checked={check}
+              onChange={() => setCheck((prev) => !prev)}
+            />
+          </div>
         </div>
       </div>
       {/* Combination */}
@@ -445,12 +480,11 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
         <b>Select Combination:</b>
         <select id="combination" onChange={(e) => handleSelectCombination(e)}>
           <option value="select">Please, select a combination</option>
-          {/* <option value="30">(0000001,0000002,0000003)</option> */}
           {combinationsMap.map((combination, index) => (
             <option key={combination.id} value={`${combination.id},${combination.refId}`}>
               (
               {combination.references
-                .map((reference) => reference.id)
+                .map((reference) => reference.ref)
                 .join(', ')}
               )
             </option>
@@ -496,14 +530,20 @@ export const UpdateCombination = ({ editor, onReady, allReferences, availableIma
         <div className="flex w-[50%] flex-col items-center justify-center overflow-clip border">
           <FabricJSCanvas className="sample-canvas" onReady={onReady} />
         </div>
-        {loading && availableImages.length > 1 ? (            
+        {loading && availableImages.length > 0 ? (
             <div className="flex h-[600px] w-[50%] flex-wrap items-center justify-center gap-2 overflow-scroll overflow-x-hidden border">
               {renderImages()}
             </div>
          ): (
-            <div className="flex h-[600px] w-[50%] flex-wrap items-center justify-center gap-2 overflow-scroll overflow-x-hidden border">
-            <Spin size="large" className='scale-200'/>
-            </div>         
+            vacio || availableImages.length === 0 ? (
+              <h1>There are no more references with the selected filter</h1>
+            ) : (
+              loading && (
+                <div className="flex h-[600px] w-[50%] flex-wrap items-center justify-center gap-2 overflow-scroll overflow-x-hidden border">
+                  <Spin size="large" className='scale-200'/>
+                </div>
+              )
+            )
         ) }
       </section>
       <div className="my-10 flex flex-row items-center justify-end gap-6">

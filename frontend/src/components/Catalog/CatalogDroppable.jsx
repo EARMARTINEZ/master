@@ -94,7 +94,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
   const [StopState, setStopState] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const showModal = (item) => {
     setSelectedItem(item)
@@ -117,16 +117,26 @@ export function CatalogDroppable({ catalogType="reference" }) {
 
   let ItemRMap = [];
 
+
+  // se ejecuta cada vez que se obtienen nuevos datos
   useEffect(() => {
     if(StopState){
 
       let ArryFilter;
       if (catalogType == "reference") {
-        ArryFilter = ItemGender ?
-             ReferenceMap.filter(type => type.attributes.genderName == ItemGender )
-            :ReferenceMap.filter(type => type.attributes.genderName == 'Baby Girl' )
 
-        // console.log(ItemGender)
+        if (ReferenceMap.length < 1) {
+          return;
+        }
+
+        // ArryFilter = ItemGender ?
+        //      ReferenceMap.filter(type => type.attributes.genderName == ItemGender )
+        //     : ReferenceMap.filter(type => type.attributes.genderName == 'Baby Girl' )
+
+        ArryFilter = ReferenceMap;
+        if (ItemGender && ItemGender != 'All Genders') {
+          ArryFilter = ArryFilter.filter(type => type.attributes.genderName == ItemGender)
+        }
 
         ArryFilter?.map((dataRef, index) => {
           const { referencia, drawings, Composition, status } = dataRef
@@ -138,8 +148,13 @@ export function CatalogDroppable({ catalogType="reference" }) {
 
           drawings.data?.map((dataDrawings, index) => {
             const isCatalogSelec = status != 'Cancelled'
-            const isImgReferencia =
-              dataDrawings.attributes.name === referencia + '.jpg'
+
+            // La referencia y su Drawing deben tener el mismo nombre (campo referencia dentro de ACreateReference)
+            // si no, no se muestra
+
+            // NO OLVIDAR CAMBIAR EL TRUE POR LA CONDICION DE ABAJOOOOO
+            const isImgReferencia = //true;
+              dataDrawings.attributes.name === referencia + '.jpg' || dataDrawings.attributes.name === referencia + '.png'
 
             if (isCatalogSelec) {
               if (isImgReferencia) {
@@ -238,9 +253,21 @@ export function CatalogDroppable({ catalogType="reference" }) {
         //   ]
         // }
 
-        ArryFilter = ItemGender ?
-             combinationsMap.filter(type => type.gender == ItemGender )
-            :combinationsMap.filter(type => type.gender == 'Baby Girl' )
+        if (combinationsMap.length < 1) {
+          return;
+        }
+
+        // ArryFilter = ItemGender ?
+        //      combinationsMap.filter(type => type.gender == ItemGender )
+        //     :combinationsMap.filter(type => type.gender == 'Baby Girl' )
+
+        console.log('combinationsMap')
+        console.log(combinationsMap)
+
+        ArryFilter = combinationsMap;
+        if (ItemGender && ItemGender != 'All Genders') {
+          ArryFilter = ArryFilter.filter(type => type.gender == ItemGender)
+        }
 
         ArryFilter?.map((dataRef, index) => {
               const { id, refId, type, gender, g_order_show, theme, image, references } = dataRef ? dataRef : '0';
@@ -269,18 +296,18 @@ export function CatalogDroppable({ catalogType="reference" }) {
               newDataDrawings?.map((dataDrawings, index) => {
                   // const valor = Math.trunc (Object.keys(ItemBaseMap).length / 3 )
                   // console.log(dataDrawings)
-                          let FiltersTableReferences = {
-                              id: dataDrawings.id,
-                              content: dataDrawings.references.map((reference) => reference.id).join(', '),
-                              url: new URL(dataDrawings.image).pathname,
-                              reference:dataDrawings.reference,
-                              order_Part:null,
-                              orderShowProduct:null,
-                              orderShowGender: dataDrawings.orderShowGender,
-                              theme: dataDrawings.theme,
-                          };
-                          ItemRandomMap.push(FiltersTableReferences);
-                          ItemRandomMap.sort((a, b) => a.orderShowGender - b.orderShowGender);
+                    let FiltersTableReferences = {
+                        id: dataDrawings.id,
+                        content: dataDrawings.references.map((reference) => reference.id).join(', '),
+                        url: new URL(dataDrawings.image).pathname,
+                        reference:dataDrawings.reference,
+                        order_Part:null,
+                        orderShowProduct:null,
+                        orderShowGender: dataDrawings.orderShowGender,
+                        theme: dataDrawings.theme,
+                    };
+                    ItemRandomMap.push(FiltersTableReferences);
+                    ItemRandomMap.sort((a, b) => a.orderShowGender - b.orderShowGender);
               });
 
                   //ItemMap
@@ -327,20 +354,23 @@ export function CatalogDroppable({ catalogType="reference" }) {
         //const flattenedArray = [].concat(...ItemRandomMap, ...ItemMap,  ...ItemRestMap);
         // setState([flattenedArray])
         // setCaptureReport([flattenedArray])
+        console.log('Item Random Map')
+        console.log(ItemRandomMap);
         const PartesIgualesArray = doDivideEnPartesIguales(ItemRandomMap);
         //console.log([ItemRandomMap, ItemMap,  ItemRestMap])
-        //console.log(PartesIgualesArray )
 
         setState(PartesIgualesArray)
         setCaptureReport(PartesIgualesArray)
+        setLoading(false)
 
     }, [ReferenceMap, combinationsMap]);
 
-    useEffect(() => {    
-        console.log(state)
-        setState(state)
-        setCaptureReport(state)
+    useEffect(() => {
+        // console.log("State", state)
+        // setState(state)
+        // setCaptureReport(state)
       }, [state]);
+    // }, []);
 
   function onDragEnd(result) {
     const { source, destination } = result;
@@ -366,21 +396,20 @@ export function CatalogDroppable({ catalogType="reference" }) {
     }
   }
 
+  // Se dejo de usar IsMounted
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
       setIsMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (ReferenceMap.length > 0) {
-      setLoading(true);
-    }
-  }, [ReferenceMap]);
+  // useEffect(() => {
+  //   if (ReferenceMap.length > 0) {
+  //     setLoading(true);
+  //   }
+  // }, [ReferenceMap]);
 
- 
   return (
     <>
-    
       <Row justify="start">
         <Col className="gutter-row">
           <div className="grid grid-cols-1 gap-1 ">
@@ -395,10 +424,10 @@ export function CatalogDroppable({ catalogType="reference" }) {
             </div>
           </div>
         </Col>
-      </Row>     
+      </Row>
 
         <div style={{ display: 'flex', justifyContent: 'start', height: '100%' }}>
-          {isMounted ? (
+          {!loading ? (
             <div>
               {/* <button
           type="button"
@@ -423,6 +452,7 @@ export function CatalogDroppable({ catalogType="reference" }) {
                       {state.length == 0 ? (
                         <div style={{ width: 'max-content' }}>No data found</div>
                       ) : (
+                        /*Renderizamos los componentes en la lista, todos estan dentro de State*/
                         state.map((el, ind) => (
                           <Droppable key={uuid()} droppableId={`${ind}`}>
                             {(provided, snapshot) => (
@@ -526,7 +556,6 @@ export function CatalogDroppable({ catalogType="reference" }) {
                                     </Draggable>
                                   </div>
                                 ))}
-
                                 {provided.placeholder}
                               </div>
                             )}
@@ -538,9 +567,12 @@ export function CatalogDroppable({ catalogType="reference" }) {
                 </Col>
               </Row>
             </div>
-          ) : null}
+          ) : (
+            <div className="flex items-center justify-center">
+              <Spin />
+            </div>
+          )}
         </div>
-      
     </>
   )
 }

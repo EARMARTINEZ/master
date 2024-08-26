@@ -217,7 +217,7 @@ const CombinationBoard = ({ action, refToEdit=0 }) => {
 
     const fetchSilhouettes = async () => {
       const response = await dofetchReferenceForSilhouettes(IdCollection);
-      let initialImages = response.map((item) => {
+      let initialImages = response?.map((item) => {
       return item.silhouette ? {
         id: item.id,
         ref: item.ref,
@@ -225,11 +225,12 @@ const CombinationBoard = ({ action, refToEdit=0 }) => {
         genderType: item.gender,
         themeType: item.theme,
         partType: item.part,
-        typeproduct: item.typeproduct
+        typeproduct: item.typeproduct,
+        status: item.status,
         } : null;
       });
       // Filtrar las imágenes que no tienen silhouette
-      initialImages = initialImages.filter((item) => item !== null);
+      initialImages = initialImages?.filter((item) => item !== null);
       setAllReferences(initialImages);
       setAvailableImages(initialImages);
     }

@@ -135,8 +135,8 @@ const UserProvider = ({ children }) => {
                   // setStamp({});//{}
                   // setRefeComments([]);//[]
                   // setRefePendings([]);//[]
-          setFiltersReferenceMap([]);
-          setReferenceMap([]);
+                  // setFiltersReferenceMap([]);
+                  // setReferenceMap([]);
           MapValues.data?.map((dataRef, index) => {
                 setIdMaster(dataRef ? dataRef.id : '0');
 
@@ -234,6 +234,8 @@ const UserProvider = ({ children }) => {
            setFiltersReferenceMap([...FilterRefMap]);
            setSoloReferenceMap([...ItemMap]);
            setTableStampsMap([...FilterTableStampsMap]);
+
+           console.log("Set Reference Map", RefMap)
            setReferenceMap([...RefMap]);
 
           return FilterRefMap;
@@ -265,17 +267,16 @@ const UserProvider = ({ children }) => {
                   id: collection.data.id,
                   name: collection.data.attributes.name,
                 },
-                gender: genderName,
-                typeproduct: Composition.typeproduct.data.attributes.name,
-                part: Composition.typeproduct.data.attributes.id_part.data.attributes.name,
-                color: Composition.color.data.attributes.name,
-                fabric: Composition.fabric.data.attributes.name,
+                gender: genderName || '',
+                typeproduct: Composition?.typeproduct?.data?.attributes?.name || '',
+                part: Composition?.typeproduct?.data?.attributes?.id_part?.data?.attributes?.name || '',
+                color: Composition?.color?.data?.attributes?.name || '',
+                fabric: Composition?.fabric?.data?.attributes?.name || '',
                 theme: theme.data ? theme.data.attributes.name : '',
-                silhouette: silhouette.data ? {
-                  id: silhouette.data.id,
-                  // url: getStrapiURL(silhouette.data.attributes.formats.thumbnail.url),
-                  url: getStrapiURL(silhouette.data.attributes.url),
-                } : null
+                silhouette: silhouette?.data ? {
+                  id: silhouette.data.id || '',
+                  url: getStrapiURL(silhouette.data.attributes?.url || ''),
+                } : null,
               }
               silMap.push(ParsedDataSource)
             })
@@ -446,6 +447,7 @@ const UserProvider = ({ children }) => {
   }
 
   async function doIDReference(values) {
+    console.log('do id reference')
     try {
       const pageData = await  getIDReference({
         IDReference: values, //1240001 2230003
@@ -461,6 +463,7 @@ const UserProvider = ({ children }) => {
     }
   }
     async function dofetchReference(values) {
+      console.log('do fetch reference')
       try {
         let Prefix = values.length === 4 ? `${IdPrefixCollection}${values}`  : values;
         const pageData = await  getReference({
@@ -478,19 +481,21 @@ const UserProvider = ({ children }) => {
 
     // hacer tantas peticiones como pageCount hayan
     async function dofetchReferenceForSilhouettes(values) {
+      console.log('do fetch reference for silhouettes')
       try {
         // console.log(values)
         await fetchCollectionName(values);
         const pageData = await  getSilhouetteByCollection({
           NCollection: values | '0'
-        }).then( keys => {
-          let refs = MapReferencesForSilhouettes(keys.masters);
+        }).then( keys => {   
+          console.log(keys)       
+          let refs = MapReferencesForSilhouettes(keys.masters);          
           return refs;
       });
           setShowModalLoading(false);
           return pageData;
       } catch (error) {
-        console.log("error", error)
+        console.log("error silhouettes", error)
         setShowModalLoading(false);
       }
     }
@@ -589,6 +594,7 @@ const UserProvider = ({ children }) => {
     }
 
       async function dogetCollectionReference(values, Start, PageSize, FILTERS) {
+        console.log('do get collection reference')
         try {
             setIdCollection(values);
             //VAMOS A GUARDAR EL ID DE LA COLLECTION EN EL LOCALSTORAGE
@@ -622,6 +628,7 @@ const UserProvider = ({ children }) => {
                 //MapReference(keys.masters);
               return keys.masters;
           });
+          console.log(pageData)
           return pageData;
           } catch (error) {
               console.log("error", error)
@@ -644,6 +651,7 @@ const UserProvider = ({ children }) => {
       }
 
       async function doReferenceMapFilters(ArrayMap) {
+        console.log('do reference map filters')
         try {
           let data = {data: ArrayMap ? ArrayMap : [] };
               MapReference(data);
@@ -677,7 +685,7 @@ const UserProvider = ({ children }) => {
             const dogenerateFilters = (IdCollection, newStatusMap, columnKey, reference = true) => {
               const newStatusArr = Object.values(newStatusMap).flat();
               let response;
-
+      
               const columnKeys = {
                   theme: 'theme',
                   typeproduct: 'productname',
@@ -686,12 +694,12 @@ const UserProvider = ({ children }) => {
                   sizeref:'sizes',
                   status:'status'
               };
-
+      
               const combinationColumnKeys = {
                   theme: 'theme',
                   gender: 'gender',
               }
-
+      
               const defaultColumnKey = 'theme';
               let selectedColumnKey;
               if (reference) {
@@ -699,36 +707,38 @@ const UserProvider = ({ children }) => {
               } else {
                 selectedColumnKey = combinationColumnKeys[columnKey] || defaultColumnKey;
               }
-
-              // console.log(selectedColumnKey)
-
+      
                   if (newStatusArr.length > 0) {
+                    let filterValue = JSON.stringify(newStatusArr);
                       switch (selectedColumnKey) {
                           case 'theme':
                           case 'stamp':
                           case 'sizes':
                               response = `collection:{
                                   id:{eq:"${IdCollection || null}"}}
-                                  ${selectedColumnKey}:{name:{in: ${JSON.stringify(newStatusArr)}}}`;
+                                  ${selectedColumnKey}:{name:{in: ${filterValue}}}`;
                               break;
-
                           case 'productname':
                           case 'status':
                               response = `collection:{
                                   id:{eq:"${IdCollection || null}"}}
-                                  ${selectedColumnKey}:{in: ${JSON.stringify(newStatusArr)}}`;
+                                  ${selectedColumnKey}:{in: ${filterValue}}`;
                               break;
                           default:
+                              if (JSON.parse(filterValue).includes("All Genders")){
+                                  response = `collection:{id:{eq:"${IdCollection || null}"}}`;
+                              } else {
                                 if (reference) {
-                                  response = `
-                                    collection:{id:{eq:"${IdCollection || null}"}}
-                                    ${selectedColumnKey}:{in: ${JSON.stringify(newStatusArr)}}`;
-                                  } else { // combination
-                                  response =
-                                    `collection:{id:{eq:"${IdCollection || null}"}}
-                                    ${selectedColumnKey}:{name:{in: ${JSON.stringify(newStatusArr)}}}`;
-                                  }
-                                break;
+                                    response = `
+                                      collection:{id:{eq:"${IdCollection || null}"}}
+                                      ${selectedColumnKey}:{in: ${filterValue}}`;
+                                } else { // combination
+                                    response =
+                                      `collection:{id:{eq:"${IdCollection || null}"}}
+                                      ${selectedColumnKey}:{name:{in: ${filterValue}}}`;
+                                }
+                              }
+                              break;
                       }
                   }
                       return response;
@@ -770,7 +780,7 @@ const UserProvider = ({ children }) => {
     try {
 
         const Nreferencia = values ? values : '0'
-        setfiltersGenderMap([]);
+        // setfiltersGenderMap([]);
 
         const pageData = await fetchAPI("/mastercontrol/getGenderReference/"+Nreferencia, {
             //Nreferencia: "1240001",
@@ -924,7 +934,7 @@ const UserProvider = ({ children }) => {
           async function dofindGender() {
             try {
               let ItemGenderMap = [];
-              setfiltersGenderMap([]);
+              // setfiltersGenderMap([]);
               const pageData = await fetchAPI("/genders", {
               }).then( MapGender => {
                   MapGender.data?.map((dataRef, index) => {

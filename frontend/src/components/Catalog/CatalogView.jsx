@@ -14,7 +14,7 @@ import {CatalogDroppable} from '@/components/Catalog/CatalogDroppable'
 import { PDFViewer } from '@react-pdf/renderer';
 
 import ReporViewer from '@/components/Catalog/ReporViewer'
-import ButtonRecharge from '@/components/Cards/DetailReference/buttonRecharge'
+import ButtonRechargeCatalog from '@/components/Cards/DetailReference/buttonRechargeCatalog'
 import {FormItemTheme,
         FormItemGender,
         FormItemProduct,
@@ -54,7 +54,7 @@ export function CatalogView() {
    const [ ItemSelectTheme, setItemSelectTheme] = useState();
    const [ ItemSelectProduct, setItemSelectProduct] = useState();
    const [formCatalogView] = Form.useForm();
-   const [loading, setLoading] = useState(false);
+   const [loading, setLoading] = useState(true);
 
    const [openCatalog, setOpenCatalog] = useState(false);
 
@@ -76,16 +76,16 @@ export function CatalogView() {
     setOpenCatalog(false);
   };
 
-  
-
-useEffect(() => {
- 
-  fetchData();
-}, [IdCollection]);
+// Mejoramos el rendimiento gracias a la modificacion de este UseEffect
+  useEffect(() => {
+      IdCollection
+        ? dofetchIDCollection(IdCollection)
+        : dofetchIDCollection('29')
+  // }, [IdCollection]);
+  }, []);
 
   return (
     <>
-    
       <div className="overflow-hidden bg-white dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]">
         <div className="py-1 sm:px-2 lg:relative lg:px-0 lg:py-1">
           <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-1 px-4 lg:max-w-8xl lg:grid-cols-1 lg:px-8 xl:gap-x-16 xl:px-12">
@@ -102,7 +102,7 @@ useEffect(() => {
                 }
               </div>
               <div className="col-span-6 sm:col-span-1  ">
-                {<ButtonRecharge />}
+                {<ButtonRechargeCatalog />}
               </div>
             </div>
             <Form form={formCatalogView} name="form_CatalogViewFilterSelect">
@@ -147,21 +147,20 @@ useEffect(() => {
                   </Button>
                 )}
               </div>
-              <div className="col-span-6 sm:col-span-1  ">            
-
+              <div className="col-span-6 sm:col-span-1  ">
                 <CatalogDroppable catalogType={catalogType} />
-            
               </div>
             </div>
           </div>
         </div>
       </div>
-      
+
       <Drawer
         title="Close"
         placement="right"
         onClose={() => {
-          doReferenceMapFilters(FilterCatalogSelect), onClose(true)
+          // doReferenceMapFilters(FilterCatalogSelect),
+          onClose(true)
         }}
         open={open}
         size={'large'}
