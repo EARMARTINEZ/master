@@ -16,7 +16,8 @@ const RecentComments = () => {
         dofetchReference, 
         SoloReferenceMap,       
         IdCollection,
-        doshowDrawer,        
+        doshowDrawer,    
+        fetchData,    
             } = useTasks();
 
         let FilterTablePendingsMap = [];
@@ -30,8 +31,10 @@ const RecentComments = () => {
         const [StatusMap, setStatusMap] = useState([]);
         const [UserMap, setUserMap] = useState([]);    
         const [filtersReferenceMap, setfiltersReferenceMap] = useState([]);  
+
         
-        useEffect(() => {            
+        
+        useEffect(() => {                
             ReferenceMap?.map((dataRef, index) => {  
                 const { referencia, comments } = dataRef ? dataRef.attributes : '0'; 
 
@@ -95,7 +98,7 @@ const RecentComments = () => {
                  setUserMap(ItemUserMap);
                  setfiltersReferenceMap([...ItemReferenceMap])
             });          
-            }, [IdCollection]);
+            }, [ReferenceMap]);
 
          
 

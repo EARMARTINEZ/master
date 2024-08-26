@@ -12,7 +12,7 @@ import {CardReference} from '@/components/Cards/DetailReference/CardReference'
 import {CardStamp} from '@/components/DetailStamp/CardStamp'
 import RecentComments from '@/components/RecentComment/RecentComments'
 import RecentStampComments from '@/components/RecentComment/RecentStampComments'
-
+import useFetchCollection from '@/components/Cards/useFetchCollection'
 
 
 export default function TableSearchComments() {  
@@ -36,11 +36,11 @@ export default function TableSearchComments() {
        } = BasicTasks();        
       
           
-      useEffect(() => {            
-            IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('31');          
-      }, [IdCollection]); 
+    //   useEffect(() => {            
+    //         IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('31');          
+    //   }, [IdCollection]); 
       
-     
+      useFetchCollection(IdCollection);
        
   
     return (

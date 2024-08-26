@@ -12,7 +12,7 @@ import {CardReference} from '@/components/Cards/DetailReference/CardReference'
 import {CardStamp} from '@/components/DetailStamp/CardStamp'
 import RecentPendings from '@/components/RecentComment/RecentPendings'
 import RecentStampPendings from '@/components/RecentComment/RecentStampPendings'
-
+import useFetchCollection from '@/components/Cards/useFetchCollection'
 
 export default function TableSearchPendings() {  
     
@@ -35,11 +35,11 @@ export default function TableSearchPendings() {
        } = BasicTasks();        
       
           
-      useEffect(() => {            
-            IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('31');          
-      }, [IdCollection]); 
+    //   useEffect(() => {            
+    //         IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('31');          
+    //   }, [IdCollection]); 
       
-     
+      useFetchCollection(IdCollection);
        
   
     return (

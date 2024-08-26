@@ -97,7 +97,7 @@ const RecentPendings = () => {
                  setUserMap(ItemUserMap);
                  setfiltersReferenceMap([...ItemReferenceMap])
             });          
-            }, [IdCollection]);
+            }, [ReferenceMap]);
 
          
 
