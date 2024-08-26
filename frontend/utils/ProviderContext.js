@@ -665,6 +665,7 @@ const UserProvider = ({ children }) => {
           // let data = {data: arrayMap ? arrayMap : [] };
           let data = {data: arrayMap || []};
               MapCombinations(data);
+              setLoading(false);
           } catch (error) {
               console.log("error", error)
           }
