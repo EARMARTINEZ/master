@@ -17,7 +17,8 @@ const RecentComments = () => {
         SoloReferenceMap,       
         IdCollection,
         doshowDrawer,    
-        fetchData,    
+        fetchData,
+        MetaReferenceMap,    
             } = useTasks();
 
         let FilterTablePendingsMap = [];
@@ -38,7 +39,12 @@ const RecentComments = () => {
             ReferenceMap?.map((dataRef, index) => {  
                 const { referencia, comments } = dataRef ? dataRef.attributes : '0'; 
 
-                comments?.map((comments, index) => {                    
+                    // Ordenar los comentarios por fecha en orden descendente
+                    const sortedComments = comments?.sort((a, b) => {
+                        return new Date(b.date) - new Date(a.date);
+                    });
+
+                sortedComments?.map((comments, index) => {                    
                     let PendingsComments= {
                       "references": dataRef.attributes.referencia,
                       'reference':<Button type="link" 
@@ -360,9 +366,9 @@ const RecentComments = () => {
         columns={columns} 
         dataSource={data}
         onChange={onChange}
-        pagination={{
-            pageSize: 10,
-          }}
+        // pagination={{
+        //     pageSize: 10,
+        //   }}
         scroll={{
             x: 1000,
             

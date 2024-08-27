@@ -910,8 +910,11 @@ export async function getCollectionReference({ NCollection, start, pageSize, FIL
   const Start = start ? start : 1;
   const Limite = pageSize ? pageSize : 10;
   
-  const Filters = FILTERS ? `collection: { id: { eq: $NCollection } }, ${FILTERS}`
-                          :`collection: { id: { eq: $NCollection } }`
+  const Filters = FILTERS ? `${FILTERS}`
+                          :`sort: "referencia:asc" 
+                            filters: { 
+                            collection: { id: { eq: $NCollection }} 
+                            } `
 
                     
   console.time('fetchData');
@@ -928,9 +931,8 @@ export async function getCollectionReference({ NCollection, start, pageSize, FIL
         $Limite: Int!
       ) {
         masters(
-          publicationState: PREVIEW
-          sort: "referencia:asc"
-          filters: { ${Filters}}          
+          publicationState: PREVIEW          
+          ${Filters}          
           pagination: { page: $Start, pageSize: $Limite }
         ) {
           data {
