@@ -30,7 +30,8 @@ export default function TableSearchComments() {
         open,
         StampsOpen, 
         onCloseStamps, 
-        fetchData,          
+        fetchData,
+        setLoading,          
        } = useTasks();  
           
        const { 
@@ -48,7 +49,7 @@ export default function TableSearchComments() {
                              filters: { 
                              collection: { id: { eq: $NCollection } }                         
                              }`                
-                
+                setLoading(true)
                 fetchData(Start, PageSize,Filters);
                 setControlfetchData(false);                
            

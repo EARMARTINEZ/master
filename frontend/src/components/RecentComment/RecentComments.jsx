@@ -18,7 +18,9 @@ const RecentComments = () => {
         IdCollection,
         doshowDrawer,    
         fetchData,
-        MetaReferenceMap,    
+        MetaReferenceMap,   
+        loading, 
+        setLoading
             } = useTasks();
 
         let FilterTablePendingsMap = [];
@@ -33,9 +35,20 @@ const RecentComments = () => {
         const [UserMap, setUserMap] = useState([]);    
         const [filtersReferenceMap, setfiltersReferenceMap] = useState([]);  
 
+        const data = PendingsMap;             
         
+        const [searchText, setSearchText] = useState('');
+        const [searchedColumn, setSearchedColumn] = useState('');
+        const searchInput = useRef(null);
+
+        // const [loading, setLoading] = useState(true); 
         
-        useEffect(() => {                
+        const tableProps = { 
+         loading,        
+       };
+        
+        useEffect(() => {   
+                      
             ReferenceMap?.map((dataRef, index) => {  
                 const { referencia, comments } = dataRef ? dataRef.attributes : '0'; 
 
@@ -103,22 +116,13 @@ const RecentComments = () => {
                  setStatusMap(ItemStatusMap);
                  setUserMap(ItemUserMap);
                  setfiltersReferenceMap([...ItemReferenceMap])
-            });          
+            }); 
+            // setLoading(false);         
             }, [ReferenceMap]);
 
          
 
-        const data = PendingsMap;     
-        
-        
-        const [searchText, setSearchText] = useState('');
-        const [searchedColumn, setSearchedColumn] = useState('');
-        const searchInput = useRef(null);
-
-        const [loading, setLoading] = useState(false); 
-        const tableProps = { 
-         loading,        
-       };
+       
      
 
        
@@ -363,6 +367,7 @@ const RecentComments = () => {
      <Table 
         {...tableProps}
         bordered
+        loading={loading}
         columns={columns} 
         dataSource={data}
         onChange={onChange}
