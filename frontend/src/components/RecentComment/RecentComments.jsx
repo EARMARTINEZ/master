@@ -35,7 +35,7 @@ const RecentComments = () => {
         const [UserMap, setUserMap] = useState([]);    
         const [filtersReferenceMap, setfiltersReferenceMap] = useState([]);  
 
-        const data = PendingsMap;             
+                  
         
         const [searchText, setSearchText] = useState('');
         const [searchedColumn, setSearchedColumn] = useState('');
@@ -122,8 +122,7 @@ const RecentComments = () => {
 
          
 
-       
-     
+        const data = PendingsMap;       
 
        
 

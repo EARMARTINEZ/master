@@ -45,7 +45,7 @@ export default function TableSearchComments() {
         try {            
                 const Start= 1;  
                 const PageSize= 50;  
-                const Filters =`sort: "referencia:desc", 
+                const Filters =`sort: "updatedAt:desc", 
                              filters: { 
                              collection: { id: { eq: $NCollection } }                         
                              }`                
