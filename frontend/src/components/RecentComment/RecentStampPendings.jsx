@@ -37,7 +37,7 @@ const RecentStampPendings = () => {
 
                 const { pendingstamp } = stamp.data ?  stamp.data.attributes : '';
 
-               
+                
 
                 pendingstamp?.map((comments, index) => {                    
                     let PendingsComments= {
@@ -99,13 +99,16 @@ const RecentStampPendings = () => {
 
                                 
                  });
+
+                 
                  setPendingsMap([...FilterTableStampsMap]);
                  setTypePendingsMap([...ItemMap]);
                  setStatusMap([...ItemStatusMap]);
                  setUserMap([...ItemUserMap]);
                  setfiltersStampsNameMap([...ItemStampNameMap])
-            });          
-            }, [IdCollection]);
+            });    
+                    
+            }, [ReferenceMap]);
 
          
 

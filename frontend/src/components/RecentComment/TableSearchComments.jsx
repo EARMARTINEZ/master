@@ -119,7 +119,7 @@ export default function TableSearchComments() {
             <Drawer 
                 title="Close" 
                 placement="right" 
-                onClose={() => onCloseStamps( ) } 
+                onClose={() => {onCloseStamps(true), dofetchData()} } 
                 open={StampsOpen} 
                 size={'large'} 
                 width={2000}

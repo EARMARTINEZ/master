@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 
 import  'flowbite'
-import {useEffect } from "react"; 
+import {useEffect, useCallback, useState } from "react"; 
 import {getStrapiURL} from "utils/api";
 import { Card  } from 'antd';
 
@@ -20,6 +20,7 @@ export default function TableSearchPendings() {
     
     const {
         IdCollection, 
+        ReferenceMap,
         NameCollection,        
         dogetCollectionReference, 
         dofetchIDCollection,
@@ -27,7 +28,9 @@ export default function TableSearchPendings() {
         onClose,
         open,
         StampsOpen, 
-        onCloseStamps,           
+        onCloseStamps, 
+        fetchData,
+        setLoading,          
        } = useTasks();  
           
        const { 
@@ -35,11 +38,34 @@ export default function TableSearchPendings() {
        } = BasicTasks();        
       
           
-    //   useEffect(() => {            
-    //         IdCollection ? dogetCollectionReference(IdCollection) : dogetCollectionReference('31');          
-    //   }, [IdCollection]); 
+       const [controlFetchData, setControlfetchData] = useState(true);
+
+       const dofetchData = useCallback(async () => {
+        
+        try {            
+                const Start= 1;  
+                const PageSize= 50;  
+                const Filters =`sort: "updatedAt:desc", 
+                             filters: { 
+                             collection: { id: { eq: $NCollection } }
+                             }`                
+                setLoading(true)
+                fetchData(Start, PageSize,Filters);
+                setControlfetchData(false);                
+           
+          
+        } catch (error) {
+          console.error('Error al obtener datos de la colección:', error);
+        }
+      }, []);
       
-      useFetchCollection(IdCollection);
+          
+   
+      useEffect(() => {
+        if (controlFetchData){ 
+            dofetchData();
+        }
+    }, [ReferenceMap, controlFetchData]);
        
   
     return (
@@ -78,7 +104,7 @@ export default function TableSearchPendings() {
           <Drawer 
               title="Close" 
               placement="right" 
-              onClose={() => onClose( ) } 
+              onClose={() => {onClose(true), dofetchData()}  } 
               open={open} 
               size={'large'} 
               width={2000}
@@ -90,7 +116,7 @@ export default function TableSearchPendings() {
             <Drawer 
                 title="Close" 
                 placement="right" 
-                onClose={() => onCloseStamps( ) } 
+                onClose={() =>{ onCloseStamps(true), dofetchData()} } 
                 open={StampsOpen} 
                 size={'large'} 
                 width={2000}

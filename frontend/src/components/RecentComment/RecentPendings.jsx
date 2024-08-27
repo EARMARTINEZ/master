@@ -16,7 +16,8 @@ const RecentPendings = () => {
         dofetchReference, 
         SoloReferenceMap,       
         IdCollection,
-        doshowDrawer,        
+        doshowDrawer, 
+        loading,       
             } = useTasks();
 
         let FilterTablePendingsMap = [];
@@ -108,7 +109,8 @@ const RecentPendings = () => {
         const [searchedColumn, setSearchedColumn] = useState('');
         const searchInput = useRef(null);
 
-        const [loading, setLoading] = useState(false); 
+       
+        
         const tableProps = { 
          loading,        
        };
@@ -353,6 +355,7 @@ const RecentPendings = () => {
      <Table 
         {...tableProps}
         bordered
+        loading={loading}
         columns={columns} 
         dataSource={data}
         onChange={onChange}

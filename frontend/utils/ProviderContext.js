@@ -234,7 +234,7 @@ const UserProvider = ({ children }) => {
            setSoloReferenceMap([...ItemMap]);
            setTableStampsMap([...FilterTableStampsMap]);
 
-           console.log("Set Reference Map", RefMap)
+          //  console.log("Set Reference Map", RefMap)
            setReferenceMap([...RefMap]);
 
           return FilterRefMap;
@@ -1875,9 +1875,11 @@ const UserProvider = ({ children }) => {
     setStampsOpen(true);
    };
 
-   const onCloseStamps = ( ) => {
+   const onCloseStamps = (values ) => {
 
-   
+      if(values){
+        setStampsOpen(false);
+      }
 
       if(StatusOnCloseStamps==true){
 

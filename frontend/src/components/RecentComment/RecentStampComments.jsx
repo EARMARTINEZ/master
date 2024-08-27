@@ -35,9 +35,8 @@ const RecentStampComments = () => {
             ReferenceMap?.map((dataRef, index) => {  
                 const { referencia, pendings, stamp } = dataRef ? dataRef.attributes : '0'; 
 
-                const { commentstamp } = stamp.data ?  stamp.data.attributes : '';
-
-               
+                const { commentstamp } = stamp.data ?  stamp.data.attributes : '';              
+                
 
                 commentstamp?.map((comments, index) => {                    
                     let PendingsComments= {
@@ -52,7 +51,7 @@ const RecentStampComments = () => {
                      'Idcomments': comments.id ? comments.id : '',           
                       "user": comments.user ? comments.user : 'null',           
                       "date": comments.date ?  moment(comments.date ).format('MM/DD/YYYY, h:mm:ss a') : 'null',
-                      "status": comments.status ? comments.status : 'null',
+                      "status": stamp.data ? stamp.data.attributes.status : 'null',
                       "comment": comments.comment ? comments.comment : 'null',
                       "typependings": comments.type.data.attributes ? comments.type.data.attributes.name : 'null'
                     }
@@ -104,8 +103,9 @@ const RecentStampComments = () => {
                  setStatusMap([...ItemStatusMap]);
                  setUserMap([...ItemUserMap]);
                  setfiltersStampsNameMap([...ItemStampNameMap])
-            });          
-            }, [IdCollection]);
+            });
+            
+            }, [ReferenceMap]);
 
          
 
@@ -364,9 +364,9 @@ const RecentStampComments = () => {
         columns={columns} 
         dataSource={data}
         onChange={onChange}
-        pagination={{
-            pageSize: 10,
-          }}
+        // pagination={{
+        //     pageSize: 10,
+        //   }}
         scroll={{
             x: 1000,
             
