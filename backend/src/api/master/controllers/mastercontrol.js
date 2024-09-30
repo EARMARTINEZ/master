@@ -903,7 +903,7 @@ module.exports = {
           //   $contains: Prefix,
           // },
           collection: {
-            $ne: null, // Asegura que la colección existe
+            $not: null, // Asegura que la colección existe
           },
       },
         populate: {
