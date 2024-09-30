@@ -903,9 +903,6 @@ module.exports = {
           //   $contains: Prefix,
           // },
           collection: {
-            id: {
-                $not: null, // Verifica que el ID de la colección no sea nulo
-            },
             name: {
                 $contains: 'Spring-Summer 2024' // Agrega el filtro que necesitas para el atributo 'name'
             }
