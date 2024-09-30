@@ -12,7 +12,7 @@ const ButtonExport = ({}) => {
     const {          
           IdPrefixCollection,
           FiltersReferenceMap,
-          NameCollection
+          IdCollection
        } = useTasks();     
     
     const [loadings, setLoadings] = useState([]);
@@ -62,7 +62,7 @@ const ButtonExport = ({}) => {
               loading={loadings[1]}
               disabled={disabled}
               className="rounded bg-sky-100 py-0 px-4 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500"
-              href={ `/api/auth/getAPI?value=${NameCollection}` }
+              href={ `/api/auth/getAPI?value=${IdCollection}` }
               onClick={ () => {
                   enterLoading(1);
                  
