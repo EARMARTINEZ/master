@@ -890,22 +890,23 @@ module.exports = {
 
 
    const { Nreferencia } = ctx.params;
-   const ReferencePrefix = Nreferencia.substring(0, 3)
+  //  const ReferencePrefix = Nreferencia.substring(0, 3)
 
-   let Prefix = Nreferencia.length === 3 ? `${ReferencePrefix}`  : Nreferencia;
+  //  let Prefix = Nreferencia.length === 3 ? `${ReferencePrefix}`  : Nreferencia;
 
    try {
 
       const [MasterEntry, EntryCount] = await strapi.db.query('api::master.master').findWithCount({
         select: ['id', 'referencia', 'description', 'status', 'similarRefs'],
-        where: {
-          referencia: {
-            $contains: Prefix,
-          },
-      },
+       
         populate: {
           collection: {
             populate: {
+              where: {
+                name: {
+                  $contains: Nreferencia,
+                },
+            },
               collection_type:{
                 fields: ['id'],
                 },
