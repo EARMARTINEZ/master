@@ -981,15 +981,15 @@ if(EntryCount){
 
       let masterlist = {
 
-        "Identifier": data.referencia,
-        "collection": data.collection.name,
-        "color": data.color_pantone.name,
-        "SystemColor": data.Composition.color.name,
+        "Identifier": data.referencia ? data.referencia : '',
+        "collection": data.collection.name ? data.collection.name : '',
+        "color": data.color_pantone.name ? data.color_pantone.name : '',
+        "SystemColor": data.Composition.color.name ? data.Composition.color.name : '',
         "Size":CodigoSizes.join(' '),
-        "Theme": data.theme.name,
-        "Gender": data.Composition.gender.name,
-        "Product": data.Composition.typeproduct.name,
-        "Fabric": data.Composition.fabric.name,
+        "Theme": data.theme.name ? data.theme.name : '',
+        "Gender": data.Composition.gender.name ? data.Composition.gender.name : '',
+        "Product": data.Composition.typeproduct.name ? data.Composition.typeproduct.name : '',
+        "Fabric": data.Composition.fabric.name ? data.Composition.fabric.name : '',
         "Status": data.status,
         "Description": data.description,
         "Pending": PendingComment.join(' '),
