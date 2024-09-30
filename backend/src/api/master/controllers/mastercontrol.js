@@ -904,7 +904,7 @@ module.exports = {
           // },
           collection: {
             name: {
-              $contains: Nreferencia, // Aquí pones el valor que quieres buscar en el campo name de collection
+              $contains: 'Spring-Summer 2024', // Aquí pones el valor que quieres buscar en el campo name de collection
             },
           },
       },
