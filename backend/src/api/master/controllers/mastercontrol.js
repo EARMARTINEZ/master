@@ -900,8 +900,8 @@ module.exports = {
         select: ['id', 'referencia', 'description', 'status', 'similarRefs'],
         
         populate: {
-          collection: {
-            where: {
+          where: {
+          collection: {           
               name: {
                 $contains: Nreferencia,
               },
