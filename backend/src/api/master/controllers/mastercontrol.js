@@ -889,7 +889,7 @@ module.exports = {
   async TriggerXLSX(ctx){
 
 
-   const { IdCollection } = ctx.params;
+   const { Nreferencia } = ctx.params;
   //  const ReferencePrefix = Nreferencia.substring(0, 3)
 
   //  let Prefix = Nreferencia.length === 3 ? `${ReferencePrefix}`  : Nreferencia;
@@ -904,7 +904,7 @@ module.exports = {
           // },
           collection: {
             id: {
-                $contains: IdCollection // Agrega el filtro que necesitas para el atributo 'name'
+                $contains: Nreferencia // Agrega el filtro que necesitas para el atributo 'name'
             }
         }
       },
@@ -962,7 +962,7 @@ module.exports = {
     let CodigoSizes=[];
     let PendingComment=[];
 
-    console.log(MasterEntry)
+   
 
 if(EntryCount){
     MasterEntry?.map((data, index) => {
