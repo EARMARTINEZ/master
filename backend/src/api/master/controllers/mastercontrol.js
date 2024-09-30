@@ -962,17 +962,19 @@ module.exports = {
     let CodigoSizes=[];
     let PendingComment=[];
 
+    console.log(MasterEntry)
+
 if(EntryCount){
     MasterEntry?.map((data, index) => {
 
 
       data.sizes.map((Sizes, index) => {
-        const IdSizes = Sizes ? Sizes.name : 'null'
+        const IdSizes = Sizes ? Sizes.name : []
         CodigoSizes.push(IdSizes);
     });
 
     data.pendings?.map((Comments, index) => {
-      const Commenta = Comments ? Comments.comment : 'null'
+      const Commenta = Comments ? Comments.comment : []
       PendingComment.push(Commenta);
     });
 
