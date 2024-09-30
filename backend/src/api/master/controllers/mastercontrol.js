@@ -898,15 +898,15 @@ module.exports = {
 
       const [MasterEntry, EntryCount] = await strapi.db.query('api::master.master').findWithCount({
         select: ['id', 'referencia', 'description', 'status', 'similarRefs'],
-       
+        
         populate: {
           collection: {
+            where: {
+              name: {
+                $contains: Nreferencia,
+              },
+          },
             populate: {
-              where: {
-                name: {
-                  $contains: Nreferencia,
-                },
-            },
               collection_type:{
                 fields: ['id'],
                 },
