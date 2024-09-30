@@ -982,7 +982,7 @@ if(EntryCount){
       let masterlist = {
 
         "Identifier": data.referencia,
-        // "collection": data.collection.name,
+        "collection": data.collection.name,
         // "color": data.color_pantone.name,
         // "SystemColor": data.Composition.color.name,
         // "Size":CodigoSizes.join(' '),
