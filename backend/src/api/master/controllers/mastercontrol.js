@@ -907,7 +907,7 @@ module.exports = {
           collection: {
             where: {
               name: {
-                $contains: Nreferencia,
+                $contains: 'spring-summer 2024',
               },
             },
             populate: {
