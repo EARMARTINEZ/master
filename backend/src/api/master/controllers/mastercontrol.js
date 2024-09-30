@@ -903,14 +903,14 @@ module.exports = {
           //   $contains: Prefix,
           // },
           collection: {
-            name: {
-                $contains: 'Spring-Summer 2024' // Agrega el filtro que necesitas para el atributo 'name'
+            id: {
+                $contains: '29' // Agrega el filtro que necesitas para el atributo 'name'
             }
         }
       },
         populate: {
           collection: {
-              fields: ['name'],
+              fields: ['id'],
             populate: {
               collection_type:{
                 fields: ['id'],
