@@ -980,18 +980,18 @@ if(EntryCount){
       let masterlist = {
 
         "Identifier": data.referencia,
-        "collection": data.collection.name,
-        "color": data.color_pantone.name,
-        "SystemColor": data.Composition.color.name,
-        "Size":CodigoSizes.join(' '),
-        "Theme": data.theme.name,
-        "Gender": data.Composition.gender.name,
-        "Product": data.Composition.typeproduct.name,
-        "Fabric": data.Composition.fabric.name,
-        "Status": data.status,
-        "Description": data.description,
-        "Pending": PendingComment.join(' '),
-        "SimilarRef": data.similarRefs,
+        // "collection": data.collection.name,
+        // "color": data.color_pantone.name,
+        // "SystemColor": data.Composition.color.name,
+        // "Size":CodigoSizes.join(' '),
+        // "Theme": data.theme.name,
+        // "Gender": data.Composition.gender.name,
+        // "Product": data.Composition.typeproduct.name,
+        // "Fabric": data.Composition.fabric.name,
+        // "Status": data.status,
+        // "Description": data.description,
+        // "Pending": PendingComment.join(' '),
+        // "SimilarRef": data.similarRefs,
       }
 
       CodigoSizes=[''];
