@@ -903,13 +903,16 @@ module.exports = {
           //   $contains: Prefix,
           // },
           collection: {
-            name: {
-              $contains: 'Spring-Summer 2024', // Aquí pones el valor que quieres buscar en el campo name de collection
-            },
+            $ne: null, // Asegura que la colección existe
           },
       },
         populate: {
           collection: {
+            where: {
+              name: {
+                $contains: 'Spring-Summer 2024', // El valor que estás buscando en 'name'
+              },
+            },
             populate: {
               collection_type:{
                 fields: ['id'],
