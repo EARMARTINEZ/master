@@ -956,6 +956,9 @@ module.exports = {
             }
           ],
         },
+        orderBy: { 
+          referencia: 'asc'
+        },
     });
 
     let ArrayReference=[];
