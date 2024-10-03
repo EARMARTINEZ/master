@@ -799,129 +799,266 @@ export function FormItemColor() {
 }
 
 
-export function FormItemStamp() {   
+// export function FormItemStamp() {   
     
-        const { 
-          filtersStampsMap,  
-           } = BasicTasks();          
+//         const { 
+//           filtersStampsMap,  
+//            } = BasicTasks();          
          
-           const { TextArea } = Input;
+//            const { TextArea } = Input;
     
-          const { Option } = Select;
-          const stamp =filtersStampsMap;
+//           const { Option } = Select;
+//           const stamp =filtersStampsMap;
     
-          const [ItemOpen, setItemOpen] = useState(true);
+//           const [ItemOpen, setItemOpen] = useState(true);
           
-          const [form] = Form.useForm();    
-          const handleChange = () => {
-            form.setFieldsValue({
-              NewStamp: [],
-            });
-          };
+//           const [form] = Form.useForm();    
+//           const handleChange = () => {
+//             form.setFieldsValue({
+//               NewStamp: [],
+//             });
+//           };
        
       
-        return (
-        <>
+//         return (
+//         <>
          
-          <div className="grid grid-cols-1 gap-1 m-0">
-              <div className="grid grid-cols-2 gap-1 m-0 ">                
+//           <div className="grid grid-cols-1 gap-1 m-0">
+//               <div className="grid grid-cols-2 gap-1 m-0 ">                
     
-                      {ItemOpen ? (         
-                        <div className="col-span-1 sm:col-span-1  ">
-                          <Form.Item
-                              name="stamp"
-                              label="Stamp"
+//                       {ItemOpen ? (         
+//                         <div className="col-span-1 sm:col-span-1  ">
+//                           <Form.Item
+//                               name="stamp"
+//                               label="Stamp"
                             
-                          >
-                              <Select 
+//                           >
+//                               <Select 
                             
-                              options={stamp} 
-                              onChange={handleChange} 
-                              showSearch         
-                              placeholder="Search to Select"
-                              optionFilterProp="children"
-                              filterOption={(input, option) => option?.label.toString().toLowerCase().includes(input.toLowerCase())}
-                              //filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                              filterSort={(optionA, optionB) =>
-                                  (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+//                               options={stamp} 
+//                               onChange={handleChange} 
+//                               showSearch         
+//                               placeholder="Search to Select"
+//                               optionFilterProp="children"
+//                               filterOption={(input, option) => option?.label.toString().toLowerCase().includes(input.toLowerCase())}
+//                               //filterOption={(input, option) => (option?.label ?? '').includes(input)}
+//                               filterSort={(optionA, optionB) =>
+//                                   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
                                 
-                              }
+//                               }
                               
-                              />
-                          </Form.Item> 
-                        </div> 
-                      ) : null} 
+//                               />
+//                           </Form.Item> 
+//                         </div> 
+//                       ) : null} 
     
-                        <div className="col-span-1 sm:col-span-1  ">
-                          <Form.List name="NewStamp">
-                            {(fields, { add, remove }) => (
-                            <>
-                                {fields.length<1 ? setItemOpen(true) : setItemOpen(false)} 
-                                {fields.map((field) => (
-                                <Space 
-                                key={field.key} 
-                                align="baseline"
-                                style={{
-                                  display: 'flex',
-                                  marginBottom: 8,
-                                }}
-                                >
+//                         <div className="col-span-1 sm:col-span-1  ">
+//                           <Form.List name="NewStamp">
+//                             {(fields, { add, remove }) => (
+//                             <>
+//                                 {fields.length<1 ? setItemOpen(true) : setItemOpen(false)} 
+//                                 {fields.map((field) => (
+//                                 <Space 
+//                                 key={field.key} 
+//                                 align="baseline"
+//                                 style={{
+//                                   display: 'flex',
+//                                   marginBottom: 8,
+//                                 }}
+//                                 >
     
-                                    <Form.Item
-                                    {...field}
-                                    label="Stamp"
-                                    name={[field.name, 'newStamp']}
-                                    rules={[
-                                        {
-                                        required: true,
-                                        message: 'Missing stamp',
-                                        },
-                                    ]}
-                                    >
-                                    <TextArea placeholder="" 
-                                    autoSize={{
-                                      minRows: 1,
-                                      maxRows: 6,
-                                    }} 
-                                />
-                                    </Form.Item>
+//                                     <Form.Item
+//                                     {...field}
+//                                     label="Stamp"
+//                                     name={[field.name, 'newStamp']}
+//                                     rules={[
+//                                         {
+//                                         required: true,
+//                                         message: 'Missing stamp',
+//                                         },
+//                                     ]}
+//                                     >
+//                                     <TextArea placeholder="" 
+//                                     autoSize={{
+//                                       minRows: 1,
+//                                       maxRows: 6,
+//                                     }} 
+//                                 />
+//                                     </Form.Item>
     
-                                    <MinusCircleOutlined onClick={() =>{
-                                      remove(field.name),
-                                      setItemOpen(true)
+//                                     <MinusCircleOutlined onClick={() =>{
+//                                       remove(field.name),
+//                                       setItemOpen(true)
     
-                                    } } />
-                                </Space>
-                                ))}
+//                                     } } />
+//                                 </Space>
+//                                 ))}
     
-                              {ItemOpen ? (   
-                                  <Space               
-                                  align="baseline"
-                                  style={{
-                                    display: 'flex',
-                                    marginBottom: 8,
-                                  }}
-                                  >
-                                    <PlusCircleTwoTone onClick={() => { 
-                                      add(),
-                                      setItemOpen(false) 
-                                      } } />
-                                    </Space>
-                                ) : null} 
-                            </>
-                            )}
-                          </Form.List>
-                        </div>  
+//                               {ItemOpen ? (   
+//                                   <Space               
+//                                   align="baseline"
+//                                   style={{
+//                                     display: 'flex',
+//                                     marginBottom: 8,
+//                                   }}
+//                                   >
+//                                     <PlusCircleTwoTone onClick={() => { 
+//                                       add(),
+//                                       setItemOpen(false) 
+//                                       } } />
+//                                     </Space>
+//                                 ) : null} 
+//                             </>
+//                             )}
+//                           </Form.List>
+//                         </div>  
     
-              </div>  
-          </div>          
+//               </div>  
+//           </div>          
           
         
-        </>
+//         </>
       
-      )
-}      
+//       )
+// }      
 
+export function FormItemStamp() {
+
+          const { 
+            doStamps,  
+           } = BasicTasks();   
+           
+           const { 
+            
+            IdPrefixCollection     
+           } = useTasks();   
+
+  const { TextArea } = Input;
+  const { Option } = Select;
+  const [ItemOpen, setItemOpen] = useState(true);
+  const [form] = Form.useForm();
+
+  const [stamps, setStamps] = useState([]); // Estado para almacenar los sellos
+  const [page, setPage] = useState(1); // Página actual
+  const [totalPages, setTotalPages] = useState(1); // Total de páginas disponibles
+  const [loading, setLoading] = useState(false); // Estado de carga
+
+         
+            const handleChange = () => {
+              form.setFieldsValue({
+                NewStamp: [],
+              });
+            };
+
+
+  // Función para cargar sellos (asume paginación en tu API)
+  const loadStamps = async (pageNumber = 1) => {
+    setLoading(true);
+    const result = await doStamps(IdPrefixCollection, pageNumber);
+    setStamps((prevStamps) => [...prevStamps, ...result.items]); // Agregar nuevos sellos
+    setTotalPages(result.pagination.pageCount); // Actualizar el total de páginas
+    setLoading(false);
+  };
+
+  const handleScroll = (event) => {
+    const { target } = event;
+    if (target.scrollTop + target.offsetHeight === target.scrollHeight) {
+      if (page < totalPages) {
+        loadStamps(page + 1); // Cargar más datos si hay más páginas
+        setPage(page + 1);
+      }
+    }
+  };
+
+  useEffect(() => {
+    loadStamps(); // Cargar la primera página al montar el componente
+  }, []);
+
+  return (
+    <>
+      <div className="grid grid-cols-1 gap-1 m-0">
+        <div className="grid grid-cols-2 gap-1 m-0">
+          {ItemOpen ? (
+            <div className="col-span-1 sm:col-span-1">
+              <Form.Item name="stamp" label="Stamp">
+                <Select
+                  showSearch
+                  onChange={handleChange}
+                  placeholder="Search to Select"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option?.label.toLowerCase().includes(input.toLowerCase())
+                  }
+                  onPopupScroll={handleScroll} // Activar scroll infinito
+                  loading={loading} // Mostrar estado de carga
+                  options={stamps} // Usar las opciones cargadas
+                />
+              </Form.Item>
+            </div>
+          ) : null}
+
+          <div className="col-span-1 sm:col-span-1">
+            <Form.List name="NewStamp">
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.length < 1 ? setItemOpen(true) : setItemOpen(false)}
+                  {fields.map((field) => (
+                    <Space
+                      key={field.key}
+                      align="baseline"
+                      style={{
+                        display: "flex",
+                        marginBottom: 8,
+                      }}
+                    >
+                      <Form.Item
+                        {...field}
+                        label="Stamp"
+                        name={[field.name, "newStamp"]}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Missing stamp",
+                          },
+                        ]}
+                      >
+                        <TextArea
+                          placeholder=""
+                          autoSize={{
+                            minRows: 1,
+                            maxRows: 6,
+                          }}
+                        />
+                      </Form.Item>
+
+                      <MinusCircleOutlined
+                        onClick={() => {
+                          remove(field.name);
+                          setItemOpen(true);
+                        }}
+                      />
+                    </Space>
+                  ))}
+
+                  {ItemOpen ? (
+                    <Space align="baseline" style={{ display: "flex", marginBottom: 8 }}>
+                      <PlusCircleTwoTone
+                        onClick={() => {
+                          add();
+                          setItemOpen(false);
+                        }}
+                      />
+                    </Space>
+                  ) : null}
+                </>
+              )}
+            </Form.List>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
 
 
 export function FormItemSystemColor() {   

@@ -366,7 +366,7 @@ export function FormItemTheme({form, ItemFilter, SelectTheme}) {
         let ArryFilterTheme = StaticReferenceMap.filter(type => type.attributes.theme.data.attributes.name === value)
         let ArryFilterGender = ArryFilterTheme.filter(type => type.attributes.genderName === ItemGender)
 
-        console.log(ArryFilterGender)
+        // console.log(ArryFilterGender)
 
         setReferenceMapStatus(false);
         doReferenceMapFilters(ArryFilterTheme);
@@ -607,7 +607,7 @@ export function FormSelectCatalog({CatalogSelec, SelectTheme, SelectProduct}) {
 
 
         const handleChange = (value) => {
-          console.log(value);
+          // console.log(value);
           CatalogSelec(value);
           SelectTheme();
           SelectProduct();

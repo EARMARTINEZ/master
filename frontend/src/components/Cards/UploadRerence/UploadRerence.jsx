@@ -44,7 +44,7 @@ const  UploadRerence = () => {
        
         
         <Form onFinish={async (values)=>{
-           console.log(values);
+        //    console.log(values);
 
             const Nreferencia = '25'
 

@@ -627,7 +627,7 @@ const UserProvider = ({ children }) => {
                 //MapReference(keys.masters);
               return keys.masters;
           });
-          console.log(pageData)
+          // console.log(pageData)
           return pageData;
           } catch (error) {
               console.log("error", error)
@@ -1870,7 +1870,7 @@ const UserProvider = ({ children }) => {
   const doShowStampsDrawer = (value, nfer) => {
     value==true ? setStatusOnCloseStamps(true) : setStatusOnCloseStamps(false)
     setShowModalLoading(true);
-    console.log(nfer)
+    // console.log(nfer)
     dofetchReference( nfer ? nfer : '0');
     setStampsOpen(true);
    };

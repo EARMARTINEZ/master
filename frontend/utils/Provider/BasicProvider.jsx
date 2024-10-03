@@ -136,7 +136,7 @@ const BasicProvider = ({ children }) => {
             ItemMap.push(Item,);
 
          });
-          console.log(ItemMap)
+          // console.log(ItemMap)
          setfiltersFabricsMap(ItemMap);
           return ResMap;
       });
@@ -207,6 +207,37 @@ const BasicProvider = ({ children }) => {
 
         }
   }
+
+  async function doStamps(values, currentPage = 1) {
+    try {
+      const ItemMap = [];
+     
+      const pageData = await getStampsCollection({
+        NCollection: values || "0",
+        page: currentPage,
+      });
+      console.log(pageData)
+      if (pageData.stamps.data) {
+        pageData.stamps.data.forEach((dataRef) => {
+          let Item = {
+            value: dataRef.id || '',
+            label: dataRef.attributes ? dataRef.attributes.name : ''
+          };
+          
+          ItemMap.push(Item);
+        });
+      }
+  
+      return {
+        items: ItemMap,
+        pagination: pageData.stamps.meta.pagination, // Metadatos de paginación
+      };
+    } catch (error) {
+      console.log("error", error);
+      return { items: [], pagination: {} };
+    }
+  }
+  
 
   async function dofindColorPantone(values) {
     try {
@@ -582,6 +613,7 @@ const useract = {
   dofindThemes:dofindThemes,
   dofindColorPantone:dofindColorPantone,
   dofindStamps:dofindStamps,
+  doStamps:doStamps,
   dofindSizes:dofindSizes,
   dofindTypecomments:dofindTypecomments,
   doDivideEnPartesIguales:doDivideEnPartesIguales,

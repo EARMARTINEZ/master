@@ -2123,33 +2123,84 @@ export async function getColorPantoneCollection({ NCollection }) {
   return pagesData.data;
 }
 
-export async function getStampsCollection({ NCollection }) {
-  // Find the pages that match this slug
+// export async function getStampsCollection({ NCollection }) {
+//   // Find the pages that match this slug
+//   const gqlEndpoint = getStrapiURL("/graphql");
+//   const pagesRes = await fetch(gqlEndpoint, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+
+//     },
+//     body: JSON.stringify({
+//       query: `
+//       query GetStampsCollection(
+//         $NCollection: String!){
+
+//           stamps(
+
+//             sort:"id:asc"
+//             filters:{masters:{referencia:{contains:$NCollection}}}
+//           ){
+//             data{
+//               id
+//               attributes{
+//                 name
+
+//               }
+//             }
+//                meta {
+//             pagination {
+//               page
+//               pageSize
+//               total
+//               pageCount
+//             }
+//           }
+//           }
+//        }
+//       `, variables: {
+//          NCollection
+
+//       },
+
+//     }),
+//   });
+
+//   const pagesData = await pagesRes.json();
+
+//   // Make sure we found something, otherwise return null
+//   if (pagesData.data?.stamps == null || pagesData.data.stamps.length === 0) {
+//     return null;
+//   }
+//   //console.log(pagesData.data.masters.data)
+//   // Return the first item since there should only be one result per slug
+//   return pagesData.data;
+// }
+
+export async function getStampsCollection({ NCollection, page = 1 }) {
   const gqlEndpoint = getStrapiURL("/graphql");
+
   const pagesRes = await fetch(gqlEndpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-
     },
     body: JSON.stringify({
       query: `
-      query GetStampsCollection(
-        $NCollection: String!){
-
-          stamps(
-
-            sort:"id:asc"
-            filters:{masters:{referencia:{contains:$NCollection}}}
-          ){
-            data{
-              id
-              attributes{
-                name
-
-              }
+      query GetStampsCollection($NCollection: String!, $page: Int!) {
+        stamps(
+          sort: "id:asc",
+          filters: { masters: { referencia: { contains: $NCollection } } },
+          pagination: { page: $page, pageSize: 10 }  
+        ) {
+          data {
+            id
+            attributes {
+              name
             }
-               meta {
+          }
+          meta {
             pagination {
               page
               pageSize
@@ -2157,26 +2208,20 @@ export async function getStampsCollection({ NCollection }) {
               pageCount
             }
           }
-          }
-       }
-      `, variables: {
-         NCollection
-
+        }
+      }
+      `,
+      variables: {
+        NCollection,
+        page,
       },
-
     }),
   });
 
-  const pagesData = await pagesRes.json();
-
-  // Make sure we found something, otherwise return null
-  if (pagesData.data?.stamps == null || pagesData.data.stamps.length === 0) {
-    return null;
-  }
-  //console.log(pagesData.data.masters.data)
-  // Return the first item since there should only be one result per slug
+  const pagesData = await pagesRes.json();  
   return pagesData.data;
 }
+
 
 export async function getSizesAll({ NGenders, NTypeproducts }) {
   // Find the pages that match this slug
@@ -2595,7 +2640,7 @@ export async function getCollectionFiltersCombination({ FILTERS }) {
 
   const pagesData = await pagesRes.json()
   console.log("PAGES DATA FILTERED")
-  console.log(pagesData)
+  // console.log(pagesData)
   // Make sure we found something, otherwise return null
   if (pagesData.data?.combinations == null || pagesData.data.combinations.length === 0) {
     return null

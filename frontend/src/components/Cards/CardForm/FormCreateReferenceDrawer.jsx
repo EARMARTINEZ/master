@@ -58,7 +58,7 @@ export function FormCreateReferenceDrawer() {
                     dofindFabrics(),
                     dofindThemes(IdCollection), 
                     dofindColorPantone(IdCollection), 
-                    dofindStamps(IdPrefixCollection),
+                    // dofindStamps(IdPrefixCollection),
                     //dogetSystemColor();
                     setStartSequence([]);                               
                 }} 

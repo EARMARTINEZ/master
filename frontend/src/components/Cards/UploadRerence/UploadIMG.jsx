@@ -96,7 +96,7 @@ const  UploadIMG = () => {
                             body: formData,
                         }).then( async res => {                   
                 
-                            console.log(await res.json()); 
+                            // console.log(await res.json()); 
                             
                             setSendUploadIMG(true);
                             setfileListIMG([]);                           

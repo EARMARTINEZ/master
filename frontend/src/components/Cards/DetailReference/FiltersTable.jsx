@@ -38,7 +38,7 @@ const FiltersTable = () => {
         dogenerateFilters,
         } = useTasks();
 
-         console.log(MetaReferenceMap)
+        
 
         let ItemStatusMap = [];
         const [filtersStatusMap, setfiltersStatusMap] = useState([]);
