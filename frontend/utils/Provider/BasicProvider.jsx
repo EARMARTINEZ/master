@@ -216,7 +216,7 @@ const BasicProvider = ({ children }) => {
         NCollection: values || "0",
         page: currentPage,
       });
-      console.log(pageData)
+      
       if (pageData.stamps.data) {
         pageData.stamps.data.forEach((dataRef) => {
           let Item = {

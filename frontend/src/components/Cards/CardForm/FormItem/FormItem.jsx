@@ -948,13 +948,14 @@ export function FormItemStamp() {
               form.setFieldsValue({
                 NewStamp: [],
               });
+              console.log('hola')
             };
 
 
   // Función para cargar sellos (asume paginación en tu API)
   const loadStamps = async (pageNumber = 1) => {
     setLoading(true);
-    const result = await doStamps(IdPrefixCollection, pageNumber);
+    const result = await doStamps(IdPrefixCollection, pageNumber);    
     setStamps((prevStamps) => [...prevStamps, ...result.items]); // Agregar nuevos sellos
     setTotalPages(result.pagination.pageCount); // Actualizar el total de páginas
     setLoading(false);
@@ -974,6 +975,15 @@ export function FormItemStamp() {
     loadStamps(); // Cargar la primera página al montar el componente
   }, []);
 
+  useEffect(() => {
+    setStamps([]);
+    setPage(1);
+    setTotalPages(1);
+    setLoading(false);
+    loadStamps();
+  }, [IdPrefixCollection]);
+
+
   return (
     <>
       <div className="grid grid-cols-1 gap-1 m-0">
@@ -992,6 +1002,13 @@ export function FormItemStamp() {
                   onPopupScroll={handleScroll} // Activar scroll infinito
                   loading={loading} // Mostrar estado de carga
                   options={stamps} // Usar las opciones cargadas
+                  // onDropdownVisibleChange={(open) => {
+                  //   if (open) {
+                  //     // Acción que quieres disparar cuando se abre el select
+                  //     console.log("Dropdown abierto");
+                  //     loadStamps(); 
+                  //   }
+                  // }}
                 />
               </Form.Item>
             </div>
