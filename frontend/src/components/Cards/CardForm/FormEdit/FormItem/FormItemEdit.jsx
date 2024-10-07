@@ -1,5 +1,5 @@
 import  'flowbite'
-import  React, {useEffect, useState, useCallback  } from "react"; 
+import  React, {useEffect, useState, useRef  } from "react"; 
 import { useTasks } from "utils/ProviderContext";
 import { BasicTasks } from "utils/Provider/BasicProvider";
 import { getStrapiURL, fetchAPI } from "utils/api"; 
@@ -554,6 +554,9 @@ export function FormItemFabric() {
       const fabrics = filtersFabricsMap;
 
       const [ItemOpen, setItemOpen] = useState(true);
+      const selectRef = useRef(null);
+      const [selectWidth, setSelectWidth] = useState(150); // Valor por defecto
+      const [selectWidthCircle, setSelectWidthCircle] = useState(20);
       
       const [form] = Form.useForm();    
       const handleChange = (value) => {
@@ -562,6 +565,27 @@ export function FormItemFabric() {
           Newfabric: [],
         });
       };
+
+        // Función para calcular el ancho del texto
+  const getTextWidth = (text, font = "8px Arial") => {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    context.font = font;
+    return context.measureText(text).width;
+  };
+
+  // Efecto para calcular el ancho dinámicamente en base al texto más largo
+  useEffect(() => {
+    if (fabrics && fabrics.length > 0) {
+      const longestLabel = fabrics.reduce((acc, option) => 
+        acc.length > option.label.length ? acc : option.label, ""
+      );
+      const width = getTextWidth(longestLabel) + 10; // Añadir un margen extra
+      const widthCircle = getTextWidth(longestLabel) + 10
+      setSelectWidth(width);
+      setSelectWidthCircle(widthCircle);
+    }
+  }, [fabrics]);
    
   
     return (
@@ -584,7 +608,8 @@ export function FormItemFabric() {
                           ]}
                       >
                           <Select 
-                        
+                          ref={selectRef}
+                          // style={{ width: `${selectWidth}px` }}
                           options={fabrics} 
                           onChange={handleChange} 
                           showSearch         
@@ -655,7 +680,9 @@ export function FormItemFabric() {
                                 <PlusCircleTwoTone onClick={() => { 
                                   add(),
                                   setItemOpen(false) 
-                                  } } />
+                                  } }
+                                  // style={{ width: `${selectWidthCircle}px` }}
+                                  />
                                 </Space>
                             ) : null} 
                         </>
