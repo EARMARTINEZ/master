@@ -695,64 +695,6 @@ export function FormItemFabric() {
   )
 }
     
-// export function FormItemFabric() {
-//   const { filtersFabricsMap } = BasicTasks(); 
-//   const fabric = filtersFabricsMap;
-  
-//   const [form] = Form.useForm();    
-//   const selectRef = useRef(null);
-//   const [selectWidth, setSelectWidth] = useState(150); // Valor por defecto
-
-//   const handleChange = (value) => {
-//     form.setFieldsValue({ Newfabric: [] });
-//   };
-
-//   // Función para calcular el ancho del texto
-//   const getTextWidth = (text, font = "8px Arial") => {
-//     const canvas = document.createElement("canvas");
-//     const context = canvas.getContext("2d");
-//     context.font = font;
-//     return context.measureText(text).width;
-//   };
-
-//   // Efecto para calcular el ancho dinámicamente en base al texto más largo
-//   useEffect(() => {
-//     if (fabric && fabric.length > 0) {
-//       const longestLabel = fabric.reduce((acc, option) => 
-//         acc.length > option.label.length ? acc : option.label, ""
-//       );
-//       const width = getTextWidth(longestLabel) + 50; // Añadir un margen extra
-//       setSelectWidth(width);
-//     }
-//   }, [fabric]);
-
-//   return (
-//     <div className="grid grid-cols-1 gap-1 m-0">
-//       <div className="grid grid-cols-2 gap-1 m-0">
-//         <div className="col-span-1 sm:col-span-1">
-//           <Form.Item
-//             name="fabric"
-//             label="Fabric"
-//             rules={[{ required: true, message: 'Missing fabric' }]}
-//           >
-//             <Select
-//               ref={selectRef}
-//               style={{ width: `${selectWidth}px` }} // Aplica el ancho dinámico calculado
-//               options={fabric}
-//               onChange={handleChange}
-//               showSearch
-//               placeholder="Search to Select"
-//               optionFilterProp="children"
-//               filterOption={(input, option) => 
-//                 option?.label.toLowerCase().includes(input.toLowerCase())
-//               }
-//             />
-//           </Form.Item>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
 
 export function FormItemColor() {   
     
