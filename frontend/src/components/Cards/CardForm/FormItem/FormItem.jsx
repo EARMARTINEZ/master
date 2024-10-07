@@ -539,33 +539,180 @@ export function FormItemSize() {
 }
   
   
-export function FormItemFabric() {   
+// export function FormItemFabric() {   
     
-  const {        
-    filtersFabricsMap,   
-     } = BasicTasks();         
+//   const {        
+//     filtersFabricsMap,   
+//      } = BasicTasks();         
      
-       const { TextArea } = Input;
+//        const { TextArea } = Input;
 
-      const { Option } = Select;
-      const fabric = filtersFabricsMap;
+//       const { Option } = Select;
+//       const fabric = filtersFabricsMap;
 
-      const [ItemOpen, setItemOpen] = useState(true);
+//       const [ItemOpen, setItemOpen] = useState(true);
 
-      const selectRef = useRef(null);
-      const [selectWidth, setSelectWidth] = useState(150); // Valor por defecto
-      const [selectWidthCircle, setSelectWidthCircle] = useState(20);
+//       const selectRef = useRef(null);
+//       const [selectWidth, setSelectWidth] = useState(150); // Valor por defecto
+//       const [selectWidthCircle, setSelectWidthCircle] = useState(20);
       
-      const [form] = Form.useForm();    
-      const handleChange = (value) => {
-        console.log(`Selected: ${value}`);
-        form.setFieldsValue({
-          Newfabric: [],
-        });
-      };
+//       const [form] = Form.useForm();    
+//       const handleChange = (value) => {
+//         console.log(`Selected: ${value}`);
+//         form.setFieldsValue({
+//           Newfabric: [],
+//         });
+//       };
    
-       // Función para calcular el ancho del texto
-  const getTextWidth = (text, font = "8px Arial") => {
+//        // Función para calcular el ancho del texto
+//   const getTextWidth = (text, font = "8px Arial") => {
+//     const canvas = document.createElement("canvas");
+//     const context = canvas.getContext("2d");
+//     context.font = font;
+//     return context.measureText(text).width;
+//   };
+
+//   // Efecto para calcular el ancho dinámicamente en base al texto más largo
+//   useEffect(() => {
+//     if (fabric && fabric.length > 0) {
+//       const longestLabel = fabric.reduce((acc, option) => 
+//         acc.length > option.label.length ? acc : option.label, ""
+//       );
+//       const width = getTextWidth(longestLabel) + 50; // Añadir un margen extra
+//       const widthCircle = getTextWidth(longestLabel) + 10
+//       setSelectWidth(width);
+//       setSelectWidthCircle(widthCircle);
+//     }
+//   }, [fabric]);
+  
+//     return (
+//     <>
+     
+//       <div className="grid grid-cols-1 gap-1 m-0">
+//           <div className="grid grid-cols-2 gap-1 m-0 ">                
+
+//                   {ItemOpen ? (         
+//                     <div className="col-span-1 sm:col-span-1  ">
+//                       <Form.Item
+//                           name="fabric"
+//                           label="Fabric"
+//                           rules={[
+//                           {
+//                               required: true,
+//                               message: 'Missing fabric',
+//                           },
+//                           ]}
+//                       >
+                      
+//                           <Select 
+//                           ref={selectRef}
+//                           style={{ width: `${selectWidth}px` }}
+//                           options={fabric} 
+//                           onChange={handleChange} 
+//                           showSearch         
+//                           placeholder="Search to Select"
+//                           optionFilterProp="children"
+//                           filterOption={(input, option) => option?.label.toString().toLowerCase().includes(input.toLowerCase())}
+//                           //filterOption={(input, option) => (option?.label ?? '').includes(input)}
+                          
+//                           // filterSort={(optionA, optionB) =>
+//                           //     (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())                            
+//                           // }
+                          
+//                           />
+//                       </Form.Item> 
+//                     </div> 
+//                   ) : null} 
+
+//                     <div className="col-span-1 sm:col-span-1  ">
+//                       <Form.List name="Newfabric">
+//                         {(fields, { add, remove }) => (
+//                         <>
+//                             {fields.length<1 ? setItemOpen(true) : setItemOpen(false)} 
+//                             {fields.map((field) => (
+//                             <Space 
+//                             key={field.key} 
+//                             align="baseline"
+//                             style={{
+//                               display: 'flex',
+//                               marginBottom: 8,
+//                             }}
+//                             >
+
+//                                 <Form.Item
+//                                 {...field}
+//                                 label="Fabric"
+//                                 name={[field.name, 'newfabric']}
+//                                 rules={[
+//                                     {
+//                                     required: true,
+//                                     message: 'Missing fabric',
+//                                     },
+//                                 ]}
+//                                 >
+//                                 <TextArea placeholder="" 
+//                                     autoSize={{
+//                                       minRows: 1,
+//                                       maxRows: 6,
+//                                     }} 
+//                                 />
+//                                 </Form.Item>
+
+//                                 <MinusCircleOutlined onClick={() =>{
+//                                   remove(field.name),
+//                                   setItemOpen(true)
+
+//                                 } } />
+//                             </Space>
+//                             ))}
+
+//                           {ItemOpen ? (   
+//                               <Space               
+//                               align="baseline"
+//                               style={{
+//                                 display: 'flex',
+//                                 marginBottom:8,
+//                               }}
+//                               >
+//                                 <PlusCircleTwoTone onClick={() => { 
+//                                   add(),
+//                                   setItemOpen(false) 
+//                                   } }
+//                                 style={{ width: `${selectWidthCircle}px` }} />
+//                                 </Space>
+//                             ) : null} 
+//                         </>
+//                         )}
+//                       </Form.List>
+//                     </div>  
+
+//           </div>  
+//       </div>          
+      
+    
+//     </>
+  
+//   )
+// }
+    
+export function FormItemFabric() {
+  const { filtersFabricsMap } = BasicTasks();
+  const fabric = filtersFabricsMap;
+  const { TextArea } = Input;
+
+  const [ItemOpen, setItemOpen] = useState(true);
+  const [selectWidth, setSelectWidth] = useState(120); // Valor por defecto para el Select cerrado
+  const [form] = Form.useForm();
+
+  const handleChange = (value) => {
+    console.log(`Selected: ${value}`);
+    form.setFieldsValue({
+      Newfabric: [],
+    });
+  };
+
+  // Función para calcular el ancho del texto
+  const getTextWidth = (text, font = "9px Arial") => {
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
     context.font = font;
@@ -575,56 +722,64 @@ export function FormItemFabric() {
   // Efecto para calcular el ancho dinámicamente en base al texto más largo
   useEffect(() => {
     if (fabric && fabric.length > 0) {
-      const longestLabel = fabric.reduce((acc, option) => 
+      const longestLabel = fabric.reduce((acc, option) =>
         acc.length > option.label.length ? acc : option.label, ""
       );
       const width = getTextWidth(longestLabel) + 50; // Añadir un margen extra
-      const widthCircle = getTextWidth(longestLabel) + 100
       setSelectWidth(width);
-      setSelectWidthCircle(widthCircle);
     }
   }, [fabric]);
-  
-    return (
+
+  const handleDropdownVisibleChange = (open) => {
+    if (open) {
+      // Al abrir el Select, ajustar el ancho al texto más largo
+      if (fabric && fabric.length > 0) {
+        const longestLabel = fabric.reduce((acc, option) =>
+          acc.length > option.label.length ? acc : option.label, ""
+        );
+        const width = getTextWidth(longestLabel) + 50;
+        setSelectWidth(width);
+      }
+    } else {
+      // Al cerrar el Select, regresar al ancho inicial
+      // setSelectWidth(250);
+    }
+  };
+
+  return (
     <>
-     
-      <div className="grid grid-cols-1 gap-1 m-0">
-          <div className="grid grid-cols-2 gap-1 m-0 ">                
-
-                  {ItemOpen ? (         
-                    <div className="col-span-1 sm:col-span-1  ">
-                      <Form.Item
-                          name="fabric"
-                          label="Fabric"
-                          rules={[
-                          {
-                              required: true,
-                              message: 'Missing fabric',
-                          },
-                          ]}
-                      >
-                      
-                          <Select 
-                          ref={selectRef}
-                          style={{ width: `${selectWidth}px` }}
-                          options={fabric} 
-                          onChange={handleChange} 
-                          showSearch         
-                          placeholder="Search to Select"
-                          optionFilterProp="children"
-                          filterOption={(input, option) => option?.label.toString().toLowerCase().includes(input.toLowerCase())}
-                          //filterOption={(input, option) => (option?.label ?? '').includes(input)}
-                          
-                          // filterSort={(optionA, optionB) =>
-                          //     (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())                            
-                          // }
-                          
-                          />
-                      </Form.Item> 
-                    </div> 
-                  ) : null} 
-
-                    <div className="col-span-1 sm:col-span-1  ">
+      <div className="grid grid-cols-2 gap-0"> {/* Ajustamos gap a 0 para acercar los elementos */}
+        {/* Primer Form.Item (Fabric) */}
+        {ItemOpen ? (   
+          <div className="flex items-center">
+            <Form.Item
+              name="fabric"
+              label="Fabric"
+              rules={[{
+                required: true,
+                message: 'Missing fabric',
+              }]}
+              style={{ marginBottom: 0, marginRight: '10px' }} // Reducir márgenes
+            >
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Select
+                  style={{ width: `${selectWidth}px` }} // Ajustar el ancho dinámico
+                  options={fabric}
+                  onChange={handleChange}
+                  showSearch
+                  placeholder="Search to Select"
+                  onDropdownVisibleChange={handleDropdownVisibleChange} // Manejar cuando se abre/cierra el dropdown
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option?.label.toString().toLowerCase().includes(input.toLowerCase())
+                  }
+                />
+              
+              </div>
+            </Form.Item>
+          </div>
+        ) : null} 
+        <div className="col-span-1 sm:col-span-1  ">
                       <Form.List name="Newfabric">
                         {(fields, { add, remove }) => (
                         <>
@@ -678,23 +833,18 @@ export function FormItemFabric() {
                                   add(),
                                   setItemOpen(false) 
                                   } }
-                                style={{ width: `${selectWidthCircle}px` }} />
+                                style={{ width: `${selectWidth}px` }} />
                                 </Space>
                             ) : null} 
                         </>
                         )}
                       </Form.List>
-                    </div>  
+        </div>      
 
-          </div>  
-      </div>          
-      
-    
+      </div>
     </>
-  
-  )
+  );
 }
-    
 
 export function FormItemColor() {   
     
